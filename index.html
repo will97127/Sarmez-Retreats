@@ -54,26 +54,6 @@
     </div>
 </section>
 
-
-    <!-- Dans ton formulaire, remplace le bloc Date et Pack par ceci -->
-<label>Nombre de nuitées :</label>
-<input type="number" id="nights" name="nights" value="1" min="1" onchange="updatePrice()">
-
-<label>Choisir un Pack :</label>
-<select id="pack" name="pack" onchange="updatePrice()">
-    <option value="0">Aucun pack</option>
-    <option value="110">🌿 PACK BIEN-ÊTRE (110€)</option>
-    <!-- ... autres options ... -->
-</select>
-
-<label>Quantité de packs :</label>
-<input type="number" id="pack-qty" name="pack-qty" value="1" min="0" onchange="updatePrice()">
-
-<div class="price-display">
-    Total estimé : <strong id="total-price">-- €</strong>
-</div>
-
-
 <!-- Widget Conciergerie (Obligatoire pour que le script fonctionne) -->
 <div class="chat-widget" id="chat-widget">
     <div class="chat-header" onclick="toggleChat()">
