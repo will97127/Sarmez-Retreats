@@ -30,3 +30,36 @@ function updatePrice() {
     // Pour l'instant, on affiche le prix du pack sélectionné
     priceDisplay.innerText = packPrice + " € (hors nuitées)";
 }
+// --- LOGIQUE DU FORMULAIRE DE RÉSERVATION ---
+
+// 1. Fonction pour mettre à jour le prix estimé
+function updatePrice() {
+    const packSelect = document.getElementById('pack');
+    const priceDisplay = document.getElementById('total-price');
+    const selectedPrice = packSelect.value;
+    
+    // Met à jour l'affichage du prix dans le formulaire
+    priceDisplay.innerText = selectedPrice + " € (hors prix des nuitées)";
+}
+
+// 2. Écouteur pour capturer l'envoi du formulaire
+const bookingForm = document.getElementById('booking-form');
+if (bookingForm) {
+    bookingForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Empêche le rechargement de la page
+        
+        // Récupération des données
+        const formData = {
+            bungalow: document.getElementById('bungalow').value,
+            dateIn: document.getElementById('date-in').value,
+            dateOut: document.getElementById('date-out').value,
+            pack: document.getElementById('pack').options[document.getElementById('pack').selectedIndex].text,
+            email: document.getElementById('email').value
+        };
+
+        console.log("Données envoyées :", formData);
+        
+        // Simulation d'envoi (Ici tu mettras plus tard ton fetch vers Resend)
+        alert("Merci " + formData.email + " ! Votre demande pour le " + formData.bungalow + " a bien été enregistrée.");
+    });
+}
