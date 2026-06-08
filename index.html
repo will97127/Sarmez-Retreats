@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -9,9 +9,8 @@
 </head>
 <body>
 
-<!-- Barre de Navigation -->
 <header>
-<div class="logo">🌴Sarmèz Retreats☀️  </div>
+<div class="logo">🌴Sarmèz Retreats☀️</div>
 <nav>
 <a href="#home">Accueil</a>
 <a href="#bungalows">Nos Bungalows</a>
@@ -20,7 +19,6 @@
 </nav>
 </header>
 
-<!-- Section Héro -->
 <section id="home" class="hero">
 <div class="hero-content">
 <h1>Votre Séjour Clé en Main, Sans Stress</h1>
@@ -29,7 +27,6 @@
 </div>
 </section>
 
-<!-- Section Présentation Hébergements -->
 <section id="bungalows" class="container">
 <h2 class="section-title">Nos Hébergements de Rêve</h2>
 <p class="text-center subtitle">Sélectionnez votre havre de paix. Cliquez sur les dates dans le calendrier ci-dessous pour réserver directement.</p>
@@ -57,87 +54,57 @@
 <p>Espace intime pour couples. Piscine privé.</p>
 <span class="badge">Disponibilité Synchrone</span>
 </div>
-  
+</div>
 </div>
 </section>
 
-<!-- Section Points Forts / Fonctionnalités de Gestion -->
 <section id="features" class="bg-light">
 <div class="container">
 <h2 class="section-title">Une Conciergerie Digitale & Automatisée</h2>
 <p class="text-center subtitle">Notre système s'occupe de tout pour vous garantir une expérience fluide dès la première minute.</p>
-
 <div class="features-grid">
-<!-- Bloc 1 -->
-<div class="feature-item">
-<div class="icon-wrapper"><i class="fa-solid fa-rotate"></i></div>
-<h3>Zéro Surbooking</h3>
-<p>Notre planning est connecté en direct avec <strong>Airbnb, Booking, Abritel</strong> et notre site. Les calendriers se mettent à jour instantanément.</p>
-</div>
-<!-- Bloc 2 -->
-<div class="feature-item">
-<div class="icon-wrapper"><i class="fa-solid fa-file-signature"></i></div>
-<h3>Contrat & Signature Électronique</h3>
-<p>Édition et envoi automatique de votre contrat de location et des CGV. Signez directement en ligne depuis votre mobile.</p>
-</div>
-<!-- Bloc 3 -->
-<div class="feature-item">
-<div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
-<h3>Suivi des Paiements & Taxes</h3>
-<p>Suivez vos acomptes, payez votre solde en ligne en toute sécurité et bénéficiez du calcul automatisé de la taxe de séjour.</p>
-</div>
-<!-- Bloc 4 -->
-<div class="feature-item">
-<div class="icon-wrapper"><i class="fa-solid fa-comment-sms"></i></div>
-<h3>Copilote SMS & Emails</h3>
-<p>Recevez des confirmations instantanées par email et des alertes SMS pour vos rappels d'échéances et détails d'arrivée.</p>
-</div>
+<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-rotate"></i></div><h3>Zéro Surbooking</h3></div>
+<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-file-signature"></i></div><h3>Contrat & Signature</h3></div>
+<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div><h3>Paiements Sécurisés</h3></div>
+<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-comment-sms"></i></div><h3>Copilote SMS</h3></div>
 </div>
 </div>
 </section>
 
-<!-- Section Intégration Dynamique du Calendrier -->
 <section id="planning" class="container">
-<h2 class="section-title">Planning & Réservation en Ligne</h2>
-<p class="text-center subtitle">Consultez les disponibilités en temps réel. Cliquez sur vos dates pour réserver votre séjour au meilleur tarif garanti.</p>
-
-<!-- Zone d'intégration du widget Gîte et Bien -->
+<h2 class="section-title">Planning & Réservation</h2>
 <div class="calendar-integration-box">
 <div class="placeholder-content">
 <i class="fa-solid fa-calendar-week placeholder-icon"></i>
-<h3>Intégration de votre Moteur Gîte et Bien</h3>
-<p>C'est à cet emplacement exact que s'affichera votre calendrier interactif multi-hébergements.</p>
-<div class="code-tip">
-<code><!-- Collez ici le code iFrame / Widget fourni par votre outil de réservation --></code>
-</div>
+<h3>Intégration Moteur de Réservation</h3>
+<div class="code-tip"><code>Widget Gîte et Bien</code></div>
 </div>
 </div>
 </section>
 
-<!-- Assistant virtuel (Concierge de poche) -->
 <div class="chat-widget" id="chat-widget">
 <div class="chat-header" onclick="toggleChat()">
 <span>🤖 Mon Espace Concierge</span>
 <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
 </div>
 <div class="chat-body" id="chat-body">
-<div class="message bot">Bonjour ! Je suis votre copilote de séjour. Comment puis-je vous aider ?</div>
+<div class="message bot">Bonjour ! Comment puis-je vous aider ?</div>
 <div class="chat-options">
-<button onclick="botAnswer('contrat')">📝 Où est mon contrat de location ?</button>
-<button onclick="botAnswer('solde')">💳 Comment payer le solde de mon séjour ?</button>
-<button onclick="botAnswer('synchro')">🔄 Ma réservation Airbnb est-elle bloquée ?</button>
+<button onclick="botAnswer('services')">🛎️ Nos services</button>
+<button onclick="botAnswer('restaurant')">🍽️ Restaurant : Chez Pinpin</button>
+<button onclick="botAnswer('culture')">🏛️ Sites culturels</button>
+<button onclick="botAnswer('plage')">🏖️ Plages : Souffleur & Chapelle</button>
+<button onclick="botAnswer('contrat')">📝 Mon contrat</button>
 </div>
 <div id="chat-response" class="message bot hidden"></div>
 </div>
 </div>
 
-<!-- Pied de page -->
 <footer>
 <div class="container footer-content">
-<p>© 2027 Sarmèz Retreats    - Gîte Rural & Chambres d'Hôtes Connectées. Propulsé par un système de gestion synchrone.</p>
+<p>© 2027 Sarmèz Retreats - Gîte Rural Connecté.</p>
 </div>
 </footer>
-
 <script src="script.js"></script>
 </body>
 </html>
