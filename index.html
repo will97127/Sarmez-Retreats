@@ -31,28 +31,39 @@
 </section>
 
 <section id="planning" class="container">
-    <h2 class="section-title">Sélectionnez vos options</h2>
+    <h2 class="section-title">Nos Packs Expériences</h2>
     
-    <div id="booking-form" class="booking-card">
-        <label>Dates de séjour :</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="date" id="date-in" onchange="updatePrice()">
-            <input type="date" id="date-out" onchange="updatePrice()">
+    <div class="packs-grid">
+        <div class="pack-card">
+            <h3>🌿 Kaz Zenitude</h3>
+            <p><strong>Solo (1h) :</strong> 100 €<br><strong>Duo (1h) :</strong> 170 €</p>
+            <p><small>Inclus : Massage huiles tropicales</small></p>
+            <input type="checkbox" value="160" name="pack"> Ajouter
         </div>
 
-        <label>Vos Packs (choix multiples) :</label>
-        <div id="pack-options">
-            <label><input type="checkbox" name="pack" value="110" onchange="updatePrice()"> Pack Bien-Être (110€)</label><br>
-            <label><input type="checkbox" name="pack" value="380" onchange="updatePrice()"> Pack Loisirs (380€)</label><br>
-            <label><input type="checkbox" name="pack" value="280" onchange="updatePrice()"> Pack Patrimoine (280€)</label><br>
-            <label><input type="checkbox" name="pack" value="750" onchange="updatePrice()"> Pack Signature (750€)</label>
+        <div class="pack-card">
+            <h3>🌊 Gwadloup Aventure</h3>
+            <p><strong>Couple :</strong> 220 €<br><strong>Famille (4 pers.) :</strong> 380 €</p>
+            <p><small>Inclus : Paddle mangrove 2h + Quad 3h + transfert gîte</small></p>
+            <input type="checkbox" value="300" name="pack"> Ajouter
         </div>
 
-        <div class="price-display">
-            Total estimé : <strong id="total-price">0 €</strong>
+        <div class="pack-card">
+            <h3>🐂 Racines Créoles</h3>
+            <p><strong>Couple :</strong> 160 €<br><strong>Famille (4 pers.) :</strong> 280 €</p>
+            <p><small>Inclus : Charrette à bœufs 1h30</small></p>
+            <input type="checkbox" value="220" name="pack"> Ajouter
+        </div>
+
+        <div class="pack-card highlight">
+            <h3>👑 Sarmèz Retreats All-In</h3>
+            <p><strong>Couple :</strong> 450 €<br><strong>Famille :</strong> 750 €</p>
+            <p><small>Inclus : Les 3 packs + welcome pack créole + dîner créole en carbet</small></p>
+            <input type="checkbox" value="600" name="pack"> Ajouter
         </div>
     </div>
 </section>
+
 
 <!-- Widget Conciergerie (Obligatoire pour que le script fonctionne) -->
 <div class="chat-widget" id="chat-widget">
