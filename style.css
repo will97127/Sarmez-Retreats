@@ -48,7 +48,7 @@ nav a:hover { color: var(--primary); }
 
 /* Section Héro */
 .hero {
-background: linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.6)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+background: linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.6)), url('SRfondecran.jpg') center/cover no-repeat;
 height: 65vh;
 display: flex;
 align-items: center;
