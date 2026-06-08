@@ -1,3 +1,4 @@
+// --- LOGIQUE DU CHATBOT (Conciergerie) ---
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
     const icon = document.getElementById('chat-icon');
@@ -20,35 +21,26 @@ function botAnswer(actionKey) {
 
     responseDiv.innerHTML = answers[actionKey] || "Je suis à votre disposition.";
     const chatBody = document.getElementById('chat-body');
-    chatBody.scrollTop = chatBody.scrollHeight;
+    if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
 }
-function updatePrice() {
-    const packPrice = document.getElementById('pack-selection').value;
-    const priceDisplay = document.getElementById('total-price');
-    
-    // Ici, tu pourrais ajouter une logique complexe (nuitées * prix nuitée + pack)
-    // Pour l'instant, on affiche le prix du pack sélectionné
-    priceDisplay.innerText = packPrice + " € (hors nuitées)";
-}
+
 // --- LOGIQUE DU FORMULAIRE DE RÉSERVATION ---
 
-// 1. Fonction pour mettre à jour le prix estimé
+// Fonction unique pour mettre à jour le prix
 function updatePrice() {
     const packSelect = document.getElementById('pack');
     const priceDisplay = document.getElementById('total-price');
     const selectedPrice = packSelect.value;
     
-    // Met à jour l'affichage du prix dans le formulaire
     priceDisplay.innerText = selectedPrice + " € (hors prix des nuitées)";
 }
 
-// 2. Écouteur pour capturer l'envoi du formulaire
+// Écouteur pour capturer l'envoi du formulaire
 const bookingForm = document.getElementById('booking-form');
 if (bookingForm) {
     bookingForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Empêche le rechargement de la page
+        e.preventDefault(); 
         
-        // Récupération des données
         const formData = {
             bungalow: document.getElementById('bungalow').value,
             dateIn: document.getElementById('date-in').value,
@@ -59,7 +51,7 @@ if (bookingForm) {
 
         console.log("Données envoyées :", formData);
         
-        // Simulation d'envoi (Ici tu mettras plus tard ton fetch vers Resend)
-        alert("Merci " + formData.email + " ! Votre demande pour le " + formData.bungalow + " a bien été enregistrée.");
+        // Alerte de confirmation
+        alert("Merci ! Votre demande pour le " + formData.bungalow + " a bien été enregistrée. Nous vous recontactons très vite.");
     });
 }
