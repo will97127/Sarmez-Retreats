@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sarmèz Retreats | Gîte de Charme & Conciergerie Automatisée</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarmèz Retreats | Gîte de Charme & Conciergerie Automatisée</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -22,66 +22,12 @@
     </nav>
 </header>
 
-
-    <nav>
-        <a href="#home">Accueil</a>
-        <a href="#bungalows">Bungalow</a>
-        <a href="#features">Service connecté</a>
-        <a href="#planning">Tarif</a>
-    </nav>
-</header>
-
-
 <section id="home" class="hero">
-<div class="hero-content">
-<h1>Votre Séjour Clé en Main, Sans Stress</h1>
-<p>Bungalows d'exception avec planning synchronisé en temps réel, contrats automatisés et suivi client personnalisé.</p>
-<a href="#planning" class="btn">Consulter le Calendrier Direct</a>
-</div>
-</section>
-
-<section id="bungalows" class="container">
-<h2 class="section-title">Nos Hébergements de Rêve</h2>
-<p class="text-center subtitle">Sélectionnez votre havre de paix. Cliquez sur les dates dans le calendrier ci-dessous pour réserver directement.</p>
-<div class="grid">
-<div class="card">
-<div class="card-img" style="background-image: url('SRplage.jpg');"></div>
-<div class="card-body">
-<h3>SR Plage</h3>
-<p>Espace intime pour couples. Piscine privé.</p>
-<span class="badge">Disponibilité Synchrone</span>
-</div>
-</div>
-<div class="card">
-<div class="card-img" style="background-image: url('SRriviere.jpg');"></div>
-<div class="card-body">
-<h3>SR Rivière</h3>
-<p>Espace intime pour couples. Piscine privé.</p>
-<span class="badge">Disponibilité Synchrone</span>
-</div>
-</div>
-<div class="card">
-<div class="card-img" style="background-image: url('SRtradition.jpg');"></div>
-<div class="card-body">
-<h3>SR Tradition</h3>
-<p>Espace intime pour couples. Piscine privé.</p>
-<span class="badge">Disponibilité Synchrone</span>
-</div>
-</div>
-</div>
-</section>
-
-<section id="features" class="bg-light">
-<div class="container">
-<h2 class="section-title">Une Conciergerie Digitale & Automatisée</h2>
-<p class="text-center subtitle">Notre système s'occupe de tout pour vous garantir une expérience fluide dès la première minute.</p>
-<div class="features-grid">
-<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-rotate"></i></div><h3>Zéro Surbooking</h3></div>
-<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-file-signature"></i></div><h3>Contrat & Signature</h3></div>
-<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div><h3>Paiements Sécurisés</h3></div>
-<div class="feature-item"><div class="icon-wrapper"><i class="fa-solid fa-comment-sms"></i></div><h3>Copilote SMS</h3></div>
-</div>
-</div>
+    <div class="hero-content">
+        <h1>Votre Séjour Clé en Main, Sans Stress</h1>
+        <p>Bungalows d'exception avec planning synchronisé, contrats automatisés et suivi client personnalisé.</p>
+        <a href="#planning" class="btn">Réserver mon séjour</a>
+    </div>
 </section>
 
 <section id="planning" class="container">
@@ -95,8 +41,8 @@
         </select>
 
         <div style="display: flex; gap: 10px;">
-            <div><label>Arrivée :</label><input type="date" id="date-in" name="date-in" required></div>
-            <div><label>Départ :</label><input type="date" id="date-out" name="date-out" required></div>
+            <div style="flex: 1;"><label>Arrivée :</label><input type="date" id="date-in" name="date-in" required></div>
+            <div style="flex: 1;"><label>Départ :</label><input type="date" id="date-out" name="date-out" required></div>
         </div>
 
         <label>Choisir un Pack :</label>
@@ -108,38 +54,10 @@
             <option value="750">👑 PACK SIGNATURE</option>
         </select>
 
-        <div class="price-display">Estimation : <strong id="total-price">-- €</strong></div>
+        <div class="price-display">Estimation pack : <strong id="total-price">-- €</strong></div>
         
-        <input type="email" id="email" name="email" placeholder="Votre email" required>
+        <input type="email" id="email" name="email" placeholder="Votre email" required style="width: 100%; padding: 10px; margin: 10px 0;">
         <button type="submit" class="btn">Envoyer la demande</button>
     </form>
 </section>
 
-
-
-<div class="chat-widget" id="chat-widget">
-<div class="chat-header" onclick="toggleChat()">
-<span>🤖 Mon Espace Concierge</span>
-<i class="fa-solid fa-chevron-up" id="chat-icon"></i>
-</div>
-<div class="chat-body" id="chat-body">
-<div class="message bot">Bonjour ! Comment puis-je vous aider ?</div>
-<div class="chat-options">
-<button onclick="botAnswer('services')">🛎️ Nos services</button>
-<button onclick="botAnswer('restaurant')">🍽️ Restaurant : Chez Pinpin</button>
-<button onclick="botAnswer('culture')">🏛️ Sites culturels</button>
-<button onclick="botAnswer('plage')">🏖️ Plages : Souffleur & Chapelle</button>
-<button onclick="botAnswer('contrat')">📝 Mon contrat</button>
-</div>
-<div id="chat-response" class="message bot hidden"></div>
-</div>
-</div>
-
-<footer>
-<div class="container footer-content">
-<p>© 2027 Sarmèz Retreats - Gîte Rural Connecté.</p>
-</div>
-</footer>
-<script src="script.js"></script>
-</body>
-</html>
