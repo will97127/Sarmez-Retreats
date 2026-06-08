@@ -85,15 +85,30 @@
 </section>
 
 <section id="planning" class="container">
-<h2 class="section-title">Planning & Réservation</h2>
-<div class="calendar-integration-box">
-<div class="placeholder-content">
-<i class="fa-solid fa-calendar-week placeholder-icon"></i>
-<h3>Intégration Moteur de Réservation</h3>
-<div class="code-tip"><code>Widget Gîte et Bien</code></div>
-</div>
-</div>
+    <h2 class="section-title">Disponibilités & Packs Séjour</h2>
+    
+    <!-- Zone Moteur de Réservation (Gîte et Bien) -->
+    <div class="booking-engine-wrapper">
+        <div id="gite-et-bien-widget">
+            <!-- Le script de ton partenaire s'insère ici -->
+            <p>Chargement du calendrier en temps réel...</p>
+        </div>
+    </div>
+
+    <!-- Sélecteur de Packs Dynamique -->
+    <div id="pack-selector" class="pack-container">
+        <h3>Choisissez votre expérience</h3>
+        <select id="pack-choice">
+            <option value="aucun">Sans pack additionnel</option>
+            <option value="zenitude">🌿 PACK BIEN-ÊTRE "Kaz Zenitude"</option>
+            <option value="aventure">🌊 PACK LOISIRS "Gwadloup Aventure"</option>
+            <option value="racines">🐂 PACK PATRIMOINE "Racines Créoles"</option>
+            <option value="signature">👑 PACK SIGNATURE "Karibbean Paradis All-In"</option>
+        </select>
+        <p id="pack-description" style="font-size: 0.9rem; margin-top: 10px;"></p>
+    </div>
 </section>
+
 
 <div class="chat-widget" id="chat-widget">
 <div class="chat-header" onclick="toggleChat()">
