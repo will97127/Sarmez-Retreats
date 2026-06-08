@@ -22,3 +22,11 @@ function botAnswer(actionKey) {
     const chatBody = document.getElementById('chat-body');
     chatBody.scrollTop = chatBody.scrollHeight;
 }
+function updatePrice() {
+    const packPrice = document.getElementById('pack-selection').value;
+    const priceDisplay = document.getElementById('total-price');
+    
+    // Ici, tu pourrais ajouter une logique complexe (nuitées * prix nuitée + pack)
+    // Pour l'instant, on affiche le prix du pack sélectionné
+    priceDisplay.innerText = packPrice + " € (hors nuitées)";
+}
