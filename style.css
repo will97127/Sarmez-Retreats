@@ -120,3 +120,17 @@ padding: 0 1rem;
 /* Footer */
 footer { background: var(--secondary); color: #94a3b8; text-align: center; font-size: 0.9rem; border-top: 1px solid #1e293b; }
 footer .container { padding: 2.5rem 2rem; }
+
+.booking-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    border: 1px solid #e2e8f0;
+}
+
+.booking-card label { display: block; margin-top: 10px; font-weight: 600; }
+.booking-card select, .booking-card input { width: 100%; padding: 8px; margin-top: 5px; }
+.price-display { margin: 15px 0; padding: 10px; background: #f8fafc; border-radius: 6px; }
