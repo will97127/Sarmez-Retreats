@@ -39,11 +39,24 @@ header {
     font-family: sans-serif; /* Police simple et lisible */
 }
 
-.logo { 
-    font-size: 1.2rem; 
-    font-weight: 700; 
-    color: var(--secondary); /* Couleur sombre pour faire ressortir le texte */
+.logo {
+    display: flex;
+    flex-direction: column; /* Empile les mots */
+    line-height: 1; /* Resserre les lignes */
+    font-family: 'Georgia', 'Times New Roman', serif; /* Police type Serif */
+    font-style: italic; /* Pour le style élégant vu dans 1000343420.jpg */
 }
+
+.logo-top {
+    color: #ffffff; /* Blanc */
+    font-size: 1.4rem;
+}
+
+.logo-bottom {
+    color: #c5a072; /* Ton doré/sable */
+    font-size: 1.4rem;
+}
+
 
 nav {
     display: flex;
