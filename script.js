@@ -27,16 +27,25 @@ function botAnswer(actionKey) {
 // --- LOGIQUE DU FORMULAIRE DE RÉSERVATION ---
 
 // Fonction unique pour mettre à jour le prix
+
 function updatePrice() {
-    const nightPrice = 200; // Prix fixe à la nuitée
-    const nights = parseInt(document.getElementById('nights').value) || 0;
-    const packPrice = parseFloat(document.getElementById('pack').value) || 0;
-    const packQty = parseInt(document.getElementById('pack-qty').value) || 0;
+    const nightPrice = 200;
+    const dateIn = new Date(document.getElementById('date-in').value);
+    const dateOut = new Date(document.getElementById('date-out').value);
     
-    const totalPrice = (nights * nightPrice) + (packPrice * packQty);
+    // Calcul des nuitées
+    const diffTime = Math.abs(dateOut - dateIn);
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 0;
     
-    const priceDisplay = document.getElementById('total-price');
-    priceDisplay.innerText = totalPrice + " €";
+    // Calcul des packs cochés
+    let packTotal = 0;
+    const checkboxes = document.querySelectorAll('input[name="pack"]:checked');
+    checkboxes.forEach((cb) => {
+        packTotal += parseFloat(cb.value);
+    });
+    
+    const totalPrice = (nights * nightPrice) + packTotal;
+    document.getElementById('total-price').innerText = totalPrice + " €";
 }
 
 
