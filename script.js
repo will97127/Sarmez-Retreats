@@ -1,41 +1,24 @@
-// Fonction pour ouvrir ou fermer le widget d'assistance de conciergerie
 function toggleChat() {
-const chatBody = document.getElementById('chat-body');
-const icon = document.getElementById('chat-icon');
-
-chatBody.classList.toggle('open');
-
-if(chatBody.classList.contains('open')) {
-icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-} else {
-icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-}
+    const chatBody = document.getElementById('chat-body');
+    const icon = document.getElementById('chat-icon');
+    chatBody.classList.toggle('open');
+    icon.classList.replace(chatBody.classList.contains('open') ? 'fa-chevron-up' : 'fa-chevron-down', 
+                           chatBody.classList.contains('open') ? 'fa-chevron-down' : 'fa-chevron-up');
 }
 
-// Logique de réponse automatique basée sur les règles de gestion du gîte
 function botAnswer(actionKey) {
-const responseDiv = document.getElementById('chat-response');
-responseDiv.classList.remove('hidden');
+    const responseDiv = document.getElementById('chat-response');
+    responseDiv.classList.remove('hidden');
 
-let answerText = "";
+    const answers = {
+        'services': "🛎️ <strong>Nos services :</strong><br>• Petit déjeuner<br>• Ménage<br>• Balade charrette à bœufs<br>• Paddle/Kayak (Mangrove)<br>• Support technique",
+        'restaurant': '🍽️ Restaurant : <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank" style="color:var(--primary);">Chez Pinpin (Itinéraire)</a>',
+        'culture': "🏛️ <strong>Sites culturels :</strong><br>• Marche des Esclaves<br>• Port de pêche<br>• Site de Duval",
+        'plage': '🏖️ <strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a>',
+        'contrat': "📝 Votre contrat est généré automatiquement dès validation du planning. Consultez votre espace client."
+    };
 
-switch(actionKey) {
-case 'contrat':
-answerText = "📝 <strong>Édition automatique :</strong> Dès que vous cliquez sur vos dates et validez votre demande sur notre planning, notre système génère votre contrat de location. Vous recevrez un lien par email/SMS pour y apposer votre <strong>signature électronique sécurisée</strong>.";
-break;
-case 'solde':
-answerText = "💳 <strong>Suivi de votre dossier :</strong> Vous disposez d'une fiche client en ligne dédiée. Notre copilote vous enverra un rappel automatique avant l'échéance pour régler vos acomptes, suppléments ou votre solde en toute simplicité.";
-break;
-case 'synchro':
-answerText = "🔄 <strong>Synchronisation OTA :</strong> Oui ! Que vous réserviez directement ici, par téléphone, ou via Airbnb/Booking, les calendriers se mettent à jour automatiquement à la minute près. Le surbooking est techniquement impossible.";
-break;
-default:
-answerText = "🤖 Notre copilote centralise toutes les requêtes. Un gestionnaire humain prendra le relais si nécessaire.";
-}
-
-responseDiv.innerHTML = answerText;
-
-// Fait défiler le chat vers le bas pour afficher la réponse
-const chatBody = document.getElementById('chat-body');
-chatBody.scrollTop = chatBody.scrollHeight;
+    responseDiv.innerHTML = answers[actionKey] || "Je suis à votre disposition.";
+    const chatBody = document.getElementById('chat-body');
+    chatBody.scrollTop = chatBody.scrollHeight;
 }
