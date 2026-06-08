@@ -29,31 +29,38 @@ padding: 5rem 2rem;
 /* Navigation */
 header {
     display: flex;
-    justify-content: space-between; /* Remet le logo à gauche et le menu à droite */
+    justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 2rem; /* Retour à la hauteur d'origine */
+    padding: 0.5rem 2rem; /* Réduit la hauteur du bandeau */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(5px);
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-.logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+.logo { 
+    font-size: 1.1rem; /* Réduit pour éviter le retour à la ligne */
+    font-weight: 700; 
+    color: var(--primary);
+    white-space: nowrap; /* Empêche le logo de se casser sur plusieurs lignes */
+}
 
 nav {
     display: flex;
-    gap: 0; /* Réinitialise le gap pour utiliser les marges d'origine */
+    align-items: center;
+    gap: 1rem; /* Espace entre les liens */
 }
 
 nav a { 
     text-decoration: none; 
     color: var(--secondary); 
-    margin-left: 1.8rem; /* Remet l'espacement gauche d'origine */
     font-weight: 500; 
+    font-size: 0.9rem; /* Taille adaptée pour tenir sur une ligne */
     transition: color 0.2s; 
 }
+
 
 
 /* Section Héro */
