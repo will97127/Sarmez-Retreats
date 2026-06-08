@@ -28,12 +28,17 @@ function botAnswer(actionKey) {
 
 // Fonction unique pour mettre à jour le prix
 function updatePrice() {
-    const packSelect = document.getElementById('pack');
-    const priceDisplay = document.getElementById('total-price');
-    const selectedPrice = packSelect.value;
+    const nightPrice = 200; // Prix fixe à la nuitée
+    const nights = parseInt(document.getElementById('nights').value) || 0;
+    const packPrice = parseFloat(document.getElementById('pack').value) || 0;
+    const packQty = parseInt(document.getElementById('pack-qty').value) || 0;
     
-    priceDisplay.innerText = selectedPrice + " € (hors prix des nuitées)";
+    const totalPrice = (nights * nightPrice) + (packPrice * packQty);
+    
+    const priceDisplay = document.getElementById('total-price');
+    priceDisplay.innerText = totalPrice + " €";
 }
+
 
 // Écouteur pour capturer l'envoi du formulaire
 const bookingForm = document.getElementById('booking-form');
