@@ -85,29 +85,36 @@
 </section>
 
 <section id="planning" class="container">
-    <h2 class="section-title">Disponibilités & Packs Séjour</h2>
-    
-    <!-- Zone Moteur de Réservation (Gîte et Bien) -->
-    <div class="booking-engine-wrapper">
-        <div id="gite-et-bien-widget">
-            <!-- Le script de ton partenaire s'insère ici -->
-            <p>Chargement du calendrier en temps réel...</p>
-        </div>
-    </div>
-
-    <!-- Sélecteur de Packs Dynamique -->
-    <div id="pack-selector" class="pack-container">
-        <h3>Choisissez votre expérience</h3>
-        <select id="pack-choice">
-            <option value="aucun">Sans pack additionnel</option>
-            <option value="zenitude">🌿 PACK BIEN-ÊTRE "Kaz Zenitude"</option>
-            <option value="aventure">🌊 PACK LOISIRS "Gwadloup Aventure"</option>
-            <option value="racines">🐂 PACK PATRIMOINE "Racines Créoles"</option>
-            <option value="signature">👑 PACK SIGNATURE "Karibbean Paradis All-In"</option>
+    <h2 class="section-title">Demande de Réservation</h2>
+    <form id="booking-form" class="booking-card">
+        <label>Bungalow :</label>
+        <select id="bungalow" name="bungalow">
+            <option value="SR Plage">SR Plage</option>
+            <option value="SR Rivière">SR Rivière</option>
+            <option value="SR Tradition">SR Tradition</option>
         </select>
-        <p id="pack-description" style="font-size: 0.9rem; margin-top: 10px;"></p>
-    </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div><label>Arrivée :</label><input type="date" id="date-in" name="date-in" required></div>
+            <div><label>Départ :</label><input type="date" id="date-out" name="date-out" required></div>
+        </div>
+
+        <label>Choisir un Pack :</label>
+        <select id="pack" name="pack" onchange="updatePrice()">
+            <option value="0">Aucun (Hébergement seul)</option>
+            <option value="110">🌿 PACK BIEN-ÊTRE</option>
+            <option value="380">🌊 PACK LOISIRS</option>
+            <option value="280">🐂 PACK PATRIMOINE</option>
+            <option value="750">👑 PACK SIGNATURE</option>
+        </select>
+
+        <div class="price-display">Estimation : <strong id="total-price">-- €</strong></div>
+        
+        <input type="email" id="email" name="email" placeholder="Votre email" required>
+        <button type="submit" class="btn">Envoyer la demande</button>
+    </form>
 </section>
+
 
 
 <div class="chat-widget" id="chat-widget">
