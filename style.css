@@ -27,12 +27,14 @@ padding: 5rem 2rem;
 .subtitle { max-width: 700px; margin: 0 auto 3rem auto; color: #64748b; font-size: 1.1rem; }
 
 /* Navigation très compacte */
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-    background: #1a1a1a; /* Fond sombre */
+    /* On augmente le padding pour agrandir la bande */
+    padding: 1rem 1.5rem; 
+    background: #1a1a1a;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -41,38 +43,25 @@ header {
 .logo-container {
     display: flex;
     flex-direction: column;
-    line-height: 1.1;
-    min-width: 80px; /* Force une largeur minimale pour ne pas disparaître */
+    line-height: 1;
 }
 
-.logo-top { color: #ffffff; font-size: 0.9rem; font-weight: bold; }
-.logo-bottom { color: #c5a072; font-size: 0.9rem; font-weight: bold; }
+/* On augmente la taille des textes ici */
+.logo-top { color: #ffffff; font-size: 1.1rem; font-weight: bold; }
+.logo-bottom { color: #c5a072; font-size: 1.1rem; font-weight: bold; }
 
 nav {
     display: flex;
-    gap: 8px; /* Réduit l'espace pour que tout tienne sur mobile */
+    gap: 12px;
 }
 
 nav a { 
     color: white; 
-    font-size: 0.7rem; /* Taille réduite pour tout afficher */
-    text-decoration: none;
-    text-align: center;
-}
-
-    display: flex;
-    gap: 15px; /* Espace minimal entre les mots */
-}
-
-nav a { 
-    text-decoration: none; 
-    color: #333; /* Gris foncé */
-    font-size: 0.85rem; /* Taille de police réduite */
+    /* On augmente légèrement la taille pour une meilleure lecture */
+    font-size: 0.85rem; 
     font-weight: 500;
+    text-decoration: none;
 }
-
-
-
 
 /* Section Héro */
 .hero {
