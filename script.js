@@ -74,3 +74,21 @@ if (bookingForm) {
         alert("Merci ! Votre demande pour le " + formData.bungalow + " a bien été enregistrée. Nous vous recontactons très vite.");
     });
 }
+function calculate() {
+    // 1. Calcul des nuitées
+    const d1 = new Date(document.getElementById('date-in').value);
+    const d2 = new Date(document.getElementById('date-out').value);
+    const diffTime = Math.abs(d2 - d1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const nightPrice = isNaN(diffDays) ? 0 : diffDays * 200;
+
+    // 2. Calcul du pack
+    const packSelect = document.getElementById('pack-select');
+    const packPrice = parseInt(packSelect.value) || 0;
+
+    // 3. Mise à jour de l'affichage
+    document.getElementById('night-total').innerText = nightPrice;
+    document.getElementById('pack-total').innerText = packPrice;
+    document.getElementById('final-price').innerText = nightPrice + packPrice;
+}
