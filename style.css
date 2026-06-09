@@ -255,3 +255,21 @@ button[type="submit"] {
     border-radius: 8px;
     cursor: pointer;
 }
+
+/* Styles généraux pour le chatbot et le formulaire */
+:root { --primary: #0284c7; --secondary: #0f172a; --accent: #10b981; }
+
+.chat-widget { position: fixed; bottom: 20px; right: 20px; width: 300px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.chat-header { background: var(--secondary); color: white; padding: 15px; cursor: pointer; border-radius: 10px 10px 0 0; }
+.chat-body { display: none; padding: 15px; }
+.chat-body.open { display: block; }
+
+.large-select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
+.chat-options button { display: block; width: 100%; margin-bottom: 5px; padding: 8px; cursor: pointer; }
+
+/* Ajout des couleurs pour le logo */
+.logo-top { color: white; font-weight: bold; }
+.logo-bottom { color: #c5a072; font-style: italic; }
+
+header { background: var(--secondary); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+nav a { color: white; text-decoration: none; margin: 0 10px; }
