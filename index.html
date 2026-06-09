@@ -81,11 +81,29 @@
         <input type="date" id="date-out" required>
 
         <!-- Packs (avec prix en data-price) -->
-        <select id="pack" onchange="updatePrice()">
-            <option value="0">Aucun pack</option>
-            <option value="170" data-name="Kaz Zenitude">Kaz Zenitude (170€)</option>
-            <option value="300" data-name="Gwadloup Aventure">Gwadloup Aventure (300€)</option>
-        </select>
+        <select id="pack-select" onchange="calculate()">
+    <option value="0">Choisissez un pack (Optionnel)</option>
+    
+    <optgroup label="🌿 Pack Bien-être">
+        <option value="100" data-name="Bien-être Solo">Solo (1h) - 100€</option>
+        <option value="170" data-name="Bien-être Duo">Duo (1h) - 170€</option>
+    </optgroup>
+
+    <optgroup label="🌊 Pack Loisirs">
+        <option value="220" data-name="Loisirs Couple">Couple - 220€</option>
+        <option value="380" data-name="Loisirs Famille">Famille (4 pers.) - 380€</option>
+    </optgroup>
+
+    <optgroup label="🐂 Pack Patrimoine">
+        <option value="160" data-name="Patrimoine Couple">Couple - 160€</option>
+        <option value="280" data-name="Patrimoine Famille">Famille (4 pers.) - 280€</option>
+    </optgroup>
+
+    <optgroup label="👑 Pack Signature (Séjour 7 nuits min.)">
+        <option value="450" data-name="Signature Couple">Couple (7 nuits) - 450€</option>
+        <option value="750" data-name="Signature Famille">Famille (7 nuits) - 750€</option>
+    </optgroup>
+</select>
 
         <p>Total estimé : <span id="total-price">0 €</span></p>
         <input type="email" id="email" placeholder="Votre email" required>
