@@ -76,19 +76,29 @@ if (bookingForm) {
 }
 function calculate() {
     // 1. Calcul des nuitées
-    const d1 = new Date(document.getElementById('date-in').value);
-    const d2 = new Date(document.getElementById('date-out').value);
-    const diffTime = Math.abs(d2 - d1);
+    const dateIn = new Date(document.getElementById('date-in').value);
+    const dateOut = new Date(document.getElementById('date-out').value);
+    const diffTime = Math.abs(dateOut - dateIn);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    const nightPrice = isNaN(diffDays) ? 0 : diffDays * 200;
+    // Si les dates sont valides, on calcule le prix des nuitées (200€/nuit)
+    const nights = (diffDays && diffDays > 0) ? diffDays : 0;
+    const nightPrice = nights * 200;
 
     // 2. Calcul du pack
-    const packSelect = document.getElementById('pack-select');
-    const packPrice = parseInt(packSelect.value) || 0;
+    const select = document.getElementById('pack-select');
+    const selectedOption = select.options[select.selectedIndex];
+    const packPrice = parseInt(selectedOption.value) || 0;
+    const packName = selectedOption.dataset.name || "Aucun";
 
-    // 3. Mise à jour de l'affichage
+    // 3. Vérification de la règle "Pack Signature"
+    if (packName.includes("Signature") && nights < 7) {
+        alert("Attention : Le Pack Signature nécessite un séjour minimum de 7 nuits.");
+    }
+
+    // 4. Mise à jour de l'affichage dans la barre flottante
     document.getElementById('night-total').innerText = nightPrice;
     document.getElementById('pack-total').innerText = packPrice;
     document.getElementById('final-price').innerText = nightPrice + packPrice;
 }
+
