@@ -269,7 +269,7 @@ button[type="submit"] {
 /* Styles généraux pour le chatbot et le formulaire */
 :root { --primary: #0284c7; --secondary: #0f172a; --accent: #10b981; }
 
-.chat-widget { position: fixed; bottom: 20px; right: 20px; width: 300px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.chat-widget { position: fixed; bottom: 80px; right: 20px; width: 300px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 .chat-header { background: var(--secondary); color: white; padding: 15px; cursor: pointer; border-radius: 10px 10px 0 0; }
 .chat-body { display: none; padding: 15px; }
 .chat-body.open { display: block; }
