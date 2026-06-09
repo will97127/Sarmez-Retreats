@@ -106,3 +106,43 @@ function calculate() {
     document.getElementById('total-price').innerText = (nightPrice + packPrice) + " €";
 }
 
+// --- CALCUL PRIX ---
+const form = document.getElementById('booking-form');
+const elements = ['bungalow', 'date-in', 'date-out', 'pack-select'];
+
+elements.forEach(id => {
+    document.getElementById(id).addEventListener('change', calculate);
+});
+
+function calculate() {
+    const d1 = new Date(document.getElementById('date-in').value);
+    const d2 = new Date(document.getElementById('date-out').value);
+    const nights = Math.max(0, (d2 - d1) / (1000 * 60 * 60 * 24));
+    
+    const packPrice = parseInt(document.getElementById('pack-select').value) || 0;
+    const total = (nights * 200) + packPrice;
+
+    // Mise à jour de la vue si nécessaire
+    console.log(`Total : ${total}€`);
+}
+
+// --- CHATBOT ---
+function toggleChat() {
+    document.getElementById('chat-body').classList.toggle('open');
+}
+
+function showCategory(cat) {
+    const container = document.getElementById('chat-content');
+    const data = {
+        'services': `<strong>Services :</strong><br>• Petit déjeuner : 15€<br>• Ménage : 20€<br>• Traiteur : Sur devis<br><button onclick="back()">Retour</button>`,
+        'plages': `<strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a><br><button onclick="back()">Retour</button>`,
+        'restos': `<strong>Restaurant :</strong><br>• <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank">Chez Pinpin</a><br><button onclick="back()">Retour</button>`,
+        'culture': `<strong>Culture :</strong><br>• <a href="https://www.google.com/maps/search/Marches+des+Esclaves" target="_blank">Marche des Esclaves</a><br>• <a href="https://www.google.com/maps/search/Site+de+Duval" target="_blank">Site de Duval</a><br>• <a href="https://www.google.com/maps/search/Port+de+peche+Petit-Canal" target="_blank">Port de pêche</a><br><button onclick="back()">Retour</button>`
+    };
+    container.innerHTML = `<div class="message bot">${data[cat]}</div>`;
+}
+
+function back() {
+    location.reload(); // Simplifié pour revenir au menu
+}
+
