@@ -97,8 +97,12 @@ function calculate() {
     }
 
     // 4. Mise à jour de l'affichage dans la barre flottante
+    
     document.getElementById('night-total').innerText = nightPrice;
     document.getElementById('pack-total').innerText = packPrice;
     document.getElementById('final-price').innerText = nightPrice + packPrice;
+    
+    // NOUVEAU : Mise à jour du texte dans le formulaire pour qu'il soit synchrone
+    document.getElementById('total-price').innerText = (nightPrice + packPrice) + " €";
 }
 
