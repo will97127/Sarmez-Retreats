@@ -184,3 +184,52 @@ nav a {
     border-radius: 6px;
     font-size: 1.2rem;
 }
+/* --- Ajustement de la barre de prix --- */
+.price-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--secondary);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+    z-index: 999;
+    border-top: 2px solid var(--primary); /* Petite touche élégante */
+}
+
+.price-bar .container {
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.total-final {
+    background: var(--primary);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Évite que le contenu de la page ne soit caché par la barre flottante */
+body {
+    padding-bottom: 80px; 
+}
+
+/* Responsive : Si l'écran est petit, on empile les éléments */
+@media (max-width: 768px) {
+    .price-bar .container {
+        flex-direction: column;
+        gap: 10px;
+        padding: 0.5rem;
+    }
+    .total-final {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}
