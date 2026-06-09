@@ -66,3 +66,24 @@ nav a { color: white; text-decoration: none; margin-left: 15px; font-size: 0.9re
 .chat-body { display: none; padding: 15px; }
 .chat-body.open { display: block; }
 .hidden { display: none; }
+
+/* --- Ajout pour la grille des Packs --- */
+.packs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.pack-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.pack-card.highlight {
+    border: 2px solid #c5a072; /* Bordure dorée pour le pack signature */
+    background: #fffdf9;
+}
