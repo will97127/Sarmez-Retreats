@@ -233,3 +233,25 @@ body {
         box-sizing: border-box;
     }
 }
+/* Style pour agrandir les cases de sélection et inputs */
+.large-select, input[type="date"], input[type="email"] {
+    width: 100%;
+    padding: 1.2rem; /* Augmente la hauteur de la case */
+    margin-bottom: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.1rem; /* Texte plus gros pour la lisibilité */
+    background-color: white;
+}
+
+/* Optionnel : Ajuste le bouton de soumission */
+button[type="submit"] {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.1rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
