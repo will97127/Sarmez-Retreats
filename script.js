@@ -1,3 +1,39 @@
+// --- LOGIQUE DE CALCUL DU PRIX (Formulaire & Barre flottante) ---
+function calculate() {
+    // 1. Calcul des nuitées
+    const dateIn = new Date(document.getElementById('date-in').value);
+    const dateOut = new Date(document.getElementById('date-out').value);
+    const diffTime = Math.abs(dateOut - dateIn);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const nights = (diffDays && diffDays > 0) ? diffDays : 0;
+    const nightPrice = nights * 200;
+
+    // 2. Calcul du pack
+    const packSelect = document.getElementById('pack-select');
+    const selectedOption = packSelect.options[packSelect.selectedIndex];
+    const packPrice = parseInt(selectedOption.value) || 0;
+    const packName = selectedOption.dataset.name || "Aucun";
+
+    // 3. Règle "Pack Signature"
+    if (packName.includes("Signature") && nights < 7) {
+        alert("Attention : Le Pack Signature nécessite un séjour minimum de 7 nuits.");
+    }
+
+    // 4. Mise à jour de la barre flottante
+    document.getElementById('night-total').innerText = nightPrice;
+    document.getElementById('pack-total').innerText = packPrice;
+    document.getElementById('final-price').innerText = nightPrice + packPrice;
+    
+    // Mise à jour formulaire
+    document.getElementById('total-price').innerText = (nightPrice + packPrice) + " €";
+}
+
+// Initialisation des écouteurs pour le calcul
+['bungalow', 'date-in', 'date-out', 'pack-select'].forEach(id => {
+    document.getElementById(id).addEventListener('change', calculate);
+});
+
 // --- LOGIQUE DU CHATBOT (Conciergerie) ---
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
@@ -7,142 +43,30 @@ function toggleChat() {
                            chatBody.classList.contains('open') ? 'fa-chevron-down' : 'fa-chevron-up');
 }
 
-function botAnswer(actionKey) {
-    const responseDiv = document.getElementById('chat-response');
-    responseDiv.classList.remove('hidden');
-
-    const answers = {
-        'services': "🛎️ <strong>Nos services :</strong><br>• Petit déjeuner<br>• Ménage<br>• Balade charrette à bœufs<br>• Paddle/Kayak (Mangrove)<br>• Support technique",
-        'restaurant': '🍽️ Restaurant : <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank" style="color:var(--primary);">Chez Pinpin (Itinéraire)</a>',
-        'culture': "🏛️ <strong>Sites culturels :</strong><br>• Marche des Esclaves<br>• Port de pêche<br>• Site de Duval",
-        'plage': '🏖️ <strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a>',
-        'contrat': "📝 Votre contrat est généré automatiquement dès validation du planning. Consultez votre espace client."
-    };
-
-    responseDiv.innerHTML = answers[actionKey] || "Je suis à votre disposition.";
-    const chatBody = document.getElementById('chat-body');
-    if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-// --- LOGIQUE DU FORMULAIRE DE RÉSERVATION ---
-
-// Fonction unique pour mettre à jour le prix
-function updatePrice() {
-    const packSelect = document.getElementById('pack');
-    const priceDisplay = document.getElementById('total-price');
-    priceDisplay.innerText = packSelect.value + " €";
-}
-
-document.getElementById('booking-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const data = {
-        bungalow: document.getElementById('bungalow').value,
-        dateIn: document.getElementById('date-in').value,
-        dateOut: document.getElementById('date-out').value,
-        pack: document.getElementById('pack').options[document.getElementById('pack').selectedIndex].text,
-        email: document.getElementById('email').value
-    };
-
-    // Envoi vers votre Worker Cloudflare
-    const response = await fetch('https://votre-worker.votre-domaine.workers.dev', {
-        method: 'POST',
-        body: JSON.stringify(data)
-    });
-
-    if (response.ok) alert("Demande envoyée !");
-});
-
-
-// Écouteur pour capturer l'envoi du formulaire
-const bookingForm = document.getElementById('booking-form');
-if (bookingForm) {
-    bookingForm.addEventListener('submit', function(e) {
-        e.preventDefault(); 
-        
-        const formData = {
-            bungalow: document.getElementById('bungalow').value,
-            dateIn: document.getElementById('date-in').value,
-            dateOut: document.getElementById('date-out').value,
-            pack: document.getElementById('pack').options[document.getElementById('pack').selectedIndex].text,
-            email: document.getElementById('email').value
-        };
-
-        console.log("Données envoyées :", formData);
-        
-        // Alerte de confirmation
-        alert("Merci ! Votre demande pour le " + formData.bungalow + " a bien été enregistrée. Nous vous recontactons très vite.");
-    });
-}
-function calculate() {
-    // 1. Calcul des nuitées
-    const dateIn = new Date(document.getElementById('date-in').value);
-    const dateOut = new Date(document.getElementById('date-out').value);
-    const diffTime = Math.abs(dateOut - dateIn);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Si les dates sont valides, on calcule le prix des nuitées (200€/nuit)
-    const nights = (diffDays && diffDays > 0) ? diffDays : 0;
-    const nightPrice = nights * 200;
-
-    // 2. Calcul du pack
-    const select = document.getElementById('pack-select');
-    const selectedOption = select.options[select.selectedIndex];
-    const packPrice = parseInt(selectedOption.value) || 0;
-    const packName = selectedOption.dataset.name || "Aucun";
-
-    // 3. Vérification de la règle "Pack Signature"
-    if (packName.includes("Signature") && nights < 7) {
-        alert("Attention : Le Pack Signature nécessite un séjour minimum de 7 nuits.");
-    }
-
-    // 4. Mise à jour de l'affichage dans la barre flottante
-    
-    document.getElementById('night-total').innerText = nightPrice;
-    document.getElementById('pack-total').innerText = packPrice;
-    document.getElementById('final-price').innerText = nightPrice + packPrice;
-    
-    // NOUVEAU : Mise à jour du texte dans le formulaire pour qu'il soit synchrone
-    document.getElementById('total-price').innerText = (nightPrice + packPrice) + " €";
-}
-
-// --- CALCUL PRIX ---
-const form = document.getElementById('booking-form');
-const elements = ['bungalow', 'date-in', 'date-out', 'pack-select'];
-
-elements.forEach(id => {
-    document.getElementById(id).addEventListener('change', calculate);
-});
-
-function calculate() {
-    const d1 = new Date(document.getElementById('date-in').value);
-    const d2 = new Date(document.getElementById('date-out').value);
-    const nights = Math.max(0, (d2 - d1) / (1000 * 60 * 60 * 24));
-    
-    const packPrice = parseInt(document.getElementById('pack-select').value) || 0;
-    const total = (nights * 200) + packPrice;
-
-    // Mise à jour de la vue si nécessaire
-    console.log(`Total : ${total}€`);
-}
-
-// --- CHATBOT ---
-function toggleChat() {
-    document.getElementById('chat-body').classList.toggle('open');
-}
-
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
     const data = {
-        'services': `<strong>Services :</strong><br>• Petit déjeuner : 15€<br>• Ménage : 20€<br>• Traiteur : Sur devis<br><button onclick="back()">Retour</button>`,
-        'plages': `<strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a><br><button onclick="back()">Retour</button>`,
-        'restos': `<strong>Restaurant :</strong><br>• <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank">Chez Pinpin</a><br><button onclick="back()">Retour</button>`,
-        'culture': `<strong>Culture :</strong><br>• <a href="https://www.google.com/maps/search/Marches+des+Esclaves" target="_blank">Marche des Esclaves</a><br>• <a href="https://www.google.com/maps/search/Site+de+Duval" target="_blank">Site de Duval</a><br>• <a href="https://www.google.com/maps/search/Port+de+peche+Petit-Canal" target="_blank">Port de pêche</a><br><button onclick="back()">Retour</button>`
+        'services': `<strong>Nos Services :</strong><br>• Petit déjeuner : 15€<br>• Ménage : 20€<br>• Traiteur : Sur devis<br>• Massage Solo : 100€ / Duo : 170€<br>• Charrette : Couple 160€ / Famille 280€<br>• Kayak/Paddle : Couple 220€ / Famille 380€<br><button onclick="backToMenu()">⬅ Retour</button>`,
+        'plages': `<strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a><br><button onclick="backToMenu()">⬅ Retour</button>`,
+        'restos': `<strong>Restaurant :</strong><br>• <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank">Chez Pinpin</a><br><button onclick="backToMenu()">⬅ Retour</button>`,
+        'culture': `<strong>Lieux culturels :</strong><br>• <a href="https://www.google.com/maps/search/Marches+des+Esclaves" target="_blank">Marche des Esclaves</a><br>• <a href="https://www.google.com/maps/search/Site+de+Duval" target="_blank">Site de Duval</a><br>• <a href="https://www.google.com/maps/search/Port+de+peche+Petit-Canal" target="_blank">Port de pêche</a><br><button onclick="backToMenu()">⬅ Retour</button>`
     };
     container.innerHTML = `<div class="message bot">${data[cat]}</div>`;
 }
 
-function back() {
-    location.reload(); // Simplifié pour revenir au menu
+function backToMenu() {
+    document.getElementById('chat-content').innerHTML = `
+        <div class="message bot">Que puis-je faire pour vous ?</div>
+        <div class="chat-options">
+            <button onclick="showCategory('services')">🛎️ Services</button>
+            <button onclick="showCategory('plages')">🏖️ Plages</button>
+            <button onclick="showCategory('restos')">🍽️ Restaurant</button>
+            <button onclick="showCategory('culture')">🏛️ Culture</button>
+        </div>`;
 }
 
+// --- SOUMISSION FORMULAIRE ---
+document.getElementById('booking-form').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    alert("Merci ! Votre demande a bien été enregistrée. Nous vous recontactons très vite.");
+});
