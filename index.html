@@ -65,38 +65,32 @@
 </section>
 
 <section id="planning" class="container bg-light">
-    <h2 class="section-title">Planning & Packs Expériences</h2>
+    <h2 class="section-title">Réservation & Packs</h2>
     
-    <div class="calendar-integration-box">
-        <div class="placeholder-content">
-            <i class="fa-solid fa-calendar-week placeholder-icon"></i>
-            <h3>Calendrier Interactif</h3>
-            <p>Sélectionnez vos dates pour calculer votre tarif personnalisé.</p>
-        </div>
-    </div>
+    <form id="booking-form">
+        <!-- Sélection Bungalow -->
+        <select id="bungalow" required>
+            <option value="">Choisir un bungalow</option>
+            <option value="SR Plage">SR Plage</option>
+            <option value="SR Rivière">SR Rivière</option>
+            <option value="SR Tradition">SR Tradition</option>
+        </select>
 
-    <div class="packs-grid" style="margin-top: 40px;">
-        <div class="pack-card">
-            <h3>🌿 Kaz Zenitude</h3>
-            <p>Solo: 100€ | Duo: 170€</p>
-            <input type="checkbox" name="pack" value="170"> Ajouter
-        </div>
-        <div class="pack-card">
-            <h3>🌊 Gwadloup Aventure</h3>
-            <p>Couple: 220€ | Famille: 380€</p>
-            <input type="checkbox" name="pack" value="300"> Ajouter
-        </div>
-        <div class="pack-card">
-            <h3>🐂 Racines Créoles</h3>
-            <p>Couple: 160€ | Famille: 280€</p>
-            <input type="checkbox" name="pack" value="220"> Ajouter
-        </div>
-        <div class="pack-card highlight">
-            <h3>👑 Sarmèz All-In</h3>
-            <p>Couple: 450€ | Famille: 750€</p>
-            <input type="checkbox" name="pack" value="600"> Ajouter
-        </div>
-    </div>
+        <!-- Dates -->
+        <input type="date" id="date-in" required>
+        <input type="date" id="date-out" required>
+
+        <!-- Packs (avec prix en data-price) -->
+        <select id="pack" onchange="updatePrice()">
+            <option value="0">Aucun pack</option>
+            <option value="170" data-name="Kaz Zenitude">Kaz Zenitude (170€)</option>
+            <option value="300" data-name="Gwadloup Aventure">Gwadloup Aventure (300€)</option>
+        </select>
+
+        <p>Total estimé : <span id="total-price">0 €</span></p>
+        <input type="email" id="email" placeholder="Votre email" required>
+        <button type="submit">Envoyer la demande</button>
+    </form>
 </section>
 
 <div class="chat-widget" id="chat-widget">
