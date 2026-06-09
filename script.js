@@ -30,10 +30,29 @@ function botAnswer(actionKey) {
 function updatePrice() {
     const packSelect = document.getElementById('pack');
     const priceDisplay = document.getElementById('total-price');
-    const selectedPrice = packSelect.value;
-    
-    priceDisplay.innerText = selectedPrice + " € (hors prix des nuitées)";
+    priceDisplay.innerText = packSelect.value + " €";
 }
+
+document.getElementById('booking-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const data = {
+        bungalow: document.getElementById('bungalow').value,
+        dateIn: document.getElementById('date-in').value,
+        dateOut: document.getElementById('date-out').value,
+        pack: document.getElementById('pack').options[document.getElementById('pack').selectedIndex].text,
+        email: document.getElementById('email').value
+    };
+
+    // Envoi vers votre Worker Cloudflare
+    const response = await fetch('https://votre-worker.votre-domaine.workers.dev', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) alert("Demande envoyée !");
+});
+
 
 // Écouteur pour capturer l'envoi du formulaire
 const bookingForm = document.getElementById('booking-form');
