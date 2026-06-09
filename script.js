@@ -29,6 +29,7 @@ function botAnswer(actionKey) {
 // Fonction unique pour mettre à jour le prix
 
 function updatePrice() {
+function updatePrice() {
     const nightPrice = 200;
     const dateIn = new Date(document.getElementById('date-in').value);
     const dateOut = new Date(document.getElementById('date-out').value);
@@ -47,6 +48,7 @@ function updatePrice() {
     const totalPrice = (nights * nightPrice) + packTotal;
     document.getElementById('total-price').innerText = totalPrice + " €";
 }
+
 
 
 // Écouteur pour capturer l'envoi du formulaire
