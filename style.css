@@ -103,3 +103,57 @@ padding: 0 1rem;
 /* Footer */
 footer { background: var(--secondary); color: #94a3b8; text-align: center; font-size: 0.9rem; border-top: 1px solid #1e293b; }
 footer .container { padding: 2.5rem 2rem; }
+
+/* --- Ajouts pour la Grille des Packs (Tarifs) --- */
+.packs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.pack-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.pack-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.pack-card h3 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.pack-card p {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+}
+
+.pack-card small {
+    display: block;
+    margin-bottom: 1.5rem;
+    color: #64748b;
+    font-style: italic;
+}
+
+.pack-card.highlight {
+    border: 2px solid var(--primary);
+    background: #f0f9ff;
+}
+
+/* Ajustement du champ checkbox pour être plus élégant */
+.pack-card input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    vertical-align: middle;
+}
