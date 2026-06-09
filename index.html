@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarmèz Retreats | Gîte de Charme</title>
+    <title>Sarmèz Retreats | Gîte de Charme & Conciergerie Automatisée</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -16,56 +16,87 @@
     </div>
     <nav>
         <a href="#home">Accueil</a>
-        <a href="#bungalows">Bungalow</a>
-        <a href="#features">Service connecté</a>
-        <a href="#planning">Tarif</a>
+        <a href="#bungalows">Nos Bungalows</a>
+        <a href="#features">Services Connectés</a>
+        <a href="#planning" class="btn-nav">Disponibilités & Tarifs</a>
     </nav>
 </header>
 
-
-
 <section id="home" class="hero">
     <div class="hero-content">
-        <h1>Votre Séjour Clé en Main</h1>
-        <p>Bungalows d'exception avec planning synchronisé et suivi personnalisé.</p>
-        <a href="#planning" class="btn">Réserver mon séjour</a>
+        <h1>Votre Séjour Clé en Main, Sans Stress</h1>
+        <p>Bungalows d'exception avec planning synchronisé en temps réel, contrats automatisés et suivi client personnalisé.</p>
+        <a href="#planning" class="btn">Consulter le Calendrier Direct</a>
     </div>
 </section>
 
-<section id="planning" class="container">
-    <h2 class="section-title">Demande de Réservation</h2>
-    <form id="booking-form" class="booking-card">
-        <label>Bungalow :</label>
-        <select id="bungalow" name="bungalow">
-            <option value="SR Plage">SR Plage</option>
-            <option value="SR Rivière">SR Rivière</option>
-            <option value="SR Tradition">SR Tradition</option>
-        </select>
-
-        <label>Dates :</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="date" id="date-in" name="date-in" required>
-            <input type="date" id="date-out" name="date-out" required>
+<section id="bungalows" class="container">
+    <h2 class="section-title">Nos Hébergements de Rêve</h2>
+    <p class="text-center subtitle">Sélectionnez votre havre de paix.</p>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('SRplage.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Plage</h3>
+                <p>Espace intime pour couples. Piscine privée.</p>
+                <span class="badge">Disponibilité Synchrone</span>
+            </div>
         </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('SRriviere.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Rivière</h3>
+                <p>Espace intime pour couples. Piscine privée.</p>
+                <span class="badge">Disponibilité Synchrone</span>
+            </div>
 
-        <label>Choisir un Pack :</label>
-        <!-- L'attribut onchange="updatePrice()" déclenche bien la fonction JS -->
-        <select id="pack" name="pack" onchange="updatePrice()">
-            <option value="0">Aucun (Hébergement seul)</option>
-            <option value="110">🌿 PACK BIEN-ÊTRE (110€)</option>
-            <option value="380">🌊 PACK LOISIRS (380€)</option>
-            <option value="280">🐂 PACK PATRIMOINE (280€)</option>
-            <option value="750">👑 PACK SIGNATURE (750€)</option>
-        </select>
+            <div class="card">
+            <div class="card-img" style="background-image: url('SRtradition.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Tradition</h3>
+                <p>Espace intime pour couples. Piscine privée.</p>
+                <span class="badge">Disponibilité Synchrone</span>
+            </div>
 
-        <div class="price-display">Estimation pack : <strong id="total-price">-- €</strong></div>
-        
-        <input type="email" id="email" name="email" placeholder="Votre email" required>
-        <button type="submit" class="btn">Envoyer la demande</button>
-    </form>
+        </div>
+    </div>
 </section>
 
-<!-- Widget Conciergerie (Obligatoire pour que le script fonctionne) -->
+<section id="planning" class="container bg-light">
+    <h2 class="section-title">Planning & Packs Expériences</h2>
+    
+    <div class="calendar-integration-box">
+        <div class="placeholder-content">
+            <i class="fa-solid fa-calendar-week placeholder-icon"></i>
+            <h3>Calendrier Interactif</h3>
+            <p>Sélectionnez vos dates pour calculer votre tarif personnalisé.</p>
+        </div>
+    </div>
+
+    <div class="packs-grid" style="margin-top: 40px;">
+        <div class="pack-card">
+            <h3>🌿 Kaz Zenitude</h3>
+            <p>Solo: 100€ | Duo: 170€</p>
+            <input type="checkbox" name="pack" value="170"> Ajouter
+        </div>
+        <div class="pack-card">
+            <h3>🌊 Gwadloup Aventure</h3>
+            <p>Couple: 220€ | Famille: 380€</p>
+            <input type="checkbox" name="pack" value="300"> Ajouter
+        </div>
+        <div class="pack-card">
+            <h3>🐂 Racines Créoles</h3>
+            <p>Couple: 160€ | Famille: 280€</p>
+            <input type="checkbox" name="pack" value="220"> Ajouter
+        </div>
+        <div class="pack-card highlight">
+            <h3>👑 Sarmèz All-In</h3>
+            <p>Couple: 450€ | Famille: 750€</p>
+            <input type="checkbox" name="pack" value="600"> Ajouter
+        </div>
+    </div>
+</section>
+
 <div class="chat-widget" id="chat-widget">
     <div class="chat-header" onclick="toggleChat()">
         <span>🤖 Mon Espace Concierge</span>
@@ -74,17 +105,17 @@
     <div class="chat-body" id="chat-body">
         <div class="message bot">Bonjour ! Comment puis-je vous aider ?</div>
         <div class="chat-options">
-            <button onclick="botAnswer('services')">🛎️ Nos services</button>
-            <button onclick="botAnswer('restaurant')">🍽️ Restaurant</button>
-            <button onclick="botAnswer('culture')">🏛️ Sites culturels</button>
-            <button onclick="botAnswer('plage')">🏖️ Plages</button>
+            <button onclick="botAnswer('contrat')">📝 Contrat de location</button>
+            <button onclick="botAnswer('solde')">💳 Paiement du solde</button>
         </div>
         <div id="chat-response" class="message bot hidden"></div>
     </div>
 </div>
 
 <footer>
-    <p>© 2027 Sarmèz Retreats</p>
+    <div class="container footer-content">
+        <p>© 2027 Sarmèz Retreats - Gîte Rural & Chambres d'Hôtes Connectées.</p>
+    </div>
 </footer>
 
 <script src="script.js"></script>
