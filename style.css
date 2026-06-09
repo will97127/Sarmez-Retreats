@@ -216,8 +216,18 @@ nav a {
 }
 
 /* Évite que le contenu de la page ne soit caché par la barre flottante */
-body {
-    padding-bottom: 80px; 
+    body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+    scroll-behavior: smooth;
+    line-height: 1.6;
+    
+    /* C'est ici que l'espace est ajouté */
+    padding-bottom: 150px; 
+}
+
 }
 
 /* Responsive : Si l'écran est petit, on empile les éléments */
