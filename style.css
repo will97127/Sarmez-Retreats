@@ -104,3 +104,31 @@ padding: 0 1rem;
 footer { background: var(--secondary); color: #94a3b8; text-align: center; font-size: 0.9rem; border-top: 1px solid #1e293b; }
 footer .container { padding: 2.5rem 2rem; }
 
+/* --- Logo Sarmèz Retreats --- */
+.logo-container { 
+    display: flex; 
+    flex-direction: column; 
+    line-height: 0.9; 
+    cursor: pointer;
+}
+
+.logo-top { 
+    color: #ffffff; 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    font-family: serif; 
+}
+
+.logo-bottom { 
+    color: #c5a072; /* Ta couleur or/beige */
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    font-family: serif; 
+    font-style: italic; 
+}
+
+/* Force le header à bien gérer ce nouveau logo */
+header {
+    background: var(--secondary) !important; /* Pour coller au style sombre du logo */
+}
+
