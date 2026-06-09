@@ -30,7 +30,6 @@
     </div>
 </section>
 
-<!-- Section Présentation Hébergements corrigée -->
 <section id="bungalows" class="container">
     <h2 class="section-title">Nos Hébergements de Rêve</h2>
     <div class="grid">
@@ -38,7 +37,7 @@
             <div class="card-img" style="background-image: url('SRplage.jpg');"></div>
             <div class="card-body">
                 <h3>SR Plage</h3>
-                <p>Espace intime pour couples. Piscine privée.</p>
+                <p>Espace intime pour couples. Piscine privée.<br><strong>200€ / nuit</strong></p>
                 <span class="badge">Disponibilité Synchrone</span>
             </div>
         </div>
@@ -46,70 +45,67 @@
             <div class="card-img" style="background-image: url('SRriviere.jpg');"></div>
             <div class="card-body">
                 <h3>SR Rivière</h3>
-                <p>Espace intime pour couples. Piscine privée.</p>
+                <p>Espace intime pour couples. Piscine privée.<br><strong>200€ / nuit</strong></p>
                 <span class="badge">Disponibilité Synchrone</span>
             </div>
-        </div> <!-- Fermeture ajoutée ici -->
+        </div>
         <div class="card">
             <div class="card-img" style="background-image: url('SRtradition.jpg');"></div>
             <div class="card-body">
                 <h3>SR Tradition</h3>
-                <p>Espace intime pour couples. Piscine privée.</p>
+                <p>Espace intime pour couples. Piscine privée.<br><strong>200€ / nuit</strong></p>
                 <span class="badge">Disponibilité Synchrone</span>
             </div>
         </div>
     </div>
 </section>
 
-    
-</section>
-
 <section id="planning" class="container bg-light">
     <h2 class="section-title">Réservation & Packs</h2>
     
     <form id="booking-form">
-        <!-- Sélection Bungalow -->
-        <select id="bungalow" required class="large-select">
-    <option value="">Choisir un bungalow</option>
-    <option value="SR Plage">SR Plage - 200€ / nuit</option>
-    <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
-    <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
-</select>
+        <!-- Sélection Bungalow avec calcul -->
+        <select id="bungalow" onchange="calculate()" required class="large-select">
+            <option value="">Choisir un bungalow</option>
+            <option value="SR Plage">SR Plage - 200€ / nuit</option>
+            <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
+            <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
+        </select>
 
-        <!-- Dates -->
-        <input type="date" id="date-in" required>
-        <input type="date" id="date-out" required>
+        <!-- Dates avec calcul -->
+        <input type="date" id="date-in" onchange="calculate()" required class="large-select">
+        <input type="date" id="date-out" onchange="calculate()" required class="large-select">
 
-        <!-- Packs (avec prix en data-price) -->
-        <select id="pack-select" onchange="calculate()">
-    <option value="0">Choisissez un pack (Optionnel)</option>
-    
-    <optgroup label="🌿 Pack Bien-être">
-        <option value="100" data-name="Bien-être Solo">Solo (1h) - 100€</option>
-        <option value="170" data-name="Bien-être Duo">Duo (1h) - 170€</option>
-    </optgroup>
+        <!-- Sélection Pack -->
+        <select id="pack-select" onchange="calculate()" class="large-select">
+            <option value="0">Choisissez un pack (Optionnel)</option>
+            <optgroup label="🌿 Pack Bien-être">
+                <option value="100" data-name="Bien-être Solo">Solo (1h) - 100€</option>
+                <option value="170" data-name="Bien-être Duo">Duo (1h) - 170€</option>
+            </optgroup>
+            <optgroup label="🌊 Pack Loisirs">
+                <option value="220" data-name="Loisirs Couple">Couple - 220€</option>
+                <option value="380" data-name="Loisirs Famille">Famille (4 pers.) - 380€</option>
+            </optgroup>
+            <optgroup label="🐂 Pack Patrimoine">
+                <option value="160" data-name="Patrimoine Couple">Couple - 160€</option>
+                <option value="280" data-name="Patrimoine Famille">Famille (4 pers.) - 280€</option>
+            </optgroup>
+            <optgroup label="👑 Pack Signature (Séjour 7 nuits min.)">
+                <option value="450" data-name="Signature Couple">Couple (7 nuits) - 450€</option>
+                <option value="750" data-name="Signature Famille">Famille (7 nuits) - 750€</option>
+            </optgroup>
+        </select>
 
-    <optgroup label="🌊 Pack Loisirs">
-        <option value="220" data-name="Loisirs Couple">Couple - 220€</option>
-        <option value="380" data-name="Loisirs Famille">Famille (4 pers.) - 380€</option>
-    </optgroup>
-
-    <optgroup label="🐂 Pack Patrimoine">
-        <option value="160" data-name="Patrimoine Couple">Couple - 160€</option>
-        <option value="280" data-name="Patrimoine Famille">Famille (4 pers.) - 280€</option>
-    </optgroup>
-
-    <optgroup label="👑 Pack Signature (Séjour 7 nuits min.)">
-        <option value="450" data-name="Signature Couple">Couple (7 nuits) - 450€</option>
-        <option value="750" data-name="Signature Famille">Famille (7 nuits) - 750€</option>
-    </optgroup>
-</select>
-
-        <p>Total estimé : <span id="total-price">0 €</span></p>
-        <input type="email" id="email" placeholder="Votre email" required>
+        <p style="font-size: 0.9rem; color: #64748b;">
+            Montant total : <strong id="total-price" style="color: var(--primary);">0 €</strong>
+        </p>
+        <input type="email" id="email" placeholder="Votre email" required class="large-select">
         <button type="submit">Envoyer la demande</button>
     </form>
 </section>
+
+<!-- ... (Widget Chat, Footer, etc.) ... -->
 
 <div class="chat-widget" id="chat-widget">
     <div class="chat-header" onclick="toggleChat()">
@@ -134,7 +130,7 @@
 
 <script src="script.js"></script>
 
-    <!-- Barre flottante de calcul -->
+<!-- Barre flottante -->
 <div id="price-bar" class="price-bar">
     <div class="container">
         <span>Séjour : <strong><span id="night-total">0</span>€</strong></span>
