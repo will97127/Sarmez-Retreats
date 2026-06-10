@@ -70,3 +70,31 @@ document.getElementById('booking-form').addEventListener('submit', function(e) {
     e.preventDefault(); 
     alert("Merci ! Votre demande est enregistrée.");
 });
+function sendServicesRequest() {
+    let selectedServices = [];
+    
+    // On sélectionne toutes les lignes de services
+    const rows = document.querySelectorAll('.service-row');
+    
+    rows.forEach(row => {
+        const checkbox = row.querySelector('.service-item');
+        const dateInput = row.querySelector('.service-date');
+        
+        if (checkbox.checked) {
+            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
+            const serviceDate = dateInput.value || "Non spécifiée";
+            selectedServices.push(`${serviceName} (Date: ${serviceDate})`);
+        }
+    });
+
+    if (selectedServices.length === 0) {
+        alert("Veuillez sélectionner au moins un service.");
+        return;
+    }
+
+    // Création du message pour l'email
+    const message = "Services demandés : " + selectedServices.join(", ");
+    
+    // Ouverture de l'email
+    window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
+}
