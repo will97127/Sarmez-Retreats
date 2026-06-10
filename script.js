@@ -70,9 +70,6 @@ function showCategory(cat) {
     container.innerHTML = data[cat] || "Catégorie non trouvée.";
 }
 
-    container.innerHTML = data[cat] || "Catégorie non trouvée.";
-}
-
 function backToMenu() {
     document.getElementById('chat-content').innerHTML = `
         <strong>Que puis-je faire pour vous ?</strong>
