@@ -55,17 +55,21 @@ function showCategory(cat) {
     const container = document.getElementById('chat-content');
     const data = {
         'services': `<strong>Sélectionnez vos services :</strong><br>
-            <label><input type="checkbox" class="service-item" value="15"> Petit déjeuner : 15€</label><br>
-            <label><input type="checkbox" class="service-item" value="20"> Ménage : 20€</label><br>
-            <label><input type="checkbox" class="service-item" value="110"> Massage Solo : 110€</label><br>
-            <label><input type="checkbox" class="service-item" value="180"> Massage Duo : 180€</label><br>
-            <label><input type="checkbox" class="service-item" value="180"> Charrette Couple : 180€</label><br>
-            <label><input type="checkbox" class="service-item" value="300"> Charrette Famille : 300€</label><br>
-            <label><input type="checkbox" class="service-item" value="240"> Kayak/Paddle Couple : 240€</label><br>
-            <label><input type="checkbox" class="service-item" value="400"> Kayak/Paddle Famille : 400€</label><br>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="15"> Petit déjeuner : 15€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="20"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="110"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="180"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="180"> Charrette Couple : 180€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="300"> Charrette Famille : 300€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="240"> Kayak/Paddle Couple : 240€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="400"> Kayak/Paddle Famille : 400€</label><br><input type="datetime-local" class="service-date"></div>
+            <div class="service-row"><label><input type="checkbox" class="service-item" value="0"> 🛠 Problème technique (Gratuit)</label><br><input type="datetime-local" class="service-date"></div>
             <hr><p>Total services : <strong id="services-total">0€</strong></p>
             <button onclick="backToMenu()">⬅ Retour</button>`
     };
+    container.innerHTML = data[cat] || "Catégorie non trouvée.";
+}
+
     container.innerHTML = data[cat] || "Catégorie non trouvée.";
 }
 
