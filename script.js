@@ -1,57 +1,68 @@
-// --- LOGIQUE DE CALCUL DU PRIX (Formulaire & Barre flottante) ---
-function calculate() {
-    // 1. Calcul des nuitées
-    const dateIn = new Date(document.getElementById('date-in').value);
-    const dateOut = new Date(document.getElementById('date-out').value);
-    const diffTime = Math.abs(dateOut - dateIn);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    const nights = (diffDays && diffDays > 0) ? diffDays : 0;
+// --- FONCTION DE CALCUL UNIFIÉE ---
+function updateAll() {
+    // 1. Calcul Séjour (200€/nuit)
+    const d1 = new Date(document.getElementById('date-in').value);
+    const d2 = new Date(document.getElementById('date-out').value);
+    const nights = Math.max(0, Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)));
     const nightPrice = nights * 200;
 
-    // 2. Calcul du pack
+    // 2. Calcul Pack
     const packSelect = document.getElementById('pack-select');
-    const selectedOption = packSelect.options[packSelect.selectedIndex];
-    const packPrice = parseInt(selectedOption.value) || 0;
-    const packName = selectedOption.dataset.name || "Aucun";
+    const packPrice = parseInt(packSelect.value) || 0;
 
-    // 3. Règle "Pack Signature"
-    if (packName.includes("Signature") && nights < 7) {
-        alert("Attention : Le Pack Signature nécessite un séjour minimum de 7 nuits.");
-    }
+    // 3. Calcul Services (Conciergerie)
+    let totalServices = 0;
+    document.querySelectorAll('.service-item:checked').forEach((item) => {
+        totalServices += parseFloat(item.value);
+    });
 
-    // 4. Mise à jour de la barre flottante
+    // 4. Mise à jour de l'affichage dans le chat
+    const servTotalEl = document.getElementById('services-total');
+    if(servTotalEl) servTotalEl.innerText = totalServices + "€";
+
+    // 5. Mise à jour de la barre flottante (id="final-total" dans votre HTML)
     document.getElementById('night-total').innerText = nightPrice;
     document.getElementById('pack-total').innerText = packPrice;
-    document.getElementById('final-price').innerText = nightPrice + packPrice;
     
-    // Mise à jour formulaire
-    document.getElementById('total-price').innerText = (nightPrice + packPrice) + " €";
+    const grandTotal = nightPrice + packPrice + totalServices;
+    document.getElementById('final-total').innerText = grandTotal;
+    
+    // Mise à jour texte formulaire
+    document.getElementById('total-price').innerText = grandTotal + " €";
 }
 
-// Initialisation des écouteurs pour le calcul
-['bungalow', 'date-in', 'date-out', 'pack-select'].forEach(id => {
-    document.getElementById(id).addEventListener('change', calculate);
+// --- INITIALISATION DES ÉCOUTEURS ---
+// Dates et Pack
+['date-in', 'date-out', 'pack-select'].forEach(id => {
+    document.getElementById(id).addEventListener('change', updateAll);
 });
 
-// --- LOGIQUE DU CHATBOT (Conciergerie) ---
+// Checkboxes de services
+document.querySelectorAll('.service-item').forEach(item => {
+    item.addEventListener('change', updateAll);
+});
+
+// --- LOGIQUE CHATBOT ---
 function toggleChat() {
-    const chatBody = document.getElementById('chat-body');
-    const icon = document.getElementById('chat-icon');
-    chatBody.classList.toggle('open');
-    icon.classList.replace(chatBody.classList.contains('open') ? 'fa-chevron-up' : 'fa-chevron-down', 
-                           chatBody.classList.contains('open') ? 'fa-chevron-down' : 'fa-chevron-up');
+    document.getElementById('chat-body').classList.toggle('open');
 }
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
     const data = {
-        'services': `<strong>Nos Services :</strong><br>• Petit déjeuner : 15€<br>• Ménage : 20€<br>• Traiteur : Sur devis<br>• Massage Solo : 100€ / Duo : 170€<br>• Charrette : Couple 160€ / Famille 280€<br>• Kayak/Paddle : Couple 220€ / Famille 380€<br><button onclick="backToMenu()">⬅ Retour</button>`,
-        'plages': `<strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br>• <a href="https://www.google.com/maps/search/Plage+de+la+Chapelle" target="_blank">Plage de la Chapelle</a><br><button onclick="backToMenu()">⬅ Retour</button>`,
-        'restos': `<strong>Restaurant :</strong><br>• <a href="https://www.google.com/maps/search/Chez+Pinpin+Petit-Canal" target="_blank">Chez Pinpin</a><br><button onclick="backToMenu()">⬅ Retour</button>`,
-        'culture': `<strong>Lieux culturels :</strong><br>• <a href="https://www.google.com/maps/search/Marches+des+Esclaves" target="_blank">Marche des Esclaves</a><br>• <a href="https://www.google.com/maps/search/Site+de+Duval" target="_blank">Site de Duval</a><br>• <a href="https://www.google.com/maps/search/Port+de+peche+Petit-Canal" target="_blank">Port de pêche</a><br><button onclick="backToMenu()">⬅ Retour</button>`
+        'services': `<strong>Nos Services :</strong><br>
+            <div id="services-form">
+                <label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br>
+                <label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br>
+                <label><input type="checkbox" class="service-item" value="100" onchange="updateAll()"> Massage Solo : 100€</label><br>
+                <hr>
+                <p>Total services : <strong id="services-total">0€</strong></p>
+                <button onclick="sendServicesRequest()">Envoyer demande</button>
+                <button onclick="backToMenu()">Retour</button>
+            </div>`,
+        'plages': `<strong>Plages :</strong><br>• <a href="https://www.google.com/maps/search/Plage+du+Souffleur" target="_blank">Plage du Souffleur</a><br><button onclick="backToMenu()">⬅ Retour</button>`
     };
-    container.innerHTML = `<div class="message bot">${data[cat]}</div>`;
+    container.innerHTML = `<div class="message bot">${data[cat] || 'En construction'}</div>`;
 }
 
 function backToMenu() {
@@ -60,59 +71,9 @@ function backToMenu() {
         <div class="chat-options">
             <button onclick="showCategory('services')">🛎️ Services</button>
             <button onclick="showCategory('plages')">🏖️ Plages</button>
-            <button onclick="showCategory('restos')">🍽️ Restaurant</button>
-            <button onclick="showCategory('culture')">🏛️ Culture</button>
         </div>`;
 }
 
-// --- SOUMISSION FORMULAIRE ---
-document.getElementById('booking-form').addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    alert("Merci ! Votre demande a bien été enregistrée. Nous vous recontactons très vite.");
-});
-// Écouteur global pour les cases à cocher des services
-document.getElementById('services-form').addEventListener('change', function() {
-    let totalServices = 0;
-    const checkboxes = document.querySelectorAll('#services-form input[type="checkbox"]:checked');
-    
-    checkboxes.forEach((cb) => {
-        totalServices += parseInt(cb.value);
-    });
-
-    // Mise à jour de l'affichage dans le chat
-    document.getElementById('services-total').innerText = totalServices + "€";
-    
-    // Si vous voulez aussi ajouter ce montant au total général de la barre en bas :
-    // updateGlobalTotal(totalServices); 
-});
-
 function sendServicesRequest() {
-    const selected = [];
-    document.querySelectorAll('#services-form input[type="checkbox"]:checked').forEach((cb) => {
-        selected.push(cb.dataset.name);
-    });
-    
-    alert("Demande envoyée pour : " + selected.join(', '));
+    alert("Votre sélection de services a été prise en compte pour votre séjour.");
 }
-function updateTotals() {
-    // 1. Récupérer le prix du séjour (déjà existant dans votre code)
-    let prixSejour = parseFloat(document.getElementById('total-sejour').innerText) || 0;
-    
-    // 2. Calculer le total des services sélectionnés
-    let totalServices = 0;
-    document.querySelectorAll('.service-item:checked').forEach((item) => {
-        totalServices += parseFloat(item.value);
-    });
-
-    // 3. Mettre à jour l'affichage dans le chat (optionnel)
-    // document.getElementById('services-total').innerText = totalServices + "€";
-
-    // 4. Mettre à jour la barre de prix fixe (Total Final)
-    let grandTotal = prixSejour + totalServices;
-    document.getElementById('display-total-final').innerText = grandTotal + "€";
-}
-
-// Ajouter l'écouteur d'événement sur toutes les checkboxes
-document.querySelectorAll('.service-item').forEach(item => {
-    item.addEventListener('change', updateTotals);
-});
