@@ -70,3 +70,27 @@ document.getElementById('booking-form').addEventListener('submit', function(e) {
     e.preventDefault(); 
     alert("Merci ! Votre demande a bien été enregistrée. Nous vous recontactons très vite.");
 });
+// Écouteur global pour les cases à cocher des services
+document.getElementById('services-form').addEventListener('change', function() {
+    let totalServices = 0;
+    const checkboxes = document.querySelectorAll('#services-form input[type="checkbox"]:checked');
+    
+    checkboxes.forEach((cb) => {
+        totalServices += parseInt(cb.value);
+    });
+
+    // Mise à jour de l'affichage dans le chat
+    document.getElementById('services-total').innerText = totalServices + "€";
+    
+    // Si vous voulez aussi ajouter ce montant au total général de la barre en bas :
+    // updateGlobalTotal(totalServices); 
+});
+
+function sendServicesRequest() {
+    const selected = [];
+    document.querySelectorAll('#services-form input[type="checkbox"]:checked').forEach((cb) => {
+        selected.push(cb.dataset.name);
+    });
+    
+    alert("Demande envoyée pour : " + selected.join(', '));
+}
