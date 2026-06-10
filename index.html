@@ -66,14 +66,18 @@
         <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
     </div>
     <div class="chat-body" id="chat-body">
-        <div id="chat-content">
-            <div class="message bot">Bonjour ! Que puis-je faire pour vous ?</div>
-            <div class="chat-options">
-                <button onclick="showCategory('services')">🛎️ Services</button>
-                <button onclick="showCategory('plages')">🏖️ Plages</button>
-                <button onclick="showCategory('restos')">🍽️ Restaurant</button>
-                <button onclick="showCategory('culture')">🏛️ Culture</button>
-            </div>
+  <div id="chat-content">
+    <strong>Sélectionnez vos services :</strong>
+    <form id="services-form">
+        <label><input type="checkbox" name="service" value="15" data-name="Petit déjeuner"> Petit déjeuner (15€)</label><br>
+        <label><input type="checkbox" name="service" value="20" data-name="Ménage"> Ménage (20€)</label><br>
+        <label><input type="checkbox" name="service" value="100" data-name="Massage Solo"> Massage Solo (100€)</label><br>
+        <hr>
+        <p>Total services : <strong id="services-total">0€</strong></p>
+        <button type="button" onclick="sendServicesRequest()">Demander ces services</button>
+    </form>
+</div>
+         </div>
         </div>
     </div>
 </div>
