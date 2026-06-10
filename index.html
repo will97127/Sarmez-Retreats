@@ -68,10 +68,11 @@
     <div class="chat-body" id="chat-body">
   <div id="chat-content">
     <strong>Sélectionnez vos services :</strong>
-    <form id="services-form">
-        <label><input type="checkbox" name="service" value="15" data-name="Petit déjeuner"> Petit déjeuner (15€)</label><br>
-        <label><input type="checkbox" name="service" value="20" data-name="Ménage"> Ménage (20€)</label><br>
-        <label><input type="checkbox" name="service" value="100" data-name="Massage Solo"> Massage Solo (100€)</label><br>
+<div class="chat-options" id="services-form">
+    <label><input type="checkbox" class="service-item" value="15"> Petit déjeuner : 15€</label><br>
+    <label><input type="checkbox" class="service-item" value="20"> Ménage : 20€</label><br>
+    <label><input type="checkbox" class="service-item" value="100"> Massage Solo : 100€</label>
+</div>
         <hr>
         <p>Total services : <strong id="services-total">0€</strong></p>
         <button type="button" onclick="sendServicesRequest()">Demander ces services</button>
