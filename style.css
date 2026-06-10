@@ -89,7 +89,7 @@ padding: 0 1rem;
 
 /* Widget Chatbot / Support */
 .chat-widget { position: fixed; bottom: 25px; right: 25px; width: 340px; background: white; border-radius: 12px; box-shadow: 0 10px 35px rgba(0,0,0,0.15); overflow: hidden; z-index: 1000; border: 1px solid var(--border); }
-.chat-header { background: var(--secondary); color: white; padding: 1.1rem; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
+.chat-header { background:3d2b1f; color: white; padding: 1.1rem; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
 .chat-body { padding: 1.2rem; max-height: 380px; overflow-y: auto; display: none; }
 .chat-body.open { display: block; }
 .message { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.75rem; font-size: 0.9rem; line-height: 1.4; }
