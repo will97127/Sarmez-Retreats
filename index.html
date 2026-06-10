@@ -65,16 +65,26 @@
         <span>🤖 Conciergerie Sarmèz</span>
         <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
     </div>
-    <div class="chat-body" id="chat-body">
+    <div class="chat-body" id="chat-body">      
   <div id="chat-content">
-    <strong>Sélectionnez vos services :</strong>
-<div class="chat-options" id="services-form">
-    <label><input type="checkbox" class="service-item" value="15"> Petit déjeuner : 15€</label><br>
-    <label><input type="checkbox" class="service-item" value="20"> Ménage : 20€</label><br>
-    <label><input type="checkbox" class="service-item" value="100"> Massage Solo : 100€</label>
+    <strong>Nos Services :</strong>
+    <div class="chat-options" id="services-form">
+        <label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br>
+        <label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br>
+        <label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br>
+        <label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br>
+        <label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Charrette Couple : 180€</label><br>
+        <label><input type="checkbox" class="service-item" value="300" onchange="updateAll()"> Charrette Famille : 300€</label><br>
+        <label><input type="checkbox" class="service-item" value="240" onchange="updateAll()"> Kayak/Paddle Couple : 240€</label><br>
+        <label><input type="checkbox" class="service-item" value="400" onchange="updateAll()"> Kayak/Paddle Famille : 400€</label>
+        <hr>
+        <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
+    </div>
 </div>
         <hr>
         <p>Total services : <strong id="services-total">0€</strong></p>
+
+      
         <button type="button" onclick="sendServicesRequest()">Demander ces services</button>
     </form>
 </div>
