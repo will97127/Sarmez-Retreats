@@ -105,16 +105,12 @@
   <div id="chat-content">
     <strong>Nos Services :</strong>
     <div class="chat-options" id="services-form">
-        <label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br>
-        <label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br>
-        <label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br>
-        <label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br>
-        <label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Charrette Couple : 180€</label><br>
-        <label><input type="checkbox" class="service-item" value="300" onchange="updateAll()"> Charrette Famille : 300€</label><br>
-        <label><input type="checkbox" class="service-item" value="240" onchange="updateAll()"> Kayak/Paddle Couple : 240€</label><br>
-        <label><input type="checkbox" class="service-item" value="400" onchange="updateAll()"> Kayak/Paddle Famille : 400€</label>
-        <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
-
+        <div id="chat-content">
+    <strong>Que puis-je faire pour vous ?</strong>
+    <div class="chat-options">
+        <button onclick="showCategory('services')">🛎️ Nos Services</button>
+    </div>
+</div>
         <hr>
         <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
     </div>
