@@ -94,3 +94,25 @@ function sendServicesRequest() {
     
     alert("Demande envoyée pour : " + selected.join(', '));
 }
+function updateTotals() {
+    // 1. Récupérer le prix du séjour (déjà existant dans votre code)
+    let prixSejour = parseFloat(document.getElementById('total-sejour').innerText) || 0;
+    
+    // 2. Calculer le total des services sélectionnés
+    let totalServices = 0;
+    document.querySelectorAll('.service-item:checked').forEach((item) => {
+        totalServices += parseFloat(item.value);
+    });
+
+    // 3. Mettre à jour l'affichage dans le chat (optionnel)
+    // document.getElementById('services-total').innerText = totalServices + "€";
+
+    // 4. Mettre à jour la barre de prix fixe (Total Final)
+    let grandTotal = prixSejour + totalServices;
+    document.getElementById('display-total-final').innerText = grandTotal + "€";
+}
+
+// Ajouter l'écouteur d'événement sur toutes les checkboxes
+document.querySelectorAll('.service-item').forEach(item => {
+    item.addEventListener('change', updateTotals);
+});
