@@ -311,3 +311,5 @@ padding: 0.6rem 1.2rem;
 border-radius: 8px;
 font-weight: bold;
 }
+.service-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+.service-date { width: 100%; margin-top: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
