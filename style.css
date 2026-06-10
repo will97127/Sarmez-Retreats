@@ -1,130 +1,313 @@
 :root {
-    --primary: #0284c7;
-    --secondary: #0f172a;
-    --accent: #10b981;
-    --light: #f8fafc;
-    --text: #334155;
-    --border: #e2e8f0;
-    --sarmez-brown: #3d2b1f; /* Votre marron */
+--primary: #0284c7;
+--secondary: #0f172a;
+--accent: #10b981;
+--light: #f8fafc;
+--text: #334155;
+--border: #e2e8f0;
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    margin: 0;
-    padding: 0;
-    color: var(--text);
-    scroll-behavior: smooth;
-    line-height: 1.6;
-    padding-bottom: 150px; /* Espace en bas pour éviter de cacher le contenu */
+font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+margin: 0;
+padding: 0;
+color: var(--text);
+scroll-behavior: smooth;
+line-height: 1.6;
 }
 
-/* --- Header & Logo --- */
+.container {
+max-width: 1200px;
+margin: auto;
+padding: 5rem 2rem;
+}
+
+.bg-light { background-color: var(--light); }
+.text-center { text-align: center; }
+.subtitle { max-width: 700px; margin: 0 auto 3rem auto; color: #64748b; font-size: 1.1rem; }
+
+/* Navigation /
+/ Navigation - Correction de la visibilité */
 header {
-    background: var(--secondary) !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
+background: var(--secondary) !important;
+}
+
+nav a {
+text-decoration: none;
+color: #ffffff; /* Change cette ligne : les liens seront maintenant blancs */
+margin-left: 1.8rem;
+font-weight: 500;
+transition: color 0.2s;
+}
+
+nav a:hover {
+color: #c5a072; /* Couleur or au survol pour rappel du logo */
+}
+
+/* Section Héro */
+.hero {
+background: linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.6)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+height: 65vh;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+color: white;
+padding: 0 1rem;
+}
+
+.hero-content h1 { font-size: 3.2rem; margin-bottom: 1.2rem; font-weight: 800; letter-spacing: -0.02em; }
+.hero-content p { font-size: 1.3rem; margin-bottom: 2.5rem; max-width: 800px; margin-left: auto; margin-right: auto; opacity: 0.9; }
+.btn { background: var(--primary); color: white; padding: 0.9rem 2rem; text-decoration: none; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); transition: transform 0.2s; }
+.btn:hover { transform: translateY(-2px); }
+
+/* Cartes Hébergements */
+.section-title { text-align: center; font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--secondary); font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
+.card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); transition: transform 0.2s; }
+.card:hover { transform: translateY(-4px); }
+.card-img { height: 240px; background-size: cover; background-position: center; }
+.card-body { padding: 1.8rem; text-align: center; }
+.card-body h3 { margin: 0 0 0.75rem 0; color: var(--secondary); font-size: 1.4rem; }
+.card-body p { color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem; }
+.badge { background: #e0f2fe; color: var(--primary); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.85rem; }
+
+/* Grille des Fonctionnalités */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1rem; }
+.feature-item { background: white; padding: 2.5rem 1.8rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: left; }
+.icon-wrapper { width: 50px; height: 50px; background: #f0fdf4; color: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; }
+.feature-item h3 { font-size: 1.2rem; color: var(--secondary); margin: 0 0 0.5rem 0; }
+.feature-item p { color: #64748b; font-size: 0.95rem; margin: 0; }
+
+/* Bloc d'intégration Calendrier */
+.calendar-integration-box { background: white; border: 2px dashed #cbd5e1; border-radius: 16px; min-height: 450px; display: flex; align-items: center; justify-content: center; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+.placeholder-content { text-align: center; max-width: 500px; color: #64748b; }
+.placeholder-icon { font-size: 3.5rem; color: var(--primary); margin-bottom: 1rem; }
+.placeholder-content h3 { color: var(--secondary); margin: 0 0 0.5rem 0; font-size: 1.3rem; }
+.code-tip { background: var(--light); padding: 0.8rem 1.2rem; border-radius: 6px; margin-top: 1.5rem; border: 1px solid var(--border); }
+.code-tip code { font-family: monospace; color: #be185d; font-size: 0.9rem; }
+
+/* Widget Chatbot / Support */
+.chat-widget { position: fixed; bottom: 25px; right: 25px; width: 340px; background: white; border-radius: 12px; box-shadow: 0 10px 35px rgba(0,0,0,0.15); overflow: hidden; z-index: 1000; border: 1px solid var(--border); }
+.chat-header { background: var(--secondary); color: white; padding: 1.1rem; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
+.chat-body { padding: 1.2rem; max-height: 380px; overflow-y: auto; display: none; }
+.chat-body.open { display: block; }
+.message { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.75rem; font-size: 0.9rem; line-height: 1.4; }
+.message.bot { background: var(--light); border-left: 4px solid var(--accent); color: var(--secondary); }
+.chat-options button { display: block; width: 100%; text-align: left; background: white; border: 1px solid var(--primary); color: var(--primary); padding: 0.7rem 1rem; margin-bottom: 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+.chat-options button:hover { background: var(--primary); color: white; }
+.hidden { display: none; }
+
+/* Footer */
+footer { background: var(--secondary); color: #94a3b8; text-align: center; font-size: 0.9rem; border-top: 1px solid #1e293b; }
+footer .container { padding: 2.5rem 2rem; }
+
+/* --- Logo Sarmèz Retreats --- */
+.logo-container {
+display: flex;
+flex-direction: column;
+line-height: 0.9;
+cursor: pointer;
+}
+
+.logo-top {
+color: #ffffff;
+font-size: 1.5rem;
+font-weight: 700;
+font-family: serif;
+}
+
+.logo-bottom {
+color: #c5a072; /* Ta couleur or/beige */
+font-size: 1.5rem;
+font-weight: 700;
+font-family: serif;
+font-style: italic;
+}
+
+/* Force le header à bien gérer ce nouveau logo /
+header {
+background: var(--secondary) !important; / Pour coller au style sombre du logo */
+}
+
+/* Centrer le header et le logo /
+header {
+display: flex;
+flex-direction: column; / Empile le logo et le menu /
+align-items: center; / Centre tout horizontalement */
+padding: 1rem;
+background: var(--secondary) !important;
 }
 
 .logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 1rem;
-    cursor: pointer;
+display: flex;
+flex-direction: column;
+align-items: center; /* Centre le texte du logo */
+margin-bottom: 1rem;
+cursor: pointer;
 }
 
-.logo-top { color: #ffffff; font-size: 1.5rem; font-weight: 700; font-family: serif; }
-.logo-bottom { color: #c5a072; font-size: 1.5rem; font-weight: 700; font-family: serif; font-style: italic; }
+nav {
+display: flex;
+justify-content: center;
+flex-wrap: wrap; /* Permet au menu de passer à la ligne si besoin /
+gap: 15px; / Espace propre entre les liens */
+}
 
-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
-nav a { color: #ffffff; text-decoration: none; font-weight: 500; }
-nav a:hover { color: #c5a072; }
-
-/* --- Barre de prix flottante --- */
+nav a {
+color: #ffffff;
+margin-left: 0; /* Supprime la marge forcée pour un centrage équilibré */
+font-weight: 500;
+}
 .price-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: var(--secondary);
-    color: white;
-    padding: 1rem 0;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-    z-index: 999;
-    border-top: 2px solid var(--primary);
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: var(--secondary);
+color: white;
+padding: 1rem 0;
+box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+z-index: 999;
 }
 
 .price-bar .container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    max-width: 1200px;
-    margin: auto;
-    padding: 0 2rem;
+display: flex;
+justify-content: space-around;
+padding: 0 2rem;
+align-items: center;
 }
 
 .total-final {
-    background: var(--primary);
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-weight: bold;
+background: var(--primary);
+padding: 0.5rem 1rem;
+border-radius: 6px;
+font-size: 1.2rem;
+}
+/* --- Ajustement de la barre de prix --- /
+.price-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: var(--secondary);
+color: white;
+padding: 1rem 0;
+box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+z-index: 999;
+border-top: 2px solid var(--primary); / Petite touche élégante */
 }
 
-/* --- Widget Chatbot --- */
-.chat-widget {
-    position: fixed;
-    bottom: 90px; /* Remonté pour être au-dessus de la barre de prix */
-    right: 20px;
-    width: 300px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.2);
-    z-index: 1000;
-    border: 1px solid var(--border);
+.price-bar .container {
+padding: 0 2rem;
+display: flex;
+justify-content: space-around;
+align-items: center;
+max-width: 1200px;
+margin: auto;
 }
 
-.chat-header {
-    background: var(--sarmez-brown); /* Application du marron */
-    color: white;
-    padding: 1.1rem;
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 12px 12px 0 0;
+.total-final {
+background: var(--primary);
+padding: 0.6rem 1.2rem;
+border-radius: 8px;
+font-size: 1.2rem;
+font-weight: bold;
 }
 
-.chat-body { padding: 1.2rem; display: none; }
-.chat-body.open { display: block; }
-.chat-options button { 
-    display: block; width: 100%; text-align: left; background: white; 
-    border: 1px solid var(--primary); color: var(--primary); 
-    padding: 0.7rem 1rem; margin-bottom: 0.6rem; border-radius: 6px; cursor: pointer; 
+/* Évite que le contenu de la page ne soit caché par la barre flottante */
+body {
+font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+margin: 0;
+padding: 0;
+color: var(--text);
+scroll-behavior: smooth;
+line-height: 1.6;
+
+/* C'est ici que l'espace est ajouté */
+padding-bottom: 150px;
 }
 
-/* --- Formulaire --- */
-.large-select, input[type="date"], input[type="email"] {
-    width: 100%;
-    padding: 1.2rem;
-    margin-bottom: 1rem;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 1.1rem;
 }
 
-button[type="submit"] {
-    width: 100%;
-    padding: 1.2rem;
-    font-size: 1.1rem;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
+/* Responsive : Si l'écran est petit, on empile les éléments /
 @media (max-width: 768px) {
-    .price-bar .container { flex-direction: column; gap: 10px; }
+.price-bar .container {
+flex-direction: column;
+gap: 10px;
+padding: 0.5rem;
+}
+.total-final {
+width: 100%;
+text-align: center;
+box-sizing: border-box;
+}
+}
+/ Style pour agrandir les cases de sélection et inputs /
+.large-select, input[type="date"], input[type="email"] {
+width: 100%;
+padding: 1.2rem; / Augmente la hauteur de la case /
+margin-bottom: 1rem;
+border: 2px solid var(--border);
+border-radius: 8px;
+font-size: 1.1rem; / Texte plus gros pour la lisibilité */
+background-color: white;
+}
+
+/* Optionnel : Ajuste le bouton de soumission */
+button[type="submit"] {
+width: 100%;
+padding: 1.2rem;
+font-size: 1.1rem;
+background-color: var(--primary);
+color: white;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+}
+
+/* Styles généraux pour le chatbot et le formulaire */
+:root { --primary: #0284c7; --secondary: #0f172a; --accent: #10b981; }
+
+.chat-widget { position: fixed; bottom: 80px; right: 20px; width: 300px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.chat-header { background: var(--secondary); color: white; padding: 15px; cursor: pointer; border-radius: 10px 10px 0 0; }
+.chat-body { display: none; padding: 15px; }
+.chat-body.open { display: block; }
+
+.large-select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
+.chat-options button { display: block; width: 100%; margin-bottom: 5px; padding: 8px; cursor: pointer; }
+
+/* Ajout des couleurs pour le logo */
+.logo-top { color: white; font-weight: bold; }
+.logo-bottom { color: #c5a072; font-style: italic; }
+
+header { background: var(--secondary); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+nav a { color: white; text-decoration: none; margin: 0 10px; }
+
+.price-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: var(--secondary);
+color: white;
+padding: 1rem 0;
+box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+z-index: 999;
+border-top: 2px solid var(--primary);
+}
+
+.price-bar .container {
+display: flex;
+justify-content: space-around;
+align-items: center;
+max-width: 1200px;
+margin: auto;
+}
+
+.total-final {
+background: var(--primary);
+padding: 0.6rem 1.2rem;
+border-radius: 8px;
+font-weight: bold;
 }
