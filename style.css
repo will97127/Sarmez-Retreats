@@ -313,3 +313,12 @@ font-weight: bold;
 }
 .service-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
 .service-date { width: 100%; margin-top: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+
+.service-date {
+    width: 90%; /* Un peu plus petit que la ligne */
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
