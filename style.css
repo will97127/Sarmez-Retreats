@@ -322,3 +322,11 @@ font-weight: bold;
     border-radius: 4px;
     font-size: 0.8rem;
 }
+.service-desc {
+    height: 60px;
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    resize: vertical; /* Permet au client d'agrandir la zone si besoin */
+}
