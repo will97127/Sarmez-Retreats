@@ -102,15 +102,17 @@
         <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
     </div>
     <div class="chat-body" id="chat-body">      
-  <div id="chat-content">
-    <strong>Nos Services :</strong>
-    <div class="chat-options" id="services-form">
         <div id="chat-content">
-    <strong>Que puis-je faire pour vous ?</strong>
-    <div class="chat-options">
-        <button onclick="showCategory('services')">🛎️ Nos Services</button>
+            <strong>Que puis-je faire pour vous ?</strong>
+            <div class="chat-options">
+                <button onclick="showCategory('services')">🛎️ Nos Services</button>
+            </div>
+        </div>
+        <hr>
+        <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>
     </div>
 </div>
+
         <hr>
         <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
     </div>
