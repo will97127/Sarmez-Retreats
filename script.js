@@ -74,7 +74,7 @@ document.getElementById('booking-form').addEventListener('submit', function(e) {
     e.preventDefault(); 
     alert("Merci ! Votre demande est enregistrée.");
 });
-function sendServicesRequest() {
+async function sendServicesRequest() {
     let selectedServices = [];
     const rows = document.querySelectorAll('.service-row');
     
@@ -84,13 +84,11 @@ function sendServicesRequest() {
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
             const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
             
-            // Récupération de la description si c'est le problème technique
             let detail = ` (Date: ${serviceDate})`;
             const descArea = row.querySelector('.service-desc');
             if (descArea && descArea.value) {
                 detail += ` - Description: ${descArea.value}`;
             }
-            
             selectedServices.push(`${serviceName}${detail}`);
         }
     });
@@ -99,6 +97,32 @@ function sendServicesRequest() {
         alert("Veuillez sélectionner au moins un service.");
         return;
     }
+
+    // --- ICI ON APPELLE VOTRE WORKER ---
+    const workerUrl = "https://sarmezconciergerie.VOTRE_NOM.workers.dev"; // Remplacez par votre vraie URL
+
+    try {
+        const response = await fetch(workerUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: document.getElementById('email').value || "contact@exemple.com",
+                date: new Date().toLocaleDateString(),
+                services: selectedServices
+            })
+        });
+
+        if (response.ok) {
+            alert("Demande envoyée avec succès !");
+        } else {
+            alert("Erreur lors de l'envoi.");
+        }
+    } catch (error) {
+        console.error("Erreur:", error);
+        alert("Impossible de contacter le serveur.");
+    }
+}
+    
 
     const message = "Services demandés :\n" + selectedServices.join("\n");
     window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
