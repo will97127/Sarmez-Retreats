@@ -14,8 +14,9 @@ function updateAll() {
         totalServices += parseFloat(item.value);
     });
 
-    const servTotalEl = document.getElementById('services-total');
-    if (servTotalEl) servTotalEl.innerText = totalServices + "€";
+    if (document.getElementById('services-total')) {
+        document.getElementById('services-total').innerText = totalServices + "€";
+    }
 
     document.getElementById('night-total').innerText = nightPrice;
     document.getElementById('pack-total').innerText = packPrice;
@@ -50,12 +51,10 @@ function showCategory(cat) {
                 <input type="datetime-local" class="service-date">
                 <textarea class="service-desc" placeholder="Décrivez votre problème ici..." style="width:100%; margin-top:5px;"></textarea>
             </div>
-            <hr><p>Total services : <strong id="services-total">0€</strong></p>
-            <button onclick="backToMenu()">⬅ Retour</button>`
+            <hr><button onclick="backToMenu()">⬅ Retour</button>`
     };
     container.innerHTML = data[cat] || "Catégorie non trouvée.";
 }
-
 
 function backToMenu() {
     document.getElementById('chat-content').innerHTML = `
@@ -65,65 +64,37 @@ function backToMenu() {
         </div>`;
 }
 
-// Initialisation des écouteurs de base
-['date-in', 'date-out', 'pack-select'].forEach(id => {
-    document.getElementById(id).addEventListener('change', updateAll);
-});
-
-document.getElementById('booking-form').addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    alert("Merci ! Votre demande est enregistrée.");
-});
+// Envoi vers le Worker
 async function sendServicesRequest() {
     let selectedServices = [];
-    const rows = document.querySelectorAll('.service-row');
-    
-    rows.forEach(row => {
+    document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox.checked) {
-            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
-            
-            let detail = ` (Date: ${serviceDate})`;
-            const descArea = row.querySelector('.service-desc');
-            if (descArea && descArea.value) {
-                detail += ` - Description: ${descArea.value}`;
-            }
-            selectedServices.push(`${serviceName}${detail}`);
+            const name = checkbox.parentElement.innerText.split(':')[0].trim();
+            const date = row.querySelector('.service-date').value || "Date non précisée";
+            selectedServices.push(`${name} (Date: ${date})`);
         }
     });
 
-    if (selectedServices.length === 0) {
-        alert("Veuillez sélectionner au moins un service.");
-        return;
-    }
+    if (selectedServices.length === 0) return alert("Sélectionnez un service.");
 
-    // --- ICI ON APPELLE VOTRE WORKER ---
-    const workerUrl = "https://sarmezconciergerie.willpapo79.workers.dev/"; // Remplacez par votre vraie URL
+    // Remplacez par VOTRE URL de Worker
+    const workerUrl = "https://sarmezconciergerie.VOTRE_NOM.workers.dev";
 
     try {
         const response = await fetch(workerUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email: document.getElementById('email').value || "contact@exemple.com",
-                date: new Date().toLocaleDateString(),
-                services: selectedServices
-            })
+            body: JSON.stringify({ email: document.getElementById('email').value, services: selectedServices })
         });
-
-        if (response.ok) {
-            alert("Demande envoyée avec succès !");
-        } else {
-            alert("Erreur lors de l'envoi.");
-        }
-    } catch (error) {
-        console.error("Erreur:", error);
-        alert("Impossible de contacter le serveur.");
-    }
+        if (response.ok) alert("Demande envoyée !");
+        else alert("Erreur serveur.");
+    } catch (e) { alert("Erreur de connexion."); }
 }
-    
 
-    const message = "Services demandés :\n" + selectedServices.join("\n");
-    window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
-}
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    ['date-in', 'date-out', 'pack-select'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', updateAll);
+    });
+    document.getElementById('booking-form')?.addEventListener('submit', (e) => e.preventDefault());
+});
