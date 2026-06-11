@@ -86,18 +86,22 @@ document.getElementById('booking-form').addEventListener('submit', function(e) {
 });
 function sendServicesRequest() {
     let selectedServices = [];
-    
-    // On sélectionne toutes les lignes de services
     const rows = document.querySelectorAll('.service-row');
     
     rows.forEach(row => {
         const checkbox = row.querySelector('.service-item');
-        const dateInput = row.querySelector('.service-date');
-        
         if (checkbox.checked) {
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            const serviceDate = dateInput.value || "Non spécifiée";
-            selectedServices.push(`${serviceName} (Date: ${serviceDate})`);
+            const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
+            
+            // Récupération de la description si c'est le problème technique
+            let detail = ` (Date: ${serviceDate})`;
+            const descArea = row.querySelector('.service-desc');
+            if (descArea && descArea.value) {
+                detail += ` - Description: ${descArea.value}`;
+            }
+            
+            selectedServices.push(`${serviceName}${detail}`);
         }
     });
 
@@ -106,9 +110,6 @@ function sendServicesRequest() {
         return;
     }
 
-    // Création du message pour l'email
-    const message = "Services demandés : " + selectedServices.join(", ");
-    
-    // Ouverture de l'email
+    const message = "Services demandés :\n" + selectedServices.join("\n");
     window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
 }
