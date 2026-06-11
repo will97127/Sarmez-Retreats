@@ -45,7 +45,21 @@ function showCategory(cat) {
             <div class="service-row"><label><input type="checkbox" class="service-item" value="300" onchange="updateAll()"> Charrette Famille : 300€</label><br><input type="datetime-local" class="service-date"></div>
             <div class="service-row"><label><input type="checkbox" class="service-item" value="240" onchange="updateAll()"> Kayak/Paddle Couple : 240€</label><br><input type="datetime-local" class="service-date"></div>
             <div class="service-row"><label><input type="checkbox" class="service-item" value="400" onchange="updateAll()"> Kayak/Paddle Famille : 400€</label><br><input type="datetime-local" class="service-date"></div>
+            'services': `<strong>Sélectionnez vos services :</strong><br>
+    <div class="service-row">
+        <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
+        <input type="datetime-local" class="service-date">
+        <textarea class="service-desc" placeholder="Décrivez votre problème ici..." style="width:100%; margin-top:5px;"></textarea>
+    </div>
+    
+    <hr><p>Total services : <strong id="services-total">0€</strong></p>
+    <button onclick="backToMenu()">⬅ Retour</button>`
+// ...
+
+            
             <div class="service-row"><label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br><input type="datetime-local" class="service-date"></div>
+           
+            
             <hr><p>Total services : <strong id="services-total">0€</strong></p>
             <button onclick="backToMenu()">⬅ Retour</button>`
     };
