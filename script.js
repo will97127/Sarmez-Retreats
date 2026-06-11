@@ -99,7 +99,7 @@ async function sendServicesRequest() {
     }
 
     // --- ICI ON APPELLE VOTRE WORKER ---
-    const workerUrl = "https://sarmezconciergerie.VOTRE_NOM.workers.dev"; // Remplacez par votre vraie URL
+    const workerUrl = "https://sarmezconciergerie.willpapo79.workers.dev/"; // Remplacez par votre vraie URL
 
     try {
         const response = await fetch(workerUrl, {
