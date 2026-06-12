@@ -45,16 +45,27 @@ function toggleChat() {
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
-    const data = {
-        'services': `<strong>Sélectionnez vos services :</strong><br>
-            <div class="service-row"><label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br><input type="datetime-local" class="service-date"></div>
-            <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
-            <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
-            <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
-            <hr><p>Total services : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="backToMenu()">⬅ Retour</button>`
-    };
-    container.innerHTML = data[cat] || "Catégorie non trouvée.";
+    const servicesHTML = `
+        <strong>Sélectionnez vos services :</strong><br>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Charrette Couple : 180€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="300" onchange="updateAll()"> Charrette Famille : 300€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="240" onchange="updateAll()"> Kayak/Paddle Couple : 240€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row"><label><input type="checkbox" class="service-item" value="400" onchange="updateAll()"> Kayak/Paddle Famille : 400€</label><br><input type="datetime-local" class="service-date"></div>
+        <div class="service-row">
+            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
+            <input type="datetime-local" class="service-date">
+            <textarea class="service-desc" placeholder="Décrivez votre problème ici..." style="width:100%; margin-top:5px;"></textarea>
+        </div>
+        <hr>
+        <p>Total services : <strong id="services-total">0€</strong></p>
+        <button type="button" onclick="backToMenu()">⬅ Retour</button>
+        <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>`;
+
+    container.innerHTML = (cat === 'services') ? servicesHTML : "Catégorie non trouvée.";
 }
 
 function backToMenu() {
@@ -65,22 +76,6 @@ function backToMenu() {
         </div>`;
 }
 
-// --- INITIALISATION ÉCOUTEURS ---
-document.addEventListener('DOMContentLoaded', () => {
-    ['date-in', 'date-out', 'pack-select'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', updateAll);
-    });
-
-    const form = document.getElementById('booking-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("Merci ! Votre demande est enregistrée.");
-        });
-    }
-});
-
 // --- ENVOI DEMANDE ---
 function sendServicesRequest() {
     let selectedServices = [];
@@ -89,7 +84,13 @@ function sendServicesRequest() {
         if (checkbox && checkbox.checked) {
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
             const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
-            selectedServices.push(`${serviceName} (${serviceDate})`);
+            let detail = ` (Date: ${serviceDate})`;
+            
+            const descArea = row.querySelector('.service-desc');
+            if (descArea && descArea.value) {
+                detail += ` - Description: ${descArea.value}`;
+            }
+            selectedServices.push(`${serviceName}${detail}`);
         }
     });
 
@@ -101,3 +102,20 @@ function sendServicesRequest() {
     const message = "Services demandés :\n" + selectedServices.join("\n");
     window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
 }
+
+// --- INITIALISATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Écouteurs pour le formulaire de réservation
+    ['date-in', 'date-out', 'pack-select'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', updateAll);
+    });
+
+    const form = document.getElementById('booking-form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert("Merci ! Votre demande est enregistrée.");
+        });
+    }
+});
