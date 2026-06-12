@@ -34,13 +34,19 @@ icon.classList.toggle('fa-chevron-down');
 }
 
 function showCategory(cat) {
-const container = document.getElementById('chat-content');
-const data = {
-'services': <strong&gt;Sélectionnez vos services :&lt;/strong&gt;&lt;br&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="15" onchange="updateAll()"&gt; Petit déjeuner : 15€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="20" onchange="updateAll()"&gt; Ménage : 20€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="110" onchange="updateAll()"&gt; Massage Solo : 110€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="180" onchange="updateAll()"&gt; Massage Duo : 180€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="180" onchange="updateAll()"&gt; Charrette Couple : 180€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="300" onchange="updateAll()"&gt; Charrette Famille : 300€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="240" onchange="updateAll()"&gt; Kayak/Paddle Couple : 240€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt;&lt;label&gt;&lt;input type="checkbox" class="service-item" value="400" onchange="updateAll()"&gt; Kayak/Paddle Famille : 400€&lt;/label&gt;&lt;br&gt;&lt;input type="datetime-local" class="service-date"&gt;&lt;/div&gt; &lt;div class="service-row"&gt; &lt;label&gt;&lt;input type="checkbox" class="service-item" value="0" onchange="updateAll()"&gt; 🛠 Problème technique (Gratuit)&lt;/label&gt;&lt;br&gt; &lt;input type="datetime-local" class="service-date"&gt; &lt;textarea class="service-desc" placeholder="Décrivez votre problème ici..." style="width:100%; margin-top:5px;"&gt;&lt;/textarea&gt; &lt;/div&gt; &lt;hr&gt;&lt;p&gt;Total services : &lt;strong id="services-total"&gt;0€&lt;/strong&gt;&lt;/p&gt; &lt;button onclick="backToMenu()"&gt;⬅ Retour&lt;/button>
-};
-container.innerHTML = data[cat] || "Catégorie non trouvée.";
+    const container = document.getElementById('chat-content');
+    const data = {
+        'services': `<strong>Sélectionnez vos services :</strong><br> 
+            <div class="service-row">
+                <label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br>
+                <input type="datetime-local" class="service-date">
+            </div>
+            <!-- ... ajoutez les autres services avec des backticks ` ... -->
+            <hr><p>Total services : <strong id="services-total">0€</strong></p>
+            <button onclick="backToMenu()">⬅ Retour</button>`
+    };
+    container.innerHTML = data[cat] || "Catégorie non trouvée.";
 }
-
 
 function backToMenu() {
 document.getElementById('chat-content').innerHTML = &lt;strong&gt;Que puis-je faire pour vous ?&lt;/strong&gt; &lt;div class="chat-options"&gt; &lt;button onclick="showCategory('services')"&gt;🛎️ Nos Services&lt;/button&gt; &lt;/div>;
