@@ -100,7 +100,28 @@ function sendServicesRequest() {
     }
 
     const message = "Services demandés :\n" + selectedServices.join("\n");
-    window.location.href = `mailto:votre-email@exemple.com?subject=Demande de services Sarmèz&body=${encodeURIComponent(message)}`;
+    function sendServicesRequest() {
+    // ... (votre code actuel pour récupérer les données)
+    const message = "Services demandés :\n" + selectedServices.join("\n");
+    const emailClient = document.getElementById('email').value;
+
+    const payload = {
+        email: emailClient,
+        message: message
+    };
+
+    // Envoi au serveur Google
+    fetch("https://script.google.com/macros/s/AKfycbyXohB9ld_IZk8fsj5T5miyyArnsB7yzAESjBiCj2f_ZZUG1l7h5ZD55dQRkii1TDMu/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        alert("Demande envoyée avec succès ! Vous recevrez une confirmation par mail.");
+    })
+    .catch(error => alert("Erreur lors de l'envoi."));
+}
 }
 
 // --- INITIALISATION ---
