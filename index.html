@@ -55,7 +55,7 @@
     
 <section id="planning" class="container">
     <h2 class="section-title">Réservation & Packs</h2>
-    <form id="booking-form">
+    <form id="booking-form" onsubmit="event.preventDefault(); sendServicesRequest();">
         <select id="bungalow" required class="large-select">
             <option value="">Choisir un bungalow</option>
             <option value="SR Plage">SR Plage - 200€ / nuit</option>
@@ -103,7 +103,6 @@
             </div>
             <hr>
             <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>
         </div>
     </div>
 </div>
@@ -118,11 +117,11 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })();
+</script>
 <script src="script.js"></script>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script type="text/javascript">
-  (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })(); // Remplacez par votre clé publique EmailJS
-</script>
-    </body>
+</body>
 </html>
