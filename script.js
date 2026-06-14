@@ -96,9 +96,7 @@ function backToMenu() {
 
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    // ... (votre code existant de récupération des variables comme clientName, etc.)
 
-    // --- REMPLACEZ VOTRE ANCIEN BLOC PAR CELUI-CI ---
     let servicesDetails = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
@@ -119,7 +117,7 @@ function sendServicesRequest() {
             servicesDetails.push(`${name} : Le ${dateVal}${desc}`);
         }
     });
-    // --- FIN DU REMPLACEMENT ---
+    
 
     // ... (la suite de votre code qui envoie templateParams via emailjs)
 }
