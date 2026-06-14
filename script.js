@@ -26,24 +26,31 @@ function renderService(name, price) {
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
-    container.innerHTML = `
-        <button onclick="backToMenu()" style="margin-bottom:10px;">⬅ Retour</button>
-        <strong>Sélectionnez vos services :</strong><br><br>
-        ${renderService("Petit déjeuner", 15)}
-        ${renderService("Ménage", 20)}
-        ${renderService("Massage Solo", 110)}
-        ${renderService("Massage Duo", 180)}
-        ${renderService("Charrette Couple", 180)}
-        ${renderService("Charrette Famille", 300)}
-        ${renderService("Kayak/Paddle Couple", 240)}
-        ${renderService("Kayak/Paddle Famille", 400)}
-        <div class="service-row" style="margin-bottom:15px;">
-            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
-            <input type="datetime-local" class="service-date" style="width:100%; margin-top:5px;"><br>
-            <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; margin-top:5px;"></textarea>
-        </div>
-        <p>Total services : <strong id="services-total">0€</strong></p>
-    `;
+    if (cat === 'services' && container) {
+        container.innerHTML = `
+            <strong>Sélectionnez vos services :</strong><br><br>
+            ${renderService("Petit déjeuner", 15)}
+            ${renderService("Ménage", 20)}
+            ${renderService("Massage Solo", 110)}
+            ${renderService("Massage Duo", 180)}
+            ${renderService("Charrette Couple", 180)}
+            ${renderService("Charrette Famille", 300)}
+            ${renderService("Kayak/Paddle Couple", 240)}
+            ${renderService("Kayak/Paddle Famille", 400)}
+            <div class="service-row" style="margin-bottom:15px;">
+                <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
+                <input type="datetime-local" class="service-date" style="width:100%; margin-top:5px;"><br>
+                <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; margin-top:5px;"></textarea>
+            </div>
+            <hr>
+            <p>Total services : <strong id="services-total">0€</strong></p>
+            
+            <button type="button" onclick="sendServicesRequest()" style="width:100%; background:#28a745; color:white; padding:10px; border:none; cursor:pointer; font-weight:bold;">
+                Envoyer ma demande
+            </button>
+            <button type="button" onclick="backToMenu()" style="width:100%; margin-top:5px;">⬅ Retour</button>
+        `;
+    }
 }
 
 function updateAll() {
