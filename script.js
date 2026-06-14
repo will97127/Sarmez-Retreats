@@ -29,70 +29,44 @@ function updateAll() {
     if (finalDisplay) finalDisplay.innerText = grandTotal + "€";
 }
 
-// --- LOGIQUE CHATBOT ---
-function toggleChat() {
-    const chatBody = document.getElementById('chat-body');
-    const icon = document.getElementById('chat-icon');
-    chatBody.classList.toggle('open');
-    icon.classList.toggle('fa-chevron-up');
-    icon.classList.toggle('fa-chevron-down');
-}
-
-function showCategory(cat) {
-    const container = document.getElementById('chat-content');
-    const servicesHTML = `
-        <strong>Identification :</strong><br>
-        <input type="text" id="chat-name" placeholder="Votre Nom" style="width:100%; margin-bottom:5px;">
-        <input type="email" id="chat-email" placeholder="Votre Email" style="width:100%; margin-bottom:5px;">
-        <strong>Bungalow :</strong><br>
-        <select id="chat-bungalow" style="width:100%; padding:5px; margin-bottom:10px;">
-            <option value="SR Plage">SR Plage</option>
-            <option value="SR Rivière">SR Rivière</option>
-            <option value="SR Tradition">SR Tradition</option>
-        </select>
-        <strong>Services :</strong><br>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déj : 15€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
-        <hr>
-        <p>Total : <strong id="services-total">0€</strong></p>
-        <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>`;
-    container.innerHTML = servicesHTML;
-}
-
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    // Récupération sécurisée des données
-    const isChat = !!document.getElementById('chat-name');
-    const clientName = isChat ? document.getElementById('chat-name').value : "Client Site";
-    const emailClient = isChat ? document.getElementById('chat-email').value : document.getElementById('email').value;
-    const bungalow = isChat ? document.getElementById('chat-bungalow').value : document.getElementById('bungalow').value;
+    // Récupération des éléments
+    const packSelect = document.getElementById('pack-select');
+    const packName = packSelect.options[packSelect.selectedIndex].getAttribute('data-name') || "Aucun pack";
+    
+    const clientName = document.getElementById('chat-name')?.value || "Client";
+    const emailClient = document.getElementById('chat-email')?.value || document.getElementById('email').value;
+    const bungalow = document.getElementById('chat-bungalow')?.value || document.getElementById('bungalow').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
-    if (!emailClient || !bungalow) {
-        alert("Veuillez remplir au moins votre email et choisir un bungalow.");
-        return;
-    }
-
+    // Récupération des services
     let servicesDetails = [];
     document.querySelectorAll('.service-item:checked').forEach(item => {
-        const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
         servicesDetails.push(name);
     });
 
+    if (!emailClient || !bungalow) {
+        alert("Veuillez remplir votre email et choisir un bungalow.");
+        return;
+    }
+
+    // Paramètres envoyés à EmailJS
     const templateParams = {
         client_name: clientName,
         client_email: emailClient,
         bungalow: bungalow,
-        services_list: servicesDetails.length > 0 ? servicesDetails.join(", ") : "Aucun",
-        total_final: totalFinal
+        pack_choisi: packName, // <--- AJOUTÉ : ceci doit correspondre à {{pack_choisi}} dans votre template
+        services_list: servicesDetails.length > 0 ? servicesDetails.join(", ") : "Aucun service",
+        total_final: totalFinal,
+        message: `Récapitulatif de votre réservation pour le bungalow ${bungalow}. Total : ${totalFinal}`
     };
 
     // Envoi
     emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams)
         .then(() => {
-            alert("Merci ! Votre demande a bien été envoyée.");
+            alert("Merci ! Votre demande a été envoyée. Vous recevrez un récapitulatif par mail.");
         })
         .catch((err) => {
             alert("Erreur lors de l'envoi : " + JSON.stringify(err));
