@@ -1,6 +1,5 @@
 // --- FONCTION DE CALCUL UNIFIÉE ---
 function updateAll() {
-    // 1. Calcul du prix des nuits
     const dateInVal = document.getElementById('date-in').value;
     const dateOutVal = document.getElementById('date-out').value;
     let nightPrice = 0;
@@ -13,17 +12,14 @@ function updateAll() {
         nightPrice = nights * 200;
     }
 
-    // 2. Calcul du prix du pack
     const packSelect = document.getElementById('pack-select');
     const packPrice = parseInt(packSelect.value) || 0;
 
-    // 3. Calcul des services (Checkboxes)
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach((item) => {
         totalServices += parseFloat(item.value);
     });
 
-    // Mise à jour de l'affichage
     const servTotalEl = document.getElementById('services-total');
     if (servTotalEl) servTotalEl.innerText = totalServices + "€";
     
@@ -85,11 +81,8 @@ function sendServicesRequest() {
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
             const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
             let detail = ` (Date: ${serviceDate})`;
-            
             const descArea = row.querySelector('.service-desc');
-            if (descArea && descArea.value) {
-                detail += ` - Description: ${descArea.value}`;
-            }
+            if (descArea && descArea.value) detail += ` - Description: ${descArea.value}`;
             selectedServices.push(`${serviceName}${detail}`);
         }
     });
@@ -99,18 +92,17 @@ function sendServicesRequest() {
         return;
     }
 
-    const message = "Services demandés :\n" + selectedServices.join("\n");
-    function sendServicesRequest() {
-    // ... (votre code actuel pour récupérer les données)
-    const message = "Services demandés :\n" + selectedServices.join("\n");
     const emailClient = document.getElementById('email').value;
+    if (!emailClient) {
+        alert("Veuillez renseigner votre email dans le formulaire principal.");
+        return;
+    }
 
     const payload = {
         email: emailClient,
-        message: message
+        message: "Services demandés :\n" + selectedServices.join("\n")
     };
 
-    // Envoi au serveur Google
     fetch("https://script.google.com/macros/s/AKfycbwLRHxNStfQsg0S0efHUZWNzKT8LX3m7TmaI_Lz-Zw4Z5JIkp5pKgxZiMPX9eTZYC_KMg/exec", {
         method: "POST",
         mode: "no-cors",
@@ -118,25 +110,18 @@ function sendServicesRequest() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("Demande envoyée avec succès ! Vous recevrez une confirmation par mail.");
+        alert("Demande envoyée avec succès !");
     })
-    .catch(error => alert("Erreur lors de l'envoi."));
-}
+    .catch(error => {
+        console.error("Erreur :", error);
+        alert("Erreur lors de l'envoi.");
+    });
 }
 
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Écouteurs pour le formulaire de réservation
     ['date-in', 'date-out', 'pack-select'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', updateAll);
     });
-
-    const form = document.getElementById('booking-form');
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert("Merci ! Votre demande est enregistrée.");
-        });
-    }
 });
