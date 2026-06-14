@@ -16,7 +16,9 @@ function backToMenu() {
             <strong>Que puis-je faire pour vous ?</strong>
             <div class="chat-options">
                 <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
-            </div>`;
+            </div>
+            <hr>
+            <p>Total services : <strong id="services-total">0€</strong></p>`;
     }
 }
 
@@ -24,7 +26,7 @@ function renderService(name, price) {
     return `
         <div class="service-row" style="margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">
             <label><input type="checkbox" class="service-item" value="${price}" onchange="updateAll()"> ${name} : ${price}€</label><br>
-            <input type="datetime-local" class="service-date" style="width:100%;">
+            <input type="datetime-local" class="service-date" style="width:100%; border: 1px solid #ccc; padding: 5px;">
         </div>`;
 }
 
@@ -43,13 +45,14 @@ function showCategory(cat) {
             ${renderService("Kayak/Paddle Famille", 400)}
             <div class="service-row" style="margin-bottom:10px;">
                 <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
-                <input type="datetime-local" class="service-date" style="width:100%;"><br>
-                <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; height:60px;"></textarea>
+                <input type="datetime-local" class="service-date" style="width:100%; border: 1px solid #ccc; padding: 5px;"><br>
+                <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; height:60px; margin-top:5px;"></textarea>
             </div>
             <hr>
             <p>Total services : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="backToMenu()">⬅ Retour</button>
+            <button type="button" onclick="backToMenu()" style="width:100%; margin-top:10px;">⬅ Retour</button>
         `;
+        updateAll(); // Recalculer le total dès l'affichage
     }
 }
 
@@ -79,50 +82,46 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow')?.value;
     if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
 
-    // Fonction de formatage date sécurisée
-    const formatDateTimeFr = (d) => {
-        if (!d) return "Non précisée";
-        const [datePart, timePart] = d.split('T');
-        if (!datePart) return "Non précisée";
-        const [y, m, d2] = datePart.split('-');
-        return `${d2}/${m}/${y} à ${timePart}`;
-    };
-
     let detailsServices = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox?.checked) {
-            // Lecture directe de la valeur dans l'input au moment de l'envoi
-            const dateValue = row.querySelector('.service-date')?.value;
-            const descValue = row.querySelector('.service-desc')?.value || "";
+            const dateInput = row.querySelector('.service-date');
+            const descInput = row.querySelector('.service-desc');
+            const dateValue = dateInput ? dateInput.value : "";
+            const descValue = descInput ? descInput.value : "";
             
-            const dateFormatted = formatDateTimeFr(dateValue);
+            // Formatage immédiat de la date
+            let dateFormatted = "Non précisée";
+            if (dateValue) {
+                const [d, t] = dateValue.split('T');
+                const [y, m, d2] = d.split('-');
+                dateFormatted = `${d2}/${m}/${y} à ${t}`;
+            }
+            
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            
-            detailsServices.push(`${serviceName} (Date : ${dateFormatted})${descValue ? ' - ' + descValue : ''}`);
+            detailsServices.push(`${serviceName} (${dateFormatted})${descValue ? ' : ' + descValue : ''}`);
         }
     });
 
     const formatDateSimple = (d) => { const [y, m, d2] = d.split('-'); return d ? `${d2}/${m}/${y}` : "Non précisé"; };
     
     const templateParams = {
-        client_name: `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`,
-        client_email: document.getElementById('email')?.value || '',
-        client_phone: document.getElementById('phone')?.value || '',
+        client_name: `${document.getElementById('client-firstname')?.value} ${document.getElementById('client-lastname')?.value}`,
+        client_email: document.getElementById('email')?.value,
+        client_phone: document.getElementById('phone')?.value,
         bungalow: bungalow,
         dates: `Du ${formatDateSimple(document.getElementById('date-in')?.value)} au ${formatDateSimple(document.getElementById('date-out')?.value)}`,
-        pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
-        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
-        total_final: document.getElementById('display-total-final')?.innerText || '0€'
+        pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text,
+        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service",
+        total_final: document.getElementById('display-total-final')?.innerText
     };
 
-    const serviceID = "service_8chuqsf";
-    emailjs.send(serviceID, "template_ip31gnr", templateParams);
-    emailjs.send(serviceID, "template_7m5glbl", templateParams)
+    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
+    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
-// --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
     ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', updateAll);
