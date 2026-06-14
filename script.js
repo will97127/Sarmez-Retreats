@@ -1,9 +1,9 @@
-// --- FONCTION DE CALCUL UNIFIÉE ---
+// --- CALCULS EN TEMPS RÉEL ---
 function updateAll() {
+    // 1. Calcul nuits
     const dateInVal = document.getElementById('date-in').value;
     const dateOutVal = document.getElementById('date-out').value;
     let nightPrice = 0;
-
     if (dateInVal && dateOutVal) {
         const dateIn = new Date(dateInVal);
         const dateOut = new Date(dateOutVal);
@@ -11,23 +11,27 @@ function updateAll() {
         const nights = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
         nightPrice = nights * 200;
     }
+    document.getElementById('night-total').innerText = nightPrice;
 
+    // 2. Calcul pack
     const packSelect = document.getElementById('pack-select');
     const packPrice = parseInt(packSelect.value) || 0;
+    document.getElementById('pack-total').innerText = packPrice;
 
+    // 3. Calcul services
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach((item) => {
         totalServices += parseFloat(item.value);
     });
+    if (document.getElementById('services-total')) {
+        document.getElementById('services-total').innerText = totalServices + "€";
+    }
 
-    const servTotalEl = document.getElementById('services-total');
-    if (servTotalEl) servTotalEl.innerText = totalServices + "€";
-    
-    document.getElementById('night-total').innerText = nightPrice;
-    document.getElementById('pack-total').innerText = packPrice;
-
+    // 4. Grand Total
     const grandTotal = nightPrice + packPrice + totalServices;
-    document.getElementById('display-total-final').innerText = grandTotal + "€";
+    if (document.getElementById('display-total-final')) {
+        document.getElementById('display-total-final').innerText = grandTotal + "€";
+    }
 }
 
 // --- LOGIQUE CHATBOT ---
@@ -47,20 +51,15 @@ function showCategory(cat) {
         <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Charrette Couple : 180€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="300" onchange="updateAll()"> Charrette Famille : 300€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="240" onchange="updateAll()"> Kayak/Paddle Couple : 240€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="400" onchange="updateAll()"> Kayak/Paddle Famille : 400€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row">
-            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
+            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
             <input type="datetime-local" class="service-date">
-            <textarea class="service-desc" placeholder="Décrivez votre problème ici..." style="width:100%; margin-top:5px;"></textarea>
+            <textarea class="service-desc" placeholder="Décrivez le problème..." style="width:100%;"></textarea>
         </div>
         <hr>
         <p>Total services : <strong id="services-total">0€</strong></p>
         <button type="button" onclick="backToMenu()">⬅ Retour</button>
         <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>`;
-
     container.innerHTML = (cat === 'services') ? servicesHTML : "Catégorie non trouvée.";
 }
 
@@ -72,52 +71,26 @@ function backToMenu() {
         </div>`;
 }
 
-// --- ENVOI DEMANDE ---
+// --- ENVOI DES DONNÉES ---
 function sendServicesRequest() {
-    let selectedServices = [];
-    document.querySelectorAll('.service-row').forEach(row => {
-        const checkbox = row.querySelector('.service-item');
-        if (checkbox && checkbox.checked) {
-            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            const serviceDate = row.querySelector('.service-date').value || "Date non précisée";
-            let detail = ` (Date: ${serviceDate})`;
-            const descArea = row.querySelector('.service-desc');
-            if (descArea && descArea.value) detail += ` - Description: ${descArea.value}`;
-            selectedServices.push(`${serviceName}${detail}`);
-        }
-    });
-
-    if (selectedServices.length === 0) {
-        alert("Veuillez sélectionner au moins un service.");
-        return;
-    }
-
     const emailClient = document.getElementById('email').value;
-    if (!emailClient) {
-        alert("Veuillez renseigner votre email dans le formulaire principal.");
-        return;
-    }
+    if (!emailClient) { alert("Veuillez entrer votre email dans le formulaire principal."); return; }
 
     const payload = {
         email: emailClient,
-        message: "Services demandés :\n" + selectedServices.join("\n")
+        message: "Demande de services depuis le chatbot"
     };
 
-    // Remplacez votre fetch actuel par celui-ci
-    fetch("https://script.google.com/macros/s/AKfycbwLRHxNStfQsg0S0efHUZWNzKT8LX3m7TmaI_Lz-Zw4Z5JIkp5pKgxZiMPX9eTZYC_KMg/exec", {
+    // REMPLACEZ ICI PAR VOTRE URL /exec
+    fetch("https://script.google.com/macros/s/AKfycbxi2m0Vo7j_sluSlnS9gRSTH5eu5H7BWZqUs_UTJjj3L9Ytppz6Qd28g4p9EaImHISxrA/exec", {
         method: "POST",
-        // On enlève "mode: no-cors" pour pouvoir voir les erreurs
-        headers: { "Content-Type": "text/plain" }, 
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
-    .then(response => response.json())
-    .then(data => {
-        alert("Succès !");
-    })
-    .catch(error => {
-        console.error("Erreur détectée :", error);
-        alert("Erreur : vérifiez la console F12");
-    });
+    .then(() => alert("Demande envoyée !"))
+    .catch(() => alert("Erreur d'envoi."));
+}
 
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
