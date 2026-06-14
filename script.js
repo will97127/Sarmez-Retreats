@@ -162,3 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el) el.addEventListener('change', updateAll);
     });
 });
+
+// Détection automatique des changements dans le chat pour le calcul en temps réel
+document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('service-item') || e.target.classList.contains('service-date')) {
+        updateAll();
+    }
+});
