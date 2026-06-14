@@ -74,25 +74,20 @@ function backToMenu() {
 // --- ENVOI DES DONNÉES ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
-    // ... (votre code pour récupérer les services) ...
-    
-    const data = {
-        email: emailClient,
-        message: "Services choisis : " // ... le reste de votre logique
-    };
+    // ... (votre logique de collecte des services) ...
+    const message = "Services demandés : ..."; 
 
-    // On utilise FormData car c'est plus stable avec Apps Script
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(data));
+    // Création du formulaire
+    const params = new URLSearchParams();
+    params.append('email', emailClient);
+    params.append('message', message);
 
     fetch("https://script.google.com/macros/s/AKfycbxi2m0Vo7j_sluSlnS9gRSTH5eu5H7BWZqUs_UTJjj3L9Ytppz6Qd28g4p9EaImHISxrA/exec", {
         method: "POST",
-        body: formData 
-        // Notez qu'on retire "mode: no-cors" et "headers"
+        body: params // Plus besoin de JSON.stringify ni de headers
     })
-    .then(response => response.json())
-    .then(data => alert("Succès !"))
-    .catch(err => console.error(err));
+    .then(() => alert("Demande envoyée avec succès !"))
+    .catch(err => alert("Erreur d'envoi."));
 }
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
