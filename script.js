@@ -1,130 +1,83 @@
 // --- LOGIQUE CHATBOT ---
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
-    const icon = document.getElementById('chat-icon');
     chatBody?.classList.toggle('open');
-    if (icon) {
-        icon.classList.toggle('fa-chevron-up');
-        icon.classList.toggle('fa-chevron-down');
-    }
 }
 
 function backToMenu() {
-    const content = document.getElementById('chat-content');
-    if (content) {
-        content.innerHTML = `
-            <strong>Que puis-je faire pour vous ?</strong>
-            <div class="chat-options">
-                <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
-            </div>
-            <hr>
-            <p>Total services : <strong id="services-total">0€</strong></p>`;
-    }
+    document.getElementById('chat-content').innerHTML = `
+        <strong>Que puis-je faire pour vous ?</strong>
+        <div class="chat-options">
+            <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
+        </div>`;
 }
 
 function renderService(name, price) {
+    // Notez l'ajout d'un ID unique ou d'une structure pour mieux cibler
     return `
-        <div class="service-row" style="margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">
-            <label><input type="checkbox" class="service-item" value="${price}" onchange="updateAll()"> ${name} : ${price}€</label><br>
-            <input type="datetime-local" class="service-date" style="width:100%; border: 1px solid #ccc; padding: 5px;">
+        <div class="service-row" style="margin-bottom:15px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+            <label style="display:block; margin-bottom:5px;">
+                <input type="checkbox" class="service-item" value="${price}" onchange="updateAll()"> 
+                <strong>${name}</strong> - ${price}€
+            </label>
+            <input type="datetime-local" class="service-date" style="width:100%; padding:5px;">
         </div>`;
 }
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
-    if (cat === 'services' && container) {
-        container.innerHTML = `
-            <strong>Sélectionnez vos services :</strong><br>
-            ${renderService("Petit déjeuner", 15)}
-            ${renderService("Ménage", 20)}
-            ${renderService("Massage Solo", 110)}
-            ${renderService("Massage Duo", 180)}
-            ${renderService("Charrette Couple", 180)}
-            ${renderService("Charrette Famille", 300)}
-            ${renderService("Kayak/Paddle Couple", 240)}
-            ${renderService("Kayak/Paddle Famille", 400)}
-            <div class="service-row" style="margin-bottom:10px;">
-                <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
-                <input type="datetime-local" class="service-date" style="width:100%; border: 1px solid #ccc; padding: 5px;"><br>
-                <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; height:60px; margin-top:5px;"></textarea>
-            </div>
-            <hr>
-            <p>Total services : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="backToMenu()" style="width:100%; margin-top:10px;">⬅ Retour</button>
-        `;
-        updateAll(); // Recalculer le total dès l'affichage
-    }
+    container.innerHTML = `
+        <button onclick="backToMenu()" style="margin-bottom:10px;">⬅ Retour</button>
+        <strong>Sélectionnez vos services :</strong><br><br>
+        ${renderService("Petit déjeuner", 15)}
+        ${renderService("Ménage", 20)}
+        ${renderService("Massage Solo", 110)}
+        ${renderService("Massage Duo", 180)}
+        ${renderService("Charrette Couple", 180)}
+        ${renderService("Charrette Famille", 300)}
+        ${renderService("Kayak/Paddle Couple", 240)}
+        ${renderService("Kayak/Paddle Famille", 400)}
+        <div class="service-row" style="margin-bottom:15px;">
+            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
+            <input type="datetime-local" class="service-date" style="width:100%; margin-top:5px;"><br>
+            <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; margin-top:5px;"></textarea>
+        </div>
+        <p>Total services : <strong id="services-total">0€</strong></p>
+    `;
 }
 
-// --- CALCULS ET ENVOI ---
 function updateAll() {
-    const dateInVal = document.getElementById('date-in')?.value;
-    const dateOutVal = document.getElementById('date-out')?.value;
-    let nightPrice = 0;
-    
-    if (dateInVal && dateOutVal) {
-        const diffTime = Math.abs(new Date(dateOutVal) - new Date(dateInVal));
-        nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
-    }
-    
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
+    document.getElementById('services-total').innerText = totalServices + "€";
     
-    const packPrice = parseInt(document.getElementById('pack-select')?.value) || 0;
-    
-    if (document.getElementById('night-total')) document.getElementById('night-total').innerText = nightPrice;
-    if (document.getElementById('pack-total')) document.getElementById('pack-total').innerText = packPrice;
-    if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
-    if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
+    // Mise à jour du total final global
+    const nightPrice = parseInt(document.getElementById('night-total')?.innerText) || 0;
+    const packPrice = parseInt(document.getElementById('pack-total')?.innerText) || 0;
+    document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
 }
 
 function sendServicesRequest() {
-    const bungalow = document.getElementById('bungalow')?.value;
-    if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
-
+    // On force la lecture de CHAQUE ligne de service
     let detailsServices = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
-        if (checkbox?.checked) {
-            const dateInput = row.querySelector('.service-date');
-            const descInput = row.querySelector('.service-desc');
-            const dateValue = dateInput ? dateInput.value : "";
-            const descValue = descInput ? descInput.value : "";
-            
-            // Formatage immédiat de la date
-            let dateFormatted = "Non précisée";
-            if (dateValue) {
-                const [d, t] = dateValue.split('T');
-                const [y, m, d2] = d.split('-');
-                dateFormatted = `${d2}/${m}/${y} à ${t}`;
-            }
-            
-            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            detailsServices.push(`${serviceName} (${dateFormatted})${descValue ? ' : ' + descValue : ''}`);
+        if (checkbox && checkbox.checked) {
+            const date = row.querySelector('.service-date').value || "Date non définie";
+            const desc = row.querySelector('.service-desc')?.value || "";
+            const name = checkbox.parentElement.innerText.split('-')[0].trim();
+            detailsServices.push(`${name} [Date: ${date}] ${desc ? '- ' + desc : ''}`);
         }
     });
 
-    const formatDateSimple = (d) => { const [y, m, d2] = d.split('-'); return d ? `${d2}/${m}/${y}` : "Non précisé"; };
-    
     const templateParams = {
-        client_name: `${document.getElementById('client-firstname')?.value} ${document.getElementById('client-lastname')?.value}`,
-        client_email: document.getElementById('email')?.value,
-        client_phone: document.getElementById('phone')?.value,
-        bungalow: bungalow,
-        dates: `Du ${formatDateSimple(document.getElementById('date-in')?.value)} au ${formatDateSimple(document.getElementById('date-out')?.value)}`,
-        pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text,
+        client_name: document.getElementById('client-firstname').value + ' ' + document.getElementById('client-lastname').value,
+        client_email: document.getElementById('email').value,
         liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service",
-        total_final: document.getElementById('display-total-final')?.innerText
+        total_final: document.getElementById('display-total-final').innerText
+        // ... ajoutez ici vos autres champs bungalow, dates, etc.
     };
 
-    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
-    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
-        .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
+    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams)
+        .then(() => alert("Demande envoyée !"));
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
-        document.getElementById(id)?.addEventListener('change', updateAll);
-    });
-    backToMenu();
-});
