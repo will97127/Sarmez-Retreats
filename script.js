@@ -24,7 +24,7 @@ function renderService(name, price) {
     return `
         <div class="service-row" style="margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">
             <label><input type="checkbox" class="service-item" value="${price}" onchange="updateAll()"> ${name} : ${price}€</label><br>
-            <textarea class="service-details" placeholder="Précisez votre demande..." style="width:100%; height:40px; margin-top:5px;"></textarea>
+            <textarea class="service-details" placeholder="Précisez votre date ou demande..." style="width:100%; height:40px; margin-top:5px;"></textarea>
         </div>`;
 }
 
@@ -70,6 +70,7 @@ function showCategory(cat) {
 
 // --- CALCULS ET ENVOI ---
 function updateAll() {
+    // Calcul séjour
     const dateInVal = document.getElementById('date-in')?.value;
     const dateOutVal = document.getElementById('date-out')?.value;
     let nightPrice = 0;
@@ -78,11 +79,14 @@ function updateAll() {
         nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
     }
     
+    // Calcul services
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
     
+    // Calcul pack
     const packPrice = parseInt(document.getElementById('pack-select')?.value) || 0;
     
+    // Mise à jour interface
     if (document.getElementById('night-total')) document.getElementById('night-total').innerText = nightPrice;
     if (document.getElementById('pack-total')) document.getElementById('pack-total').innerText = packPrice;
     if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
@@ -90,6 +94,7 @@ function updateAll() {
 }
 
 function sendServicesRequest() {
+    // Priorité aux données du Chat, sinon formulaire principal
     const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
     const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
     const phone = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
@@ -103,21 +108,18 @@ function sendServicesRequest() {
         return; 
     }
 
-    // Mise en forme HTML des services (Gras + Italique)
     let detailsServices = [];
     document.querySelectorAll('.service-item:checked').forEach(checkbox => {
         const parentRow = checkbox.closest('.service-row');
         const detail = parentRow.querySelector('.service-details')?.value || 'Aucune précision';
         const serviceName = parentRow.querySelector('label').innerText.split(':')[0].trim();
-        detailsServices.push(`<b>${serviceName}</b> : <i>${detail}</i>`);
+        detailsServices.push(`${serviceName} [Détails: ${detail}]`);
     });
 
     const formatDate = (d) => { if(!d) return "Non précisé"; const [y, m, d2] = d.split('-'); return `${d2}/${m}/${y}`; };
     const dateIn = document.getElementById('date-in')?.value;
     const dateOut = document.getElementById('date-out')?.value;
-    
-    // Mise en forme HTML des dates (Gras)
-    const datesStr = (dateIn && dateOut) ? `Du <b>${formatDate(dateIn)}</b> au <b>${formatDate(dateOut)}</b>` : "<b>Client déjà sur place</b>";
+    const datesStr = (dateIn && dateOut) ? `Du ${formatDate(dateIn)} au ${formatDate(dateOut)}` : "Client déjà sur place";
 
     const templateParams = {
         client_name: name,
@@ -126,7 +128,7 @@ function sendServicesRequest() {
         bungalow: bungalowFinal,
         dates: datesStr,
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
-        liste_services: detailsServices.length > 0 ? detailsServices.join(" <br> ") : "Aucun service sélectionné",
+        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
 
