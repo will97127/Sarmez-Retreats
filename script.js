@@ -79,13 +79,14 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow')?.value;
     if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
 
+    // Récupération des services cochés avec leurs dates/descriptions
     let detailsServices = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox?.checked) {
             const date = row.querySelector('.service-date').value;
             const desc = row.querySelector('.service-desc')?.value || "";
-            // Formatage propre : Service (Date) - Description
+            // On récupère le nom du service, la date et la description
             detailsServices.push(`${checkbox.parentElement.innerText.split(':')[0]} (${date || 'Aucune date'})${desc ? ' : ' + desc : ''}`);
         }
     });
@@ -99,7 +100,8 @@ function sendServicesRequest() {
         bungalow: bungalow,
         dates: `Du ${formatDate(document.getElementById('date-in')?.value)} au ${formatDate(document.getElementById('date-out')?.value)}`,
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
-        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service",
+        // Ajout de la liste des services ici
+        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
 
