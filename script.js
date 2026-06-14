@@ -103,21 +103,16 @@ function sendServicesRequest() {
     }
 
     let servicesDetails = [];
-    // On cible tous les éléments qui ont une classe 'service-item' et qui sont cochés
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
         
-        // RECUPERATION FORCEE : on cherche l'input date dans la même ligne
+        // LA MODIFICATION EST ICI : on récupère l'input de date spécifiquement dans la ligne du service
         const dateInput = row.querySelector('.service-date');
-        let dateValue = "Non précisée";
-        if (dateInput && dateInput.value) {
-            // Conversion du format technique en format lisible
-            dateValue = new Date(dateInput.value).toLocaleString('fr-FR', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-        }
+        const dateValue = dateInput && dateInput.value ? new Date(dateInput.value).toLocaleString('fr-FR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }) : "Date non précisée";
         
         const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
         servicesDetails.push(`${name} : Le ${dateValue}${desc}`);
@@ -135,9 +130,15 @@ function sendServicesRequest() {
     };
 
     const serviceID = "service_8chuqsf";
+    
+    // Envoi des emails
     emailjs.send(serviceID, "template_ip31gnr", templateParams);
     emailjs.send(serviceID, "template_7m5glbl", templateParams)
-        .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
+        .then(() => {
+            alert("Demande envoyée avec succès !");
+            // Optionnel : fermer le chat après envoi
+            toggleChat();
+        }, (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
