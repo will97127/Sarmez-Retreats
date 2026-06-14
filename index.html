@@ -57,9 +57,6 @@
     <h2 class="section-title">Réservation & Packs</h2>
     <form id="booking-form" onsubmit="event.preventDefault(); sendServicesRequest();">
 
-        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">
-        <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
-        
         <select id="bungalow" required class="large-select">
             <option value="">Choisir un bungalow</option>
             <option value="SR Plage">SR Plage - 200€ / nuit</option>
@@ -88,7 +85,10 @@
                 <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
             </optgroup>
         </select>
-
+        
+        <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
+        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
+        
         <input type="email" id="email" placeholder="Votre email" required class="large-select">
         <button type="submit">Envoyer la demande</button>
     </form>
