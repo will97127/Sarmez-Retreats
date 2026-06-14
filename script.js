@@ -74,24 +74,33 @@ function backToMenu() {
 // --- ENVOI DES DONNÉES ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
-    if (!emailClient) { alert("Veuillez entrer votre email dans le formulaire principal."); return; }
+    if (!emailClient) { alert("Veuillez entrer votre email."); return; }
+
+    // On récupère les services cochés
+    let selectedServices = [];
+    document.querySelectorAll('.service-item:checked').forEach(item => {
+        const row = item.closest('.service-row');
+        const serviceName = item.parentElement.innerText.split(':')[0].trim();
+        const date = row.querySelector('.service-date').value || "Pas de date";
+        selectedServices.push(`${serviceName} (${date})`);
+    });
+
+    if (selectedServices.length === 0) { alert("Sélectionnez un service."); return; }
 
     const payload = {
         email: emailClient,
-        message: "Demande de services depuis le chatbot"
+        message: "Services choisis :\n" + selectedServices.join("\n")
     };
 
-    // REMPLACEZ ICI PAR VOTRE URL /exec
     fetch("https://script.google.com/macros/s/AKfycbxi2m0Vo7j_sluSlnS9gRSTH5eu5H7BWZqUs_UTJjj3L9Ytppz6Qd28g4p9EaImHISxrA/exec", {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
-    .then(() => alert("Demande envoyée !"))
-    .catch(() => alert("Erreur d'envoi."));
+    .then(() => alert("Demande envoyée avec succès !"))
+    .catch(err => alert("Erreur d'envoi."));
 }
-
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
     ['date-in', 'date-out', 'pack-select'].forEach(id => {
