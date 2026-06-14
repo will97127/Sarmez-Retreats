@@ -111,7 +111,7 @@ function sendServicesRequest() {
     };
 
     // Envoi au serveur Google
-    fetch("https://script.google.com/macros/s/AKfycbyXohB9ld_IZk8fsj5T5miyyArnsB7yzAESjBiCj2f_ZZUG1l7h5ZD55dQRkii1TDMu/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwLRHxNStfQsg0S0efHUZWNzKT8LX3m7TmaI_Lz-Zw4Z5JIkp5pKgxZiMPX9eTZYC_KMg/exec", {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
