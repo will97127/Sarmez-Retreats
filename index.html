@@ -1,122 +1,126 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarmèz Retreats | Conciergerie</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarmèz Retreats | Conciergerie</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 <header>
-    <div class="logo-container">
-        <span class="logo-top">Sarmèz</span>
-        <span class="logo-bottom">Retreats</span>
-    </div>
-    <nav>
-        <a href="#home">Accueil</a>
-        <a href="#bungalows">Bungalow</a>
-        <a href="#planning">Tarif & Réservation</a>
-    </nav>
+    <div class="logo-container">
+        <span class="logo-top">Sarmèz</span>
+        <span class="logo-bottom">Retreats</span>
+    </div>
+    <nav>
+        <a href="#home">Accueil</a>
+        <a href="#bungalows">Bungalow</a>
+        <a href="#planning">Tarif & Réservation</a>
+    </nav>
 </header>
 
 <section id="bungalows" class="container">
-    <h2 class="section-title">Nos Bungalows</h2>
-    <p class="subtitle text-center">Découvrez nos unités premium nichées au cœur de la Guadeloupe.</p>
-    
-    <div class="grid">
-        <div class="card">
-            <div class="card-img" style="background-image: url('SRplage.jpg');"></div>
-            <div class="card-body">
-                <h3>SR Plage</h3>
-                <p>Une immersion totale dans le thème marin.</p>
-                <span class="badge">Premium</span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-img" style="background-image: url('SRriviere.jpg');"></div>
-            <div class="card-body">
-                <h3>SR Rivière</h3>
-                <p>L'apaisement absolu avec une ambiance inspirée des rivières tropicales.</p>
-                <span class="badge">Premium</span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-img" style="background-image: url('SRtradition.jpg');"></div>
-            <div class="card-body">
-                <h3>SR Tradition</h3>
-                <p>L'authenticité créole revisitée pour un confort moderne et chaleureux.</p>
-                <span class="badge">Premium</span>
-            </div>
-        </div>
-    </div>
+    <h2 class="section-title">Nos Bungalows</h2>
+    <p class="subtitle text-center">Découvrez nos unités premium nichées au cœur de la Guadeloupe.</p>
+    
+    <div class="grid">
+        <div class="card">
+            <div class="card-img" style="background-image: url('SRplage.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Plage</h3>
+                <p>Une immersion totale dans le thème marin.</p>
+                <span class="badge">Premium</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('SRriviere.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Rivière</h3>
+                <p>L'apaisement absolu avec une ambiance inspirée des rivières tropicales.</p>
+                <span class="badge">Premium</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img" style="background-image: url('SRtradition.jpg');"></div>
+            <div class="card-body">
+                <h3>SR Tradition</h3>
+                <p>L'authenticité créole revisitée pour un confort moderne et chaleureux.</p>
+                <span class="badge">Premium</span>
+            </div>
+        </div>
+    </div>
 </section>
-    
+    
 <section id="planning" class="container">
-    <h2 class="section-title">Réservation & Packs</h2>
-    <form id="booking-form">
-        <select id="bungalow" required class="large-select">
-            <option value="">Choisir un bungalow</option>
-            <option value="SR Plage">SR Plage - 200€ / nuit</option>
-            <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
-            <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
-        </select>
+    <h2 class="section-title">Réservation & Packs</h2>
+    <form id="booking-form">
+        <select id="bungalow" required class="large-select">
+            <option value="">Choisir un bungalow</option>
+            <option value="SR Plage">SR Plage - 200€ / nuit</option>
+            <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
+            <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
+        </select>
 
-        <input type="date" id="date-in" required class="large-select">
-        <input type="date" id="date-out" required class="large-select">
+        <input type="date" id="date-in" required class="large-select">
+        <input type="date" id="date-out" required class="large-select">
 
-        <select id="pack-select" class="large-select">
-            <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
-            <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
-            <optgroup label="🧖‍♂️ Bien-être">
-                <option value="100" data-name="Massage Solo">Massage Solo (1h) - 100€</option>
-                <option value="170" data-name="Massage Duo">Massage Duo (1h) - 170€</option>
-            </optgroup>
-            <optgroup label="🛶 Loisirs">
-                <option value="220" data-name="Kayak Couple">Kayak (Couple) - 220€</option>
-                <option value="380" data-name="Kayak Famille">Kayak (Famille 4p) - 380€</option>
-                <option value="220" data-name="Paddle Couple">Paddle (Couple) - 220€</option>
-                <option value="380" data-name="Paddle Famille">Paddle (Famille 4p) - 380€</option>
-            </optgroup>
-            <optgroup label="🐂 Patrimoine">
-                <option value="160" data-name="Charrette Couple">Charrette à bœufs (Couple) - 160€</option>
-                <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
-            </optgroup>
-        </select>
+        <select id="pack-select" class="large-select">
+            <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
+            <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
+            <optgroup label="🧖‍♂️ Bien-être">
+                <option value="100" data-name="Massage Solo">Massage Solo (1h) - 100€</option>
+                <option value="170" data-name="Massage Duo">Massage Duo (1h) - 170€</option>
+            </optgroup>
+            <optgroup label="🛶 Loisirs">
+                <option value="220" data-name="Kayak Couple">Kayak (Couple) - 220€</option>
+                <option value="380" data-name="Kayak Famille">Kayak (Famille 4p) - 380€</option>
+                <option value="220" data-name="Paddle Couple">Paddle (Couple) - 220€</option>
+                <option value="380" data-name="Paddle Famille">Paddle (Famille 4p) - 380€</option>
+            </optgroup>
+            <optgroup label="🐂 Patrimoine">
+                <option value="160" data-name="Charrette Couple">Charrette à bœufs (Couple) - 160€</option>
+                <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
+            </optgroup>
+        </select>
 
-        <input type="email" id="email" placeholder="Votre email" required class="large-select">
-        <button type="submit">Envoyer la demande</button>
-    </form>
+        <input type="email" id="email" placeholder="Votre email" required class="large-select">
+        <button type="submit">Envoyer la demande</button>
+    </form>
 </section>
 
 <div class="chat-widget" id="chat-widget">
-    <div class="chat-header" onclick="toggleChat()">
-        <span>🤖 Conciergerie Sarmèz</span>
-        <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
-    </div>
-    <div class="chat-body" id="chat-body">      
-        <div id="chat-content">
-            <strong>Que puis-je faire pour vous ?</strong>
-            <div class="chat-options">
-                <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
-            </div>
-            <hr>
-            <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>
-        </div>
-    </div>
+    <div class="chat-header" onclick="toggleChat()">
+        <span>🤖 Conciergerie Sarmèz</span>
+        <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
+    </div>
+    <div class="chat-body" id="chat-body">      
+        <div id="chat-content">
+            <strong>Que puis-je faire pour vous ?</strong>
+            <div class="chat-options">
+                <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
+            </div>
+            <hr>
+            <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
+            <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>
+        </div>
+    </div>
 </div>
 
 <div id="price-bar" class="price-bar">
-    <div class="container">
-        <span>Séjour : <strong><span id="night-total">0</span>€</strong></span>
-        <span>+ Pack : <strong><span id="pack-total">0</span>€</strong></span>
-        <div class="total-final">
-            Total : <span id="display-total-final">0€</span>
-        </div>
-    </div>
+    <div class="container">
+        <span>Séjour : <strong><span id="night-total">0</span>€</strong></span>
+        <span>+ Pack : <strong><span id="pack-total">0</span>€</strong></span>
+        <div class="total-final">
+            Total : <span id="display-total-final">0€</span>
+        </div>
+    </div>
 </div>
+
+<script src="script.js"></script>
+</body>
+</html>
 
 <script src="script.js"></script>
 
