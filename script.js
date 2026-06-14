@@ -31,31 +31,39 @@ function updateAll() {
 
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    // 1. Récupération des valeurs
+    // 1. Validation : Vérifier si le bungalow est bien sélectionné
+    const bungalow = document.getElementById('bungalow').value;
+    if (!bungalow) {
+        alert("Veuillez sélectionner un bungalow dans la liste.");
+        return;
+    }
+
+    // 2. Récupération des valeurs
     const firstName = document.getElementById('client-firstname').value;
     const lastName = document.getElementById('client-lastname').value;
     const emailClient = document.getElementById('email').value;
-    const bungalow = document.getElementById('bungalow').value;
+    const dateIn = document.getElementById('date-in').value;
+    const dateOut = document.getElementById('date-out').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
-    // Récupération du nom du pack sélectionné (texte de l'option)
     const packSelect = document.getElementById('pack-select');
     const packName = packSelect.options[packSelect.selectedIndex].text;
 
-    // 2. Préparation des paramètres
+    // 3. Préparation des paramètres
     const templateParams = {
         client_name: `${firstName} ${lastName}`,
         client_email: emailClient,
         bungalow: bungalow,
+        dates: `Du ${dateIn} au ${dateOut}`, // Variable pour les dates
         pack_choisi: packName,
         total_final: totalFinal,
         message: "Récapitulatif de votre demande de réservation Sarmèz Retreats."
     };
 
-    // 3. Envoi des deux emails
+    // 4. Envoi des emails
     const serviceID = "service_8chuqsf";
     
-    // Mail pour VOUS (Gestionnaire)
+    // Mail pour VOUS
     emailjs.send(serviceID, "template_ip31gnr", templateParams);
 
     // Mail pour le CLIENT
