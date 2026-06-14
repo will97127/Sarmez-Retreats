@@ -103,20 +103,21 @@ function sendServicesRequest() {
         message: "Services demandés :\n" + selectedServices.join("\n")
     };
 
+    // Remplacez votre fetch actuel par celui-ci
     fetch("https://script.google.com/macros/s/AKfycbwLRHxNStfQsg0S0efHUZWNzKT8LX3m7TmaI_Lz-Zw4Z5JIkp5pKgxZiMPX9eTZYC_KMg/exec", {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        // On enlève "mode: no-cors" pour pouvoir voir les erreurs
+        headers: { "Content-Type": "text/plain" }, 
         body: JSON.stringify(payload)
     })
-    .then(() => {
-        alert("Demande envoyée avec succès !");
+    .then(response => response.json())
+    .then(data => {
+        alert("Succès !");
     })
     .catch(error => {
-        console.error("Erreur :", error);
-        alert("Erreur lors de l'envoi.");
+        console.error("Erreur détectée :", error);
+        alert("Erreur : vérifiez la console F12");
     });
-}
 
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
