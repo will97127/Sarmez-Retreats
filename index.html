@@ -21,12 +21,6 @@
     </nav>
 </header>
 
-<section id="bungalows" class="container">
-    <h2 class="section-title">Nos Bungalows</h2>
-    <div class="grid">
-        </div>
-</section>
-    
 <section id="planning" class="container">
     <h2 class="section-title">Réservation & Packs</h2>
     <form id="booking-form" onsubmit="event.preventDefault(); sendServicesRequest();">
@@ -36,14 +30,31 @@
             <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
             <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
         </select>
+
         <input type="date" id="date-in" required class="large-select">
         <input type="date" id="date-out" required class="large-select">
+
         <select id="pack-select" class="large-select">
             <option value="0">Choisir un pack (Optionnel)</option>
-            <option value="150">🌿 Pack Romantique - 150€</option>
+            <option value="150">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
+            <optgroup label="🧖‍♂️ Bien-être">
+                <option value="100">Massage Solo (1h) - 100€</option>
+                <option value="170">Massage Duo (1h) - 170€</option>
+            </optgroup>
+            <optgroup label="🛶 Loisirs">
+                <option value="220">Kayak (Couple) - 220€</option>
+                <option value="380">Kayak (Famille 4p) - 380€</option>
+                <option value="220">Paddle (Couple) - 220€</option>
+                <option value="380">Paddle (Famille 4p) - 380€</option>
+            </optgroup>
+            <optgroup label="🐂 Patrimoine">
+                <option value="160">Charrette à bœufs (Couple) - 160€</option>
+                <option value="280">Charrette à bœufs (Famille 4p) - 280€</option>
+            </optgroup>
         </select>
+        
         <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
-        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">
+        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
         <input type="email" id="email" placeholder="Votre email" required class="large-select">
         <input type="tel" id="phone" placeholder="Votre numéro de téléphone" required class="large-select">
         <button type="submit">Envoyer la demande</button>
@@ -55,7 +66,7 @@
         <span>🤖 Conciergerie Sarmèz</span>
         <i class="fa-solid fa-chevron-up" id="chat-icon"></i>
     </div>
-    <div class="chat-body" id="chat-body">
+    <div class="chat-body" id="chat-body">      
         <div id="chat-content">
             </div>
     </div>
@@ -63,9 +74,9 @@
 
 <div id="price-bar" class="price-bar">
     <div class="container">
-        <span>Séjour : <strong id="night-total">0</strong>€</span>
-        <span>+ Pack : <strong id="pack-total">0</strong>€</span>
-        <span>+ Services : <strong id="services-total-display">0</strong>€</span>
+        <span>Séjour : <strong><span id="night-total">0</span>€</strong></span>
+        <span>+ Pack : <strong><span id="pack-total">0</span>€</strong></span>
+        <span>+ Services : <strong><span id="services-total-display">0</span>€</strong></span>
         <div class="total-final">
             Total : <span id="display-total-final">0€</span>
         </div>
