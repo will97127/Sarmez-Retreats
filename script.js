@@ -24,7 +24,7 @@ function renderService(name, price) {
     return `
         <div class="service-row" style="margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">
             <label><input type="checkbox" class="service-item" value="${price}" onchange="updateAll()"> ${name} : ${price}€</label><br>
-            <input type="datetime-local" class="service-date" style="width:100%;">
+            <textarea class="service-details" placeholder="Précisez votre date ou demande..." style="width:100%; height:40px; margin-top:5px;"></textarea>
         </div>`;
 }
 
@@ -43,8 +43,7 @@ function showCategory(cat) {
             ${renderService("Kayak/Paddle Famille", 400)}
             <div class="service-row" style="margin-bottom:10px;">
                 <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
-                <input type="datetime-local" class="service-date" style="width:100%;"><br>
-                <textarea class="service-desc" placeholder="Décrivez votre problème" style="width:100%; height:60px;"></textarea>
+                <textarea class="service-details" placeholder="Décrivez votre problème et créneau souhaité" style="width:100%; height:60px;"></textarea>
             </div>
             <hr>
             <p>Total services : <strong id="services-total">0€</strong></p>
@@ -79,15 +78,13 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow')?.value;
     if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
 
-    // Récupération des services cochés avec leurs dates/descriptions
     let detailsServices = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox?.checked) {
-            const date = row.querySelector('.service-date').value;
-            const desc = row.querySelector('.service-desc')?.value || "";
-            // On récupère le nom du service, la date et la description
-            detailsServices.push(`${checkbox.parentElement.innerText.split(':')[0]} (${date || 'Aucune date'})${desc ? ' : ' + desc : ''}`);
+            const detail = row.querySelector('.service-details')?.value || 'Aucun détail précisé';
+            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
+            detailsServices.push(`${serviceName} [Détails: ${detail}]`);
         }
     });
 
@@ -100,7 +97,6 @@ function sendServicesRequest() {
         bungalow: bungalow,
         dates: `Du ${formatDate(document.getElementById('date-in')?.value)} au ${formatDate(document.getElementById('date-out')?.value)}`,
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
-        // Ajout de la liste des services ici
         liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
@@ -110,20 +106,10 @@ function sendServicesRequest() {
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
-// REMPLACEZ VOTRE BLOC DOMContentLoaded ACTUEL PAR CELUI-CI :
-
 document.addEventListener('DOMContentLoaded', () => {
-    // On utilise l'événement 'input' au lieu de 'change' 
-    // pour une mise à jour en temps réel dès que l'utilisateur sélectionne une date
-    const inputsToWatch = ['date-in', 'date-out', 'pack-select', 'bungalow'];
-    
-    inputsToWatch.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            // 'input' détecte chaque changement immédiat
-            element.addEventListener('input', updateAll);
-        }
+    // Écoute des champs principaux pour mise à jour immédiate
+    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updateAll);
     });
-    
     backToMenu();
 });
