@@ -72,35 +72,44 @@ function backToMenu() {
 }
 
 // --- ENVOI DES DONNÉES ---
+// --- FONCTION D'ENVOI EMAILJS ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
-    if (!emailClient) { alert("Veuillez entrer votre email."); return; }
+    if (!emailClient) { 
+        alert("Veuillez entrer votre email dans le formulaire principal."); 
+        return; 
+    }
 
-    // Collecte des services
+    // 1. Collecte des services cochés
     let servicesDetails = [];
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
-        const date = row.querySelector('.service-date').value || "Date non spécifiée";
+        const date = row.querySelector('.service-date').value || "Date non précisée";
         const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
         servicesDetails.push(`${name} (${date})${desc}`);
     });
 
-    if (servicesDetails.length === 0) { alert("Veuillez sélectionner au moins un service."); return; }
+    if (servicesDetails.length === 0) { 
+        alert("Veuillez sélectionner au moins un service."); 
+        return; 
+    }
 
-    // Préparation des données pour EmailJS
+    // 2. Préparation des paramètres (Correspondant aux {{variables}} de vos templates EmailJS)
     const templateParams = {
         client_email: emailClient,
         services_list: servicesDetails.join(", \n"),
         dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value
     };
 
-    // Envoi
-    emailjs.send("VOTRE_SERVICE_ID", "VOTRE_TEMPLATE_ID", templateParams)
+    // 3. Envoi via EmailJS
+    // Remplacez 'YOUR_SERVICE_ID' et 'YOUR_TEMPLATE_ID' par vos identifiants réels
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
         .then(() => {
             alert("Demande envoyée avec succès !");
+            // Réinitialiser le formulaire si besoin
         }, (err) => {
-            alert("Erreur lors de l'envoi : " + JSON.stringify(err));
+            alert("Erreur d'envoi : " + JSON.stringify(err));
         });
 }
 // --- INITIALISATION ---
