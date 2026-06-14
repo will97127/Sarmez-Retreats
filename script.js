@@ -34,7 +34,8 @@ function sendServicesRequest() {
     // Récupération des éléments
     const packSelect = document.getElementById('pack-select');
     const packName = packSelect.options[packSelect.selectedIndex].getAttribute('data-name') || "Aucun pack";
-    
+    const firstName = document.getElementById('client-firstname').value;
+    const lastName = document.getElementById('client-lastname').value;
     const clientName = document.getElementById('chat-name')?.value || "Client";
     const emailClient = document.getElementById('chat-email')?.value || document.getElementById('email').value;
     const bungalow = document.getElementById('chat-bungalow')?.value || document.getElementById('bungalow').value;
@@ -54,7 +55,7 @@ function sendServicesRequest() {
 
     // Paramètres envoyés à EmailJS
     const templateParams = {
-        client_name: clientName,
+        client_name: `${firstName} ${lastName}`,
         client_email: emailClient,
         bungalow: bungalow,
         pack_choisi: packName, // <--- AJOUTÉ : ceci doit correspondre à {{pack_choisi}} dans votre template
