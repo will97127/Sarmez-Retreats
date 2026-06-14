@@ -72,23 +72,7 @@ function backToMenu() {
 }
 
 // --- ENVOI DES DONNÉES ---
-function sendServicesRequest() {
-    const emailClient = document.getElementById('email').value;
-    // ... (votre logique de collecte des services) ...
-    const message = "Services demandés : ..."; 
 
-    // Création du formulaire
-    const params = new URLSearchParams();
-    params.append('email', emailClient);
-    params.append('message', message);
-
-    fetch("https://script.google.com/macros/s/AKfycbxi2m0Vo7j_sluSlnS9gRSTH5eu5H7BWZqUs_UTJjj3L9Ytppz6Qd28g4p9EaImHISxrA/exec", {
-        method: "POST",
-        body: params // Plus besoin de JSON.stringify ni de headers
-    })
-    .then(() => alert("Demande envoyée avec succès !"))
-    .catch(err => alert("Erreur d'envoi."));
-}
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
     ['date-in', 'date-out', 'pack-select'].forEach(id => {
