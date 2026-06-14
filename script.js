@@ -79,10 +79,11 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow')?.value;
     if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
 
-    // Formatage date : YYYY-MM-DDTHH:MM -> JJ/MM/AAAA à HH:MM
+    // Fonction de formatage date sécurisée
     const formatDateTimeFr = (d) => {
-        if (!d) return "Date non précisée";
+        if (!d) return "Non précisée";
         const [datePart, timePart] = d.split('T');
+        if (!datePart) return "Non précisée";
         const [y, m, d2] = datePart.split('-');
         return `${d2}/${m}/${y} à ${timePart}`;
     };
@@ -91,11 +92,14 @@ function sendServicesRequest() {
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox?.checked) {
+            // Lecture directe de la valeur dans l'input au moment de l'envoi
             const dateValue = row.querySelector('.service-date')?.value;
             const descValue = row.querySelector('.service-desc')?.value || "";
-            const dateFormatted = dateValue ? formatDateTimeFr(dateValue) : "Date non précisée";
+            
+            const dateFormatted = formatDateTimeFr(dateValue);
             const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            detailsServices.push(`${serviceName} (${dateFormatted})${descValue ? ' : ' + descValue : ''}`);
+            
+            detailsServices.push(`${serviceName} (Date : ${dateFormatted})${descValue ? ' - ' + descValue : ''}`);
         }
     });
 
