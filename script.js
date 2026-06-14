@@ -42,6 +42,7 @@ function sendServicesRequest() {
     const firstName = document.getElementById('client-firstname').value;
     const lastName = document.getElementById('client-lastname').value;
     const emailClient = document.getElementById('email').value;
+    const phoneClient = document.getElementById('phone').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
     // Formatage des dates (YYYY-MM-DD vers DD/MM/YYYY)
@@ -61,6 +62,7 @@ function sendServicesRequest() {
     const templateParams = {
         client_name: `${firstName} ${lastName}`,
         client_email: emailClient,
+        client_phone: phoneClient,
         bungalow: bungalow,
         dates: `Du ${formattedDateIn} au ${formattedDateOut}`,
         pack_choisi: packName,
