@@ -1,7 +1,7 @@
 // --- CALCULS EN TEMPS RÉEL ---
 function updateAll() {
-    const dateInVal = document.getElementById('date-in').value;
-    const dateOutVal = document.getElementById('date-out').value;
+    const dateInVal = document.getElementById('date-in')?.value;
+    const dateOutVal = document.getElementById('date-out')?.value;
     let nightPrice = 0;
     if (dateInVal && dateOutVal) {
         const dateIn = new Date(dateInVal);
@@ -10,11 +10,13 @@ function updateAll() {
         const nights = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
         nightPrice = nights * 200;
     }
-    document.getElementById('night-total').innerText = nightPrice;
+    const nTotal = document.getElementById('night-total');
+    if (nTotal) nTotal.innerText = nightPrice;
 
     const packSelect = document.getElementById('pack-select');
-    const packPrice = parseInt(packSelect.value) || 0;
-    document.getElementById('pack-total').innerText = packPrice;
+    const packPrice = packSelect ? parseInt(packSelect.value) || 0 : 0;
+    const pTotal = document.getElementById('pack-total');
+    if (pTotal) pTotal.innerText = packPrice;
 
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach((item) => {
@@ -41,22 +43,24 @@ function showCategory(cat) {
     const container = document.getElementById('chat-content');
     const servicesHTML = `
         <strong>Identification :</strong><br>
-        <input type="text" id="chat-name" placeholder="Votre Nom et Prénom" style="width:100%; margin-bottom:5px;">
-        <strong>Quel est votre bungalow ?</strong><br>
+        <input type="text" id="chat-name" placeholder="Nom et Prénom" style="width:100%; margin-bottom:5px;">
+        <input type="email" id="chat-email" placeholder="Email" style="width:100%; margin-bottom:5px;">
+        <input type="tel" id="chat-phone" placeholder="Téléphone (WhatsApp)" style="width:100%; margin-bottom:5px;">
+        <strong>Bungalow :</strong><br>
         <select id="chat-bungalow" style="width:100%; padding:5px; margin-bottom:10px;">
             <option value="SR Plage">SR Plage</option>
             <option value="SR Rivière">SR Rivière</option>
             <option value="SR Tradition">SR Tradition</option>
         </select>
-        <strong>Sélectionnez vos services :</strong><br>
+        <strong>Services :</strong><br>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
         <div class="service-row">
-            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
+            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Technique</label><br>
             <input type="datetime-local" class="service-date">
-            <textarea class="service-desc" placeholder="Décrivez le problème..." style="width:100%;"></textarea>
+            <textarea class="service-desc" placeholder="Détails..." style="width:100%;"></textarea>
         </div>
         <hr>
         <p>Total : <strong id="services-total">0€</strong></p>
@@ -75,16 +79,14 @@ function backToMenu() {
 
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    const clientName = document.getElementById('chat-name') ? document.getElementById('chat-name').value : "Non précisé";
-    const emailClient = document.getElementById('email').value;
-    const phoneClient = document.getElementById('phone').value;
-    const chatBungalow = document.getElementById('chat-bungalow') ? document.getElementById('chat-bungalow').value : null;
-    const formBungalow = document.getElementById('bungalow').value;
-    const bungalow = chatBungalow || formBungalow;
-    const totalFinal = document.getElementById('display-total-final').innerText;
+    const clientName = document.getElementById('chat-name')?.value || "Non précisé";
+    const emailClient = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
+    const phoneClient = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
+    const bungalow = document.getElementById('chat-bungalow')?.value || document.getElementById('bungalow')?.value;
+    const totalFinal = document.getElementById('display-total-final')?.innerText || "0€";
     
     const packSelect = document.getElementById('pack-select');
-    const packName = packSelect.options[packSelect.selectedIndex].getAttribute('data-name') || "Aucun";
+    const packName = packSelect ? packSelect.options[packSelect.selectedIndex].getAttribute('data-name') : "Aucun";
 
     const formatDate = (dateStr) => {
         if (!dateStr) return "Non précisée";
@@ -92,11 +94,11 @@ function sendServicesRequest() {
         return `${day}/${month}/${year}`;
     };
 
-    const dateIn = formatDate(document.getElementById('date-in').value);
-    const dateOut = formatDate(document.getElementById('date-out').value);
+    const dateIn = formatDate(document.getElementById('date-in')?.value);
+    const dateOut = formatDate(document.getElementById('date-out')?.value);
 
     if (!emailClient || !phoneClient || !bungalow) { 
-        alert("Veuillez remplir votre email, téléphone et choisir un bungalow."); 
+        alert("Veuillez remplir Email, Téléphone et choisir un bungalow."); 
         return; 
     }
 
