@@ -34,13 +34,17 @@ function updateAll() {
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
     const icon = document.getElementById('chat-icon');
-    chatBody.classList.toggle('open');
-    icon.classList.toggle('fa-chevron-up');
-    icon.classList.toggle('fa-chevron-down');
+    if(chatBody) chatBody.classList.toggle('open');
+    if(icon) {
+        icon.classList.toggle('fa-chevron-up');
+        icon.classList.toggle('fa-chevron-down');
+    }
 }
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
+    if(!container) return;
+    
     const servicesHTML = `
         <strong>Identification :</strong><br>
         <input type="text" id="chat-name" placeholder="Nom et Prénom" style="width:100%; margin-bottom:5px;">
@@ -103,14 +107,14 @@ function sendServicesRequest() {
     }
 
     let servicesDetails = [];
-    // Boucle robuste sur chaque ligne de service
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox && checkbox.checked) {
             const name = checkbox.parentElement.innerText.split(':')[0].trim();
             const dateInput = row.querySelector('.service-date');
             
-            let dateVal = "Non précisée";
+            // Correction date : lecture forcée de la valeur
+            let dateVal = "Date non précisée";
             if (dateInput && dateInput.value) {
                 const d = new Date(dateInput.value);
                 if (!isNaN(d.getTime())) {
@@ -135,4 +139,21 @@ function sendServicesRequest() {
         dates: `${dateIn} au ${dateOut}`,
         pack: packName,
         services_list: servicesDetails.length > 0 ? servicesDetails.join("\n") : "Aucun service",
-        total_
+        total_final: totalFinal
+    };
+
+    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
+    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+        .then(() => {
+            alert("Demande envoyée avec succès !");
+            backToMenu();
+            toggleChat();
+        }, (err) => alert("Erreur : " + JSON.stringify(err)));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', updateAll);
+    });
+});
