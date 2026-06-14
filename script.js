@@ -32,42 +32,61 @@ function showCategory(cat) {
     const container = document.getElementById('chat-content');
     if (cat === 'services' && container) {
         container.innerHTML = `
-            <strong>Sélectionnez vos services :</strong><br>
-            ${renderService("Petit déjeuner", 15)}
-            ${renderService("Ménage", 20)}
-            ${renderService("Massage Solo", 110)}
-            ${renderService("Massage Duo", 180)}
-            ${renderService("Charrette Couple", 180)}
-            ${renderService("Charrette Famille", 300)}
-            ${renderService("Kayak/Paddle Couple", 240)}
-            ${renderService("Kayak/Paddle Famille", 400)}
-            <div class="service-row" style="margin-bottom:10px;">
-                <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique (Gratuit)</label><br>
-                <textarea class="service-details" placeholder="Décrivez votre problème et créneau souhaité" style="width:100%; height:60px;"></textarea>
+            <div style="font-size: 0.9em;">
+                <strong>Vos coordonnées :</strong>
+                <input type="text" id="chat-name" placeholder="Nom et Prénom" style="width:100%; margin-bottom:5px;">
+                <input type="email" id="chat-email" placeholder="Email" style="width:100%; margin-bottom:5px;">
+                <input type="tel" id="chat-phone" placeholder="Téléphone" style="width:100%; margin-bottom:10px;">
+                
+                <strong>Votre Bungalow :</strong>
+                <select id="chat-bungalow" style="width:100%; margin-bottom:10px;">
+                    <option value="Non précisé">Choisir un bungalow</option>
+                    <option value="SR Plage">SR Plage</option>
+                    <option value="SR Rivière">SR Rivière</option>
+                    <option value="SR Tradition">SR Tradition</option>
+                </select>
+                
+                <strong>Services souhaités :</strong><br>
+                ${renderService("Petit déjeuner", 15)}
+                ${renderService("Ménage", 20)}
+                ${renderService("Massage Solo", 110)}
+                ${renderService("Massage Duo", 180)}
+                ${renderService("Charrette Couple", 180)}
+                ${renderService("Charrette Famille", 300)}
+                ${renderService("Kayak/Paddle Couple", 240)}
+                ${renderService("Kayak/Paddle Famille", 400)}
+                <div class="service-row" style="margin-bottom:10px;">
+                    <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
+                    <textarea class="service-details" placeholder="Détails du problème" style="width:100%; height:60px;"></textarea>
+                </div>
+                <hr>
+                <p>Total : <strong id="services-total">0€</strong></p>
+                <button type="button" onclick="sendServicesRequest()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; cursor:pointer; margin-bottom:5px;">Envoyer la demande</button>
+                <button type="button" onclick="backToMenu()" style="width:100%;">⬅ Retour</button>
             </div>
-            <hr>
-            <p>Total services : <strong id="services-total">0€</strong></p>
-            <button type="button" onclick="backToMenu()">⬅ Retour</button>
         `;
     }
 }
 
 // --- CALCULS ET ENVOI ---
 function updateAll() {
+    // Calcul séjour
     const dateInVal = document.getElementById('date-in')?.value;
     const dateOutVal = document.getElementById('date-out')?.value;
     let nightPrice = 0;
-    
     if (dateInVal && dateOutVal) {
         const diffTime = Math.abs(new Date(dateOutVal) - new Date(dateInVal));
         nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
     }
     
+    // Calcul services
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
     
+    // Calcul pack
     const packPrice = parseInt(document.getElementById('pack-select')?.value) || 0;
     
+    // Mise à jour interface
     if (document.getElementById('night-total')) document.getElementById('night-total').innerText = nightPrice;
     if (document.getElementById('pack-total')) document.getElementById('pack-total').innerText = packPrice;
     if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
@@ -75,27 +94,39 @@ function updateAll() {
 }
 
 function sendServicesRequest() {
-    const bungalow = document.getElementById('bungalow')?.value;
-    if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
+    // Priorité aux données du Chat, sinon formulaire principal
+    const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
+    const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
+    const phone = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
+    
+    const mainBungalow = document.getElementById('bungalow')?.value;
+    const chatBungalow = document.getElementById('chat-bungalow')?.value;
+    const bungalowFinal = mainBungalow || (chatBungalow !== "Non précisé" ? chatBungalow : null);
+
+    if (!name || !bungalowFinal) { 
+        alert("Veuillez renseigner votre nom et sélectionner un bungalow."); 
+        return; 
+    }
 
     let detailsServices = [];
-    document.querySelectorAll('.service-row').forEach(row => {
-        const checkbox = row.querySelector('.service-item');
-        if (checkbox?.checked) {
-            const detail = row.querySelector('.service-details')?.value || 'Aucun détail précisé';
-            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
-            detailsServices.push(`${serviceName} [Détails: ${detail}]`);
-        }
+    document.querySelectorAll('.service-item:checked').forEach(checkbox => {
+        const parentRow = checkbox.closest('.service-row');
+        const detail = parentRow.querySelector('.service-details')?.value || 'Aucune précision';
+        const serviceName = parentRow.querySelector('label').innerText.split(':')[0].trim();
+        detailsServices.push(`${serviceName} [Détails: ${detail}]`);
     });
 
     const formatDate = (d) => { if(!d) return "Non précisé"; const [y, m, d2] = d.split('-'); return `${d2}/${m}/${y}`; };
-    
+    const dateIn = document.getElementById('date-in')?.value;
+    const dateOut = document.getElementById('date-out')?.value;
+    const datesStr = (dateIn && dateOut) ? `Du ${formatDate(dateIn)} au ${formatDate(dateOut)}` : "Client déjà sur place";
+
     const templateParams = {
-        client_name: `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`,
-        client_email: document.getElementById('email')?.value || '',
-        client_phone: document.getElementById('phone')?.value || '',
-        bungalow: bungalow,
-        dates: `Du ${formatDate(document.getElementById('date-in')?.value)} au ${formatDate(document.getElementById('date-out')?.value)}`,
+        client_name: name,
+        client_email: email || 'Non renseigné',
+        client_phone: phone || 'Non renseigné',
+        bungalow: bungalowFinal,
+        dates: datesStr,
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
         liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
@@ -107,7 +138,6 @@ function sendServicesRequest() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Écoute des champs principaux pour mise à jour immédiate
     ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', updateAll);
     });
