@@ -103,13 +103,24 @@ function sendServicesRequest() {
     }
 
     let servicesDetails = [];
+    // On cible tous les éléments qui ont une classe 'service-item' et qui sont cochés
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
-        const rawDate = row.querySelector('.service-date').value;
-        const formattedDate = rawDate ? new Date(rawDate).toLocaleString('fr-FR') : "Date non précisée";
+        
+        // RECUPERATION FORCEE : on cherche l'input date dans la même ligne
+        const dateInput = row.querySelector('.service-date');
+        let dateValue = "Non précisée";
+        if (dateInput && dateInput.value) {
+            // Conversion du format technique en format lisible
+            dateValue = new Date(dateInput.value).toLocaleString('fr-FR', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+        
         const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
-        servicesDetails.push(`${name} : Le ${formattedDate}${desc}`);
+        servicesDetails.push(`${name} : Le ${dateValue}${desc}`);
     });
 
     const templateParams = {
