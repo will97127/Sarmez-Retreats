@@ -74,32 +74,25 @@ function backToMenu() {
 // --- ENVOI DES DONNÉES ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
-    if (!emailClient) { alert("Veuillez entrer votre email."); return; }
-
-    // On récupère les services cochés
-    let selectedServices = [];
-    document.querySelectorAll('.service-item:checked').forEach(item => {
-        const row = item.closest('.service-row');
-        const serviceName = item.parentElement.innerText.split(':')[0].trim();
-        const date = row.querySelector('.service-date').value || "Pas de date";
-        selectedServices.push(`${serviceName} (${date})`);
-    });
-
-    if (selectedServices.length === 0) { alert("Sélectionnez un service."); return; }
-
-    const payload = {
+    // ... (votre code pour récupérer les services) ...
+    
+    const data = {
         email: emailClient,
-        message: "Services choisis :\n" + selectedServices.join("\n")
+        message: "Services choisis : " // ... le reste de votre logique
     };
+
+    // On utilise FormData car c'est plus stable avec Apps Script
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(data));
 
     fetch("https://script.google.com/macros/s/AKfycbxi2m0Vo7j_sluSlnS9gRSTH5eu5H7BWZqUs_UTJjj3L9Ytppz6Qd28g4p9EaImHISxrA/exec", {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: formData 
+        // Notez qu'on retire "mode: no-cors" et "headers"
     })
-    .then(() => alert("Demande envoyée avec succès !"))
-    .catch(err => alert("Erreur d'envoi."));
+    .then(response => response.json())
+    .then(data => alert("Succès !"))
+    .catch(err => console.error(err));
 }
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
