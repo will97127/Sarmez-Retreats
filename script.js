@@ -74,6 +74,10 @@ function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
     const bungalow = document.getElementById('bungalow').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
+    
+    // Récupération propre du nom du pack
+    const packSelect = document.getElementById('pack-select');
+    const packName = packSelect.options[packSelect.selectedIndex].getAttribute('data-name') || "Aucun";
 
     if (!emailClient || !bungalow) { 
         alert("Veuillez remplir votre email et choisir un bungalow."); 
@@ -93,11 +97,11 @@ function sendServicesRequest() {
         client_email: emailClient,
         bungalow: bungalow,
         dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value,
+        pack: packName, // Variable {{pack}} pour vos templates
         services_list: servicesDetails.length > 0 ? servicesDetails.join(", \n") : "Aucun service",
         total_final: totalFinal
     };
 
-    // Envoi double
     const serviceID = "service_8chuqsf";
     
     // 1. Mail Propriétaire
