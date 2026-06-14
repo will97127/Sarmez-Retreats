@@ -75,9 +75,18 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
-    // Récupération propre du nom du pack
     const packSelect = document.getElementById('pack-select');
     const packName = packSelect.options[packSelect.selectedIndex].getAttribute('data-name') || "Aucun";
+
+    // Fonction pour inverser la date AAAA-MM-JJ en JJ/MM/AAAA
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "Non précisée";
+        const [year, month, day] = dateStr.split('-');
+        return `${day}/${month}/${year}`;
+    };
+
+    const dateIn = formatDate(document.getElementById('date-in').value);
+    const dateOut = formatDate(document.getElementById('date-out').value);
 
     if (!emailClient || !bungalow) { 
         alert("Veuillez remplir votre email et choisir un bungalow."); 
@@ -88,26 +97,25 @@ function sendServicesRequest() {
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
-        const date = row.querySelector('.service-date').value || "Date non précisée";
+        // Formater aussi la date des services
+        const rawDate = row.querySelector('.service-date').value;
+        const formattedDate = rawDate ? new Date(rawDate).toLocaleString('fr-FR') : "Date non précisée";
         const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
-        servicesDetails.push(`${name} (${date})${desc}`);
+        servicesDetails.push(`${name} (${formattedDate})${desc}`);
     });
 
     const templateParams = {
         client_email: emailClient,
         bungalow: bungalow,
-        dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value,
-        pack: packName, // Variable {{pack}} pour vos templates
+        dates: `${dateIn} au ${dateOut}`, // Utilisation des dates formatées
+        pack: packName,
         services_list: servicesDetails.length > 0 ? servicesDetails.join(", \n") : "Aucun service",
         total_final: totalFinal
     };
 
     const serviceID = "service_8chuqsf";
     
-    // 1. Mail Propriétaire
     emailjs.send(serviceID, "template_ip31gnr", templateParams);
-    
-    // 2. Mail Client
     emailjs.send(serviceID, "template_7m5glbl", templateParams)
         .then(() => {
             alert("Demande envoyée avec succès !");
