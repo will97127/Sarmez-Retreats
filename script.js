@@ -72,6 +72,7 @@ function backToMenu() {
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
+    const phoneClient = document.getElementById('phone').value; // Récupération du téléphone
     const bungalow = document.getElementById('bungalow').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
@@ -88,8 +89,8 @@ function sendServicesRequest() {
     const dateIn = formatDate(document.getElementById('date-in').value);
     const dateOut = formatDate(document.getElementById('date-out').value);
 
-    if (!emailClient || !bungalow) { 
-        alert("Veuillez remplir votre email et choisir un bungalow."); 
+    if (!emailClient || !phoneClient || !bungalow) { 
+        alert("Veuillez remplir votre email, votre téléphone et choisir un bungalow."); 
         return; 
     }
 
@@ -97,7 +98,6 @@ function sendServicesRequest() {
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
         const name = item.parentElement.innerText.split(':')[0].trim();
-        // Formater aussi la date des services
         const rawDate = row.querySelector('.service-date').value;
         const formattedDate = rawDate ? new Date(rawDate).toLocaleString('fr-FR') : "Date non précisée";
         const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
@@ -106,8 +106,9 @@ function sendServicesRequest() {
 
     const templateParams = {
         client_email: emailClient,
+        client_phone: phoneClient, // Variable {{client_phone}} pour EmailJS
         bungalow: bungalow,
-        dates: `${dateIn} au ${dateOut}`, // Utilisation des dates formatées
+        dates: `${dateIn} au ${dateOut}`,
         pack: packName,
         services_list: servicesDetails.length > 0 ? servicesDetails.join(", \n") : "Aucun service",
         total_final: totalFinal
