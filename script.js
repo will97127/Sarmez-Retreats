@@ -110,9 +110,20 @@ function sendServicesRequest() {
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
+// REMPLACEZ VOTRE BLOC DOMContentLoaded ACTUEL PAR CELUI-CI :
+
 document.addEventListener('DOMContentLoaded', () => {
-    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
-        document.getElementById(id)?.addEventListener('change', updateAll);
+    // On utilise l'événement 'input' au lieu de 'change' 
+    // pour une mise à jour en temps réel dès que l'utilisateur sélectionne une date
+    const inputsToWatch = ['date-in', 'date-out', 'pack-select', 'bungalow'];
+    
+    inputsToWatch.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            // 'input' détecte chaque changement immédiat
+            element.addEventListener('input', updateAll);
+        }
     });
+    
     backToMenu();
 });
