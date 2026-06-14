@@ -31,21 +31,29 @@ function updateAll() {
 
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    // 1. Validation : Vérifier si le bungalow est bien sélectionné
+    // 1. Validation du bungalow
     const bungalow = document.getElementById('bungalow').value;
     if (!bungalow) {
         alert("Veuillez sélectionner un bungalow dans la liste.");
         return;
     }
 
-    // 2. Récupération des valeurs
+    // 2. Récupération des données
     const firstName = document.getElementById('client-firstname').value;
     const lastName = document.getElementById('client-lastname').value;
     const emailClient = document.getElementById('email').value;
-    const dateIn = document.getElementById('date-in').value;
-    const dateOut = document.getElementById('date-out').value;
     const totalFinal = document.getElementById('display-total-final').innerText;
     
+    // Formatage des dates (YYYY-MM-DD vers DD/MM/YYYY)
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "Non précisé";
+        const [year, month, day] = dateStr.split('-');
+        return `${day}/${month}/${year}`;
+    };
+    const formattedDateIn = formatDate(document.getElementById('date-in').value);
+    const formattedDateOut = formatDate(document.getElementById('date-out').value);
+
+    // Récupération propre du nom du pack
     const packSelect = document.getElementById('pack-select');
     const packName = packSelect.options[packSelect.selectedIndex].text;
 
@@ -54,7 +62,7 @@ function sendServicesRequest() {
         client_name: `${firstName} ${lastName}`,
         client_email: emailClient,
         bungalow: bungalow,
-        dates: `Du ${dateIn} au ${dateOut}`, // Variable pour les dates
+        dates: `Du ${formattedDateIn} au ${formattedDateOut}`,
         pack_choisi: packName,
         total_final: totalFinal,
         message: "Récapitulatif de votre demande de réservation Sarmèz Retreats."
@@ -63,13 +71,13 @@ function sendServicesRequest() {
     // 4. Envoi des emails
     const serviceID = "service_8chuqsf";
     
-    // Mail pour VOUS
+    // Mail pour vous (gestionnaire)
     emailjs.send(serviceID, "template_ip31gnr", templateParams);
 
-    // Mail pour le CLIENT
+    // Mail pour le client
     emailjs.send(serviceID, "template_7m5glbl", templateParams)
         .then(() => {
-            alert("Merci ! Votre demande a été envoyée. Vous recevrez un récapitulatif par email.");
+            alert("Merci ! Votre demande a été envoyée avec succès.");
         }, (err) => {
             alert("Erreur lors de l'envoi : " + JSON.stringify(err));
         });
