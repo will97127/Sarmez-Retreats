@@ -59,14 +59,14 @@ function showCategory(cat) {
             <option value="SR Rivière">SR Rivière</option>
             <option value="SR Tradition">SR Tradition</option>
         </select>
-        <strong>Services :</strong><br>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="15" onchange="updateAll()"> Petit déjeuner : 15€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="20" onchange="updateAll()"> Ménage : 20€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="110" onchange="updateAll()"> Massage Solo : 110€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row"><label><input type="checkbox" class="service-item" value="180" onchange="updateAll()"> Massage Duo : 180€</label><br><input type="datetime-local" class="service-date"></div>
-        <div class="service-row">
-            <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Technique</label><br>
-            <input type="datetime-local" class="service-date">
+        <strong>Services (choisissez une date par service) :</strong><br>
+        ${renderServiceRow("Petit déjeuner", 15)}
+        ${renderServiceRow("Ménage", 20)}
+        ${renderServiceRow("Massage Solo", 110)}
+        ${renderServiceRow("Massage Duo", 180)}
+        <div class="service-row" style="margin-top:10px;">
+            <label><input type="checkbox" class="service-item" value="0"> 🛠 Technique</label><br>
+            <input type="datetime-local" class="service-date" style="width:100%;">
             <textarea class="service-desc" placeholder="Détails..." style="width:100%;"></textarea>
         </div>
         <hr>
@@ -75,6 +75,15 @@ function showCategory(cat) {
         <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>`;
     
     container.innerHTML = (cat === 'services') ? servicesHTML : "Catégorie non trouvée.";
+}
+
+// Fonction utilitaire pour éviter de répéter le HTML
+function renderServiceRow(name, price) {
+    return `
+        <div class="service-row" style="margin-bottom:10px;">
+            <label><input type="checkbox" class="service-item" value="${price}"> ${name} : ${price}€</label><br>
+            <input type="datetime-local" class="service-date" style="width:100%;">
+        </div>`;
 }
 
 function backToMenu() {
