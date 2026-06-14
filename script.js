@@ -103,19 +103,28 @@ function sendServicesRequest() {
     }
 
     let servicesDetails = [];
-    document.querySelectorAll('.service-item:checked').forEach(item => {
-        const row = item.closest('.service-row');
-        const name = item.parentElement.innerText.split(':')[0].trim();
-        
-        // LA MODIFICATION EST ICI : on récupère l'input de date spécifiquement dans la ligne du service
-        const dateInput = row.querySelector('.service-date');
-        const dateValue = dateInput && dateInput.value ? new Date(dateInput.value).toLocaleString('fr-FR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        }) : "Date non précisée";
-        
-        const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
-        servicesDetails.push(`${name} : Le ${dateValue}${desc}`);
+    // Boucle robuste sur chaque ligne de service
+    document.querySelectorAll('.service-row').forEach(row => {
+        const checkbox = row.querySelector('.service-item');
+        if (checkbox && checkbox.checked) {
+            const name = checkbox.parentElement.innerText.split(':')[0].trim();
+            const dateInput = row.querySelector('.service-date');
+            
+            let dateVal = "Non précisée";
+            if (dateInput && dateInput.value) {
+                const d = new Date(dateInput.value);
+                if (!isNaN(d.getTime())) {
+                    dateVal = d.toLocaleDateString('fr-FR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
+            }
+            
+            const descInput = row.querySelector('.service-desc');
+            const desc = descInput && descInput.value ? " - Note: " + descInput.value : "";
+            servicesDetails.push(`${name} : Le ${dateVal}${desc}`);
+        }
     });
 
     const templateParams = {
@@ -126,24 +135,4 @@ function sendServicesRequest() {
         dates: `${dateIn} au ${dateOut}`,
         pack: packName,
         services_list: servicesDetails.length > 0 ? servicesDetails.join("\n") : "Aucun service",
-        total_final: totalFinal
-    };
-
-    const serviceID = "service_8chuqsf";
-    
-    // Envoi des emails
-    emailjs.send(serviceID, "template_ip31gnr", templateParams);
-    emailjs.send(serviceID, "template_7m5glbl", templateParams)
-        .then(() => {
-            alert("Demande envoyée avec succès !");
-            // Optionnel : fermer le chat après envoi
-            toggleChat();
-        }, (err) => alert("Erreur : " + JSON.stringify(err)));
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', updateAll);
-    });
-});
+        total_
