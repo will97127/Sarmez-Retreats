@@ -96,27 +96,33 @@ function backToMenu() {
 
 // --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
-    const clientName = document.getElementById('chat-name')?.value || "Non précisé";
-    const emailClient = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
-    const phoneClient = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
-    const bungalow = document.getElementById('chat-bungalow')?.value || document.getElementById('bungalow')?.value;
-    const totalFinal = document.getElementById('display-total-final')?.innerText || "0€";
-    
-    const packSelect = document.getElementById('pack-select');
-    const packName = packSelect ? packSelect.options[packSelect.selectedIndex].getAttribute('data-name') : "Aucun";
+    // ... (votre code existant de récupération des variables comme clientName, etc.)
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "Non précisée";
-        const [year, month, day] = dateStr.split('-');
-        return `${day}/${month}/${year}`;
-    };
+    // --- REMPLACEZ VOTRE ANCIEN BLOC PAR CELUI-CI ---
+    let servicesDetails = [];
+    document.querySelectorAll('.service-row').forEach(row => {
+        const checkbox = row.querySelector('.service-item');
+        if (checkbox && checkbox.checked) {
+            // Récupère le nom du service
+            const name = checkbox.parentElement.innerText.split(':')[0].trim();
+            // Récupère la date spécifique à cette ligne
+            const dateInput = row.querySelector('.service-date');
+            let dateVal = dateInput?.value ? new Date(dateInput.value).toLocaleString('fr-FR', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            }) : "Date non précisée";
+            
+            // Récupère la note si présente (pour la technique)
+            const descInput = row.querySelector('.service-desc');
+            const desc = descInput && descInput.value ? " - Note: " + descInput.value : "";
+            
+            servicesDetails.push(`${name} : Le ${dateVal}${desc}`);
+        }
+    });
+    // --- FIN DU REMPLACEMENT ---
 
-    const dateIn = formatDate(document.getElementById('date-in')?.value);
-    const dateOut = formatDate(document.getElementById('date-out')?.value);
-
-    if (!emailClient || !phoneClient || !bungalow) { 
-        alert("Veuillez remplir Email, Téléphone et choisir un bungalow."); 
-        return; 
+    // ... (la suite de votre code qui envoie templateParams via emailjs)
+}
     }
 
     let servicesDetails = [];
