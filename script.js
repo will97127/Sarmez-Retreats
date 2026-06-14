@@ -3,6 +3,7 @@ function updateAll() {
     const dateInVal = document.getElementById('date-in')?.value;
     const dateOutVal = document.getElementById('date-out')?.value;
     let nightPrice = 0;
+    
     if (dateInVal && dateOutVal) {
         const dateIn = new Date(dateInVal);
         const dateOut = new Date(dateOutVal);
@@ -10,6 +11,7 @@ function updateAll() {
         const nights = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
         nightPrice = nights * 200;
     }
+    
     const nTotal = document.getElementById('night-total');
     if (nTotal) nTotal.innerText = nightPrice;
 
@@ -20,8 +22,9 @@ function updateAll() {
 
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach((item) => {
-        totalServices += parseFloat(item.value);
+        totalServices += parseFloat(item.value || 0);
     });
+    
     const servicesDisplay = document.getElementById('services-total');
     if (servicesDisplay) servicesDisplay.innerText = totalServices + "€";
 
@@ -34,8 +37,8 @@ function updateAll() {
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
     const icon = document.getElementById('chat-icon');
-    if(chatBody) chatBody.classList.toggle('open');
-    if(icon) {
+    if (chatBody) chatBody.classList.toggle('open');
+    if (icon) {
         icon.classList.toggle('fa-chevron-up');
         icon.classList.toggle('fa-chevron-down');
     }
@@ -43,7 +46,7 @@ function toggleChat() {
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
-    if(!container) return;
+    if (!container) return;
     
     const servicesHTML = `
         <strong>Identification :</strong><br>
@@ -70,6 +73,7 @@ function showCategory(cat) {
         <p>Total : <strong id="services-total">0€</strong></p>
         <button type="button" onclick="backToMenu()">⬅ Retour</button>
         <button type="button" onclick="sendServicesRequest()">Envoyer la demande</button>`;
+    
     container.innerHTML = (cat === 'services') ? servicesHTML : "Catégorie non trouvée.";
 }
 
@@ -113,9 +117,8 @@ function sendServicesRequest() {
             const name = checkbox.parentElement.innerText.split(':')[0].trim();
             const dateInput = row.querySelector('.service-date');
             
-            // Correction date : lecture forcée de la valeur
             let dateVal = "Date non précisée";
-            if (dateInput && dateInput.value) {
+            if (dateInput?.value) {
                 const d = new Date(dateInput.value);
                 if (!isNaN(d.getTime())) {
                     dateVal = d.toLocaleDateString('fr-FR', {
@@ -126,7 +129,7 @@ function sendServicesRequest() {
             }
             
             const descInput = row.querySelector('.service-desc');
-            const desc = descInput && descInput.value ? " - Note: " + descInput.value : "";
+            const desc = descInput?.value ? " - Note: " + descInput.value : "";
             servicesDetails.push(`${name} : Le ${dateVal}${desc}`);
         }
     });
@@ -142,8 +145,10 @@ function sendServicesRequest() {
         total_final: totalFinal
     };
 
-    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
-    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+    const serviceID = "service_8chuqsf";
+    
+    emailjs.send(serviceID, "template_ip31gnr", templateParams);
+    emailjs.send(serviceID, "template_7m5glbl", templateParams)
         .then(() => {
             alert("Demande envoyée avec succès !");
             backToMenu();
