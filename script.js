@@ -23,15 +23,13 @@ function updateAll() {
     document.querySelectorAll('.service-item:checked').forEach((item) => {
         totalServices += parseFloat(item.value);
     });
-    if (document.getElementById('services-total')) {
-        document.getElementById('services-total').innerText = totalServices + "€";
-    }
+    const servicesDisplay = document.getElementById('services-total');
+    if (servicesDisplay) servicesDisplay.innerText = totalServices + "€";
 
     // 4. Grand Total
     const grandTotal = nightPrice + packPrice + totalServices;
-    if (document.getElementById('display-total-final')) {
-        document.getElementById('display-total-final').innerText = grandTotal + "€";
-    }
+    const finalDisplay = document.getElementById('display-total-final');
+    if (finalDisplay) finalDisplay.innerText = grandTotal + "€";
 }
 
 // --- LOGIQUE CHATBOT ---
@@ -71,16 +69,17 @@ function backToMenu() {
         </div>`;
 }
 
-// --- ENVOI DES DONNÉES ---
-// --- FONCTION D'ENVOI EMAILJS ---
+// --- ENVOI DES DONNÉES EMAILJS ---
 function sendServicesRequest() {
     const emailClient = document.getElementById('email').value;
-    if (!emailClient) { 
-        alert("Veuillez entrer votre email dans le formulaire principal."); 
+    const bungalow = document.getElementById('bungalow').value;
+    const totalFinal = document.getElementById('display-total-final').innerText;
+
+    if (!emailClient || !bungalow) { 
+        alert("Veuillez remplir votre email et choisir un bungalow."); 
         return; 
     }
 
-    // 1. Collecte des services cochés
     let servicesDetails = [];
     document.querySelectorAll('.service-item:checked').forEach(item => {
         const row = item.closest('.service-row');
@@ -90,31 +89,32 @@ function sendServicesRequest() {
         servicesDetails.push(`${name} (${date})${desc}`);
     });
 
-    if (servicesDetails.length === 0) { 
-        alert("Veuillez sélectionner au moins un service."); 
-        return; 
-    }
-
-    // 2. Préparation des paramètres (Correspondant aux {{variables}} de vos templates EmailJS)
     const templateParams = {
         client_email: emailClient,
-        services_list: servicesDetails.join(", \n"),
-        dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value
+        bungalow: bungalow,
+        dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value,
+        services_list: servicesDetails.length > 0 ? servicesDetails.join(", \n") : "Aucun service",
+        total_final: totalFinal
     };
 
-    // 3. Envoi via EmailJS
-    // Remplacez 'YOUR_SERVICE_ID' et 'YOUR_TEMPLATE_ID' par vos identifiants réels
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+    // Envoi double
+    const serviceID = "service_8chuqsf";
+    
+    // 1. Mail Propriétaire
+    emailjs.send(serviceID, "template_ip31gnr", templateParams);
+    
+    // 2. Mail Client
+    emailjs.send(serviceID, "template_7m5glbl", templateParams)
         .then(() => {
             alert("Demande envoyée avec succès !");
-            // Réinitialiser le formulaire si besoin
         }, (err) => {
             alert("Erreur d'envoi : " + JSON.stringify(err));
         });
 }
+
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    ['date-in', 'date-out', 'pack-select'].forEach(id => {
+    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', updateAll);
     });
