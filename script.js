@@ -79,37 +79,46 @@ function sendServicesRequest() {
     const bungalow = document.getElementById('bungalow')?.value;
     if (!bungalow) { alert("Veuillez sélectionner un bungalow."); return; }
 
-    // Récupération des services cochés avec leurs dates/descriptions
+    // Formatage date : YYYY-MM-DDTHH:MM -> JJ/MM/AAAA à HH:MM
+    const formatDateTimeFr = (d) => {
+        if (!d) return "Date non précisée";
+        const [datePart, timePart] = d.split('T');
+        const [y, m, d2] = datePart.split('-');
+        return `${d2}/${m}/${y} à ${timePart}`;
+    };
+
     let detailsServices = [];
     document.querySelectorAll('.service-row').forEach(row => {
         const checkbox = row.querySelector('.service-item');
         if (checkbox?.checked) {
-            const date = row.querySelector('.service-date').value;
-            const desc = row.querySelector('.service-desc')?.value || "";
-            // On récupère le nom du service, la date et la description
-            detailsServices.push(`${checkbox.parentElement.innerText.split(':')[0]} (${date || 'Aucune date'})${desc ? ' : ' + desc : ''}`);
+            const dateValue = row.querySelector('.service-date')?.value;
+            const descValue = row.querySelector('.service-desc')?.value || "";
+            const dateFormatted = dateValue ? formatDateTimeFr(dateValue) : "Date non précisée";
+            const serviceName = checkbox.parentElement.innerText.split(':')[0].trim();
+            detailsServices.push(`${serviceName} (${dateFormatted})${descValue ? ' : ' + descValue : ''}`);
         }
     });
 
-    const formatDate = (d) => { if(!d) return "Non précisé"; const [y, m, d2] = d.split('-'); return `${d2}/${m}/${y}`; };
+    const formatDateSimple = (d) => { const [y, m, d2] = d.split('-'); return d ? `${d2}/${m}/${y}` : "Non précisé"; };
     
     const templateParams = {
         client_name: `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`,
         client_email: document.getElementById('email')?.value || '',
         client_phone: document.getElementById('phone')?.value || '',
         bungalow: bungalow,
-        dates: `Du ${formatDate(document.getElementById('date-in')?.value)} au ${formatDate(document.getElementById('date-out')?.value)}`,
+        dates: `Du ${formatDateSimple(document.getElementById('date-in')?.value)} au ${formatDateSimple(document.getElementById('date-out')?.value)}`,
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
-        // Ajout de la liste des services ici
         liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
 
-    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
-    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+    const serviceID = "service_8chuqsf";
+    emailjs.send(serviceID, "template_ip31gnr", templateParams);
+    emailjs.send(serviceID, "template_7m5glbl", templateParams)
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
+// --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
     ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', updateAll);
