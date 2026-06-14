@@ -34,13 +34,17 @@ function updateAll() {
 function toggleChat() {
     const chatBody = document.getElementById('chat-body');
     const icon = document.getElementById('chat-icon');
-    chatBody.classList.toggle('open');
-    icon.classList.toggle('fa-chevron-up');
-    icon.classList.toggle('fa-chevron-down');
+    if(chatBody) chatBody.classList.toggle('open');
+    if(icon) {
+        icon.classList.toggle('fa-chevron-up');
+        icon.classList.toggle('fa-chevron-down');
+    }
 }
 
 function showCategory(cat) {
     const container = document.getElementById('chat-content');
+    if(!container) return;
+    
     const servicesHTML = `
         <strong>Identification :</strong><br>
         <input type="text" id="chat-name" placeholder="Nom et Prénom" style="width:100%; margin-bottom:5px;">
@@ -103,13 +107,28 @@ function sendServicesRequest() {
     }
 
     let servicesDetails = [];
-    document.querySelectorAll('.service-item:checked').forEach(item => {
-        const row = item.closest('.service-row');
-        const name = item.parentElement.innerText.split(':')[0].trim();
-        const rawDate = row.querySelector('.service-date').value;
-        const formattedDate = rawDate ? new Date(rawDate).toLocaleString('fr-FR') : "Date non précisée";
-        const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
-        servicesDetails.push(`${name} : Le ${formattedDate}${desc}`);
+    document.querySelectorAll('.service-row').forEach(row => {
+        const checkbox = row.querySelector('.service-item');
+        if (checkbox && checkbox.checked) {
+            const name = checkbox.parentElement.innerText.split(':')[0].trim();
+            const dateInput = row.querySelector('.service-date');
+            
+            // Correction date : lecture forcée de la valeur
+            let dateVal = "Date non précisée";
+            if (dateInput && dateInput.value) {
+                const d = new Date(dateInput.value);
+                if (!isNaN(d.getTime())) {
+                    dateVal = d.toLocaleDateString('fr-FR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
+            }
+            
+            const descInput = row.querySelector('.service-desc');
+            const desc = descInput && descInput.value ? " - Note: " + descInput.value : "";
+            servicesDetails.push(`${name} : Le ${dateVal}${desc}`);
+        }
     });
 
     const templateParams = {
@@ -123,10 +142,13 @@ function sendServicesRequest() {
         total_final: totalFinal
     };
 
-    const serviceID = "service_8chuqsf";
-    emailjs.send(serviceID, "template_ip31gnr", templateParams);
-    emailjs.send(serviceID, "template_7m5glbl", templateParams)
-        .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
+    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
+    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+        .then(() => {
+            alert("Demande envoyée avec succès !");
+            backToMenu();
+            toggleChat();
+        }, (err) => alert("Erreur : " + JSON.stringify(err)));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
