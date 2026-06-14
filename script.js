@@ -72,7 +72,37 @@ function backToMenu() {
 }
 
 // --- ENVOI DES DONNÉES ---
+function sendServicesRequest() {
+    const emailClient = document.getElementById('email').value;
+    if (!emailClient) { alert("Veuillez entrer votre email."); return; }
 
+    // Collecte des services
+    let servicesDetails = [];
+    document.querySelectorAll('.service-item:checked').forEach(item => {
+        const row = item.closest('.service-row');
+        const name = item.parentElement.innerText.split(':')[0].trim();
+        const date = row.querySelector('.service-date').value || "Date non spécifiée";
+        const desc = row.querySelector('.service-desc') ? " - Note: " + row.querySelector('.service-desc').value : "";
+        servicesDetails.push(`${name} (${date})${desc}`);
+    });
+
+    if (servicesDetails.length === 0) { alert("Veuillez sélectionner au moins un service."); return; }
+
+    // Préparation des données pour EmailJS
+    const templateParams = {
+        client_email: emailClient,
+        services_list: servicesDetails.join(", \n"),
+        dates: document.getElementById('date-in').value + " au " + document.getElementById('date-out').value
+    };
+
+    // Envoi
+    emailjs.send("VOTRE_SERVICE_ID", "VOTRE_TEMPLATE_ID", templateParams)
+        .then(() => {
+            alert("Demande envoyée avec succès !");
+        }, (err) => {
+            alert("Erreur lors de l'envoi : " + JSON.stringify(err));
+        });
+}
 // --- INITIALISATION ---
 document.addEventListener('DOMContentLoaded', () => {
     ['date-in', 'date-out', 'pack-select'].forEach(id => {
