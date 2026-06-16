@@ -50,8 +50,16 @@ function App() {
   const [form, setForm] = useState({ client:"", email:"", phone:"", bungalow:"SR Plage", dateIn:"", dateOut:"", pack:"Aucun", total:"", notes:"", status:"pending" });
 
   useEffect(() => {
-    try { setReservations(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")); } catch {}
-  }, []);
+  // Remplacez la ligne ci-dessous par l'URL que vous avez copiée après le déploiement
+  const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbzIqLqmWLup-Els_ykdm5u2-AVIJGQZFkCiSLiD5d_9C9zwRBKKOxvbaq5VfaG27ul-Wg/exec";
+  
+  fetch(SPREADHEET_URL)
+    .then(res => res.json())
+    .then(data => {
+      setReservations(data);
+    })
+    .catch(err => console.error("Erreur chargement :", err));
+}, []);
 
   function save(list) { setReservations(list); localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
 
