@@ -1,15 +1,255 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendrier Sarmèz Retreats</title>
 </head>
-<body>
+<body style="margin:0">
   <div id="root"></div>
-  <script type="text/babel" src="calendar.jsx"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+const { useState, useEffect } = React;
+
+const BUNGALOWS = ["SR Plage", "SR Rivière", "SR Tradition"];
+const STATUS = {
+  pending:   { label: "Demande",   color: "#f59e0b", bg: "#fef3c7", border: "#f59e0b" },
+  confirmed: { label: "Confirmée", color: "#10b981", bg: "#d1fae5", border: "#10b981" },
+  cancelled: { label: "Annulée",   color: "#ef4444", bg: "#fee2e2", border: "#ef4444" },
+};
+const BUNGALOW_COLORS = {
+  "SR Plage":     { dot: "#0284c7" },
+  "SR Rivière":   { dot: "#8b5cf6" },
+  "SR Tradition": { dot: "#c5a072" },
+};
+const STORAGE_KEY = "sarmez_reservations";
+
+function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function generateICS(res) {
+  const fmt = d => d.replace(/-/g, "");
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:${res.id}@sarmez\nDTSTART;VALUE=DATE:${fmt(res.dateIn)}\nDTEND;VALUE=DATE:${fmt(res.dateOut)}\nSUMMARY:${res.status === "confirmed" ? "✅" : "⏳"} ${res.bungalow} - ${res.client}\nDESCRIPTION:Email: ${res.email}\\nTél: ${res.phone}\\nPack: ${res.pack}\\nTotal: ${res.total}€\nSTATUS:${res.status === "confirmed" ? "CONFIRMED" : "TENTATIVE"}\nEND:VEVENT\nEND:VCALENDAR`;
+}
+
+function downloadICS(res) {
+  const blob = new Blob([generateICS(res)], { type: "text/calendar" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `reservation_${res.id}.ics`;
+  a.click();
+}
+
+function App() {
+  const [reservations, setReservations] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selected, setSelected] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [filterBungalow, setFilterBungalow] = useState("Tous");
+  const [form, setForm] = useState({ client:"", email:"", phone:"", bungalow:"SR Plage", dateIn:"", dateOut:"", pack:"Aucun", total:"", notes:"", status:"pending" });
+
+  useEffect(() => {
+    try { setReservations(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")); } catch {}
+  }, []);
+
+  function save(list) { setReservations(list); localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+  function addReservation() {
+    if (!form.client || !form.dateIn || !form.dateOut) return alert("Champs obligatoires manquants.");
+    if (form.dateIn >= form.dateOut) return alert("Date de sortie doit être après l'entrée.");
+    save([...reservations, { ...form, id: generateId(), createdAt: new Date().toISOString() }]);
+    setShowForm(false);
+    setForm({ client:"", email:"", phone:"", bungalow:"SR Plage", dateIn:"", dateOut:"", pack:"Aucun", total:"", notes:"", status:"pending" });
+  }
+
+  function updateStatus(id, status) {
+    save(reservations.map(r => r.id === id ? { ...r, status } : r));
+    if (selected?.id === id) setSelected({ ...selected, status });
+  }
+
+  function deleteReservation(id) {
+    if (!confirm("Supprimer ?")) return;
+    save(reservations.filter(r => r.id !== id));
+    setSelected(null);
+  }
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const offset = firstDay === 0 ? 6 : firstDay - 1;
+  const filtered = reservations.filter(r => filterBungalow === "Tous" || r.bungalow === filterBungalow);
+  const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  const stats = { pending: reservations.filter(r=>r.status==="pending").length, confirmed: reservations.filter(r=>r.status==="confirmed").length, cancelled: reservations.filter(r=>r.status==="cancelled").length };
+
+  function getDayRes(day) {
+    const d = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    return filtered.filter(r => r.dateIn <= d && r.dateOut > d);
+  }
+
+  return (
+    <div style={{fontFamily:"'Segoe UI',sans-serif",background:"#f8fafc",minHeight:"100vh",color:"#334155"}}>
+      {/* Header */}
+      <div style={{background:"#0f172a",color:"white",padding:"1rem 2rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div>
+          <div style={{fontFamily:"serif",fontSize:"1.4rem",fontWeight:700}}>Sarmèz</div>
+          <div style={{fontFamily:"serif",fontSize:"1.4rem",fontWeight:700,color:"#c5a072",fontStyle:"italic",marginTop:"-6px"}}>Retreats</div>
+        </div>
+        <div style={{fontSize:"1.1rem",fontWeight:600}}>📅 Calendrier Conciergerie</div>
+        <button onClick={()=>setShowForm(true)} style={{background:"#0284c7",color:"white",border:"none",padding:"0.6rem 1.2rem",borderRadius:8,cursor:"pointer",fontWeight:600}}>+ Réservation</button>
+      </div>
+
+      {/* Stats + Filtres */}
+      <div style={{display:"flex",gap:"1rem",padding:"1rem 2rem",flexWrap:"wrap",alignItems:"center"}}>
+        {Object.entries(STATUS).map(([key,s]) => (
+          <div key={key} style={{background:s.bg,border:`1px solid ${s.border}`,borderRadius:10,padding:"0.6rem 1.2rem",display:"flex",alignItems:"center",gap:8}}>
+            <div style={{width:10,height:10,borderRadius:"50%",background:s.color}}/>
+            <strong style={{color:s.color}}>{stats[key]}</strong>
+            <span style={{fontSize:"0.8rem",color:"#64748b"}}>{s.label}</span>
+          </div>
+        ))}
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          {["Tous",...BUNGALOWS].map(b=>(
+            <button key={b} onClick={()=>setFilterBungalow(b)} style={{padding:"0.4rem 0.8rem",borderRadius:20,border:`2px solid ${filterBungalow===b?"#0284c7":"#e2e8f0"}`,background:filterBungalow===b?"#0284c7":"white",color:filterBungalow===b?"white":"#64748b",cursor:"pointer",fontSize:"0.75rem",fontWeight:600}}>{b}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:selected?"1fr 340px":"1fr",gap:"1rem",padding:"0 2rem 2rem"}}>
+        {/* Calendrier */}
+        <div style={{background:"white",borderRadius:16,boxShadow:"0 4px 20px rgba(0,0,0,0.05)",overflow:"hidden",border:"1px solid #e2e8f0"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"1rem 1.5rem",borderBottom:"1px solid #e2e8f0"}}>
+            <button onClick={()=>setCurrentDate(new Date(year,month-1))} style={{background:"none",border:"1px solid #e2e8f0",borderRadius:8,padding:"0.4rem 0.8rem",cursor:"pointer",fontSize:"1rem"}}>‹</button>
+            <strong style={{fontSize:"1.2rem",color:"#0f172a"}}>{monthNames[month]} {year}</strong>
+            <button onClick={()=>setCurrentDate(new Date(year,month+1))} style={{background:"none",border:"1px solid #e2e8f0",borderRadius:8,padding:"0.4rem 0.8rem",cursor:"pointer",fontSize:"1rem"}}>›</button>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",background:"#f8fafc"}}>
+            {["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"].map(d=>(
+              <div key={d} style={{textAlign:"center",padding:"0.6rem",fontSize:"0.7rem",fontWeight:700,color:"#94a3b8",textTransform:"uppercase"}}>{d}</div>
+            ))}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:1,background:"#e2e8f0"}}>
+            {Array.from({length:offset}).map((_,i)=><div key={`e${i}`} style={{background:"#f8fafc",minHeight:85}}/>)}
+            {Array.from({length:daysInMonth}).map((_,i)=>{
+              const day=i+1, dayRes=getDayRes(day), today=new Date();
+              const isToday=today.getDate()===day&&today.getMonth()===month&&today.getFullYear()===year;
+              return (
+                <div key={day} style={{background:"white",minHeight:85,padding:6}}>
+                  <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:24,height:24,borderRadius:"50%",background:isToday?"#0284c7":"transparent",color:isToday?"white":"#334155",fontWeight:isToday?700:400,fontSize:"0.82rem"}}>{day}</span>
+                  <div style={{marginTop:3,display:"flex",flexDirection:"column",gap:2}}>
+                    {dayRes.slice(0,2).map(r=>(
+                      <div key={r.id} onClick={()=>setSelected(r)} style={{background:STATUS[r.status].bg,borderLeft:`3px solid ${STATUS[r.status].color}`,borderRadius:3,padding:"1px 4px",fontSize:"0.65rem",cursor:"pointer",display:"flex",alignItems:"center",gap:3,overflow:"hidden"}}>
+                        <div style={{width:6,height:6,borderRadius:"50%",background:BUNGALOW_COLORS[r.bungalow]?.dot,flexShrink:0}}/>
+                        <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontWeight:500}}>{r.client}</span>
+                      </div>
+                    ))}
+                    {dayRes.length>2&&<div style={{fontSize:"0.6rem",color:"#94a3b8"}}>+{dayRes.length-2}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {/* Légende */}
+          <div style={{padding:"0.8rem 1.5rem",borderTop:"1px solid #e2e8f0",display:"flex",gap:"1.2rem",flexWrap:"wrap"}}>
+            {Object.entries(STATUS).map(([k,s])=>(
+              <div key={k} style={{display:"flex",alignItems:"center",gap:5,fontSize:"0.75rem"}}>
+                <div style={{width:12,height:7,borderRadius:2,background:s.bg,border:`2px solid ${s.color}`}}/>{s.label}
+              </div>
+            ))}
+            {BUNGALOWS.map(b=>(
+              <div key={b} style={{display:"flex",alignItems:"center",gap:4,fontSize:"0.75rem"}}>
+                <div style={{width:7,height:7,borderRadius:"50%",background:BUNGALOW_COLORS[b].dot}}/>{b}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Panneau détail */}
+        {selected&&(
+          <div style={{background:"white",borderRadius:16,border:"1px solid #e2e8f0",padding:"1.5rem",alignSelf:"start"}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:"1rem"}}>
+              <h3 style={{margin:0,color:"#0f172a"}}>Détails</h3>
+              <button onClick={()=>setSelected(null)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"1.2rem",color:"#94a3b8"}}>✕</button>
+            </div>
+            <div style={{background:STATUS[selected.status].bg,borderRadius:8,padding:"0.5rem 1rem",marginBottom:"1rem",display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:10,height:10,borderRadius:"50%",background:STATUS[selected.status].color}}/>
+              <strong style={{color:STATUS[selected.status].color}}>{STATUS[selected.status].label}</strong>
+            </div>
+            {[["👤",selected.client],["📧",selected.email],["📞",selected.phone],["🏠",selected.bungalow],["📅 Arrivée",selected.dateIn],["📅 Départ",selected.dateOut],["🎁",selected.pack],["💰",selected.total?`${selected.total}€`:"—"],["📝",selected.notes||"—"]].map(([l,v])=>(
+              <div key={l} style={{display:"flex",justifyContent:"space-between",padding:"0.35rem 0",borderBottom:"1px solid #f1f5f9",fontSize:"0.82rem"}}>
+                <span style={{color:"#64748b"}}>{l}</span><span style={{fontWeight:500,maxWidth:"60%",textAlign:"right"}}>{v}</span>
+              </div>
+            ))}
+            <div style={{marginTop:"1.2rem",display:"flex",flexDirection:"column",gap:7}}>
+              <div style={{fontSize:"0.75rem",color:"#94a3b8",fontWeight:600,textTransform:"uppercase"}}>Changer statut</div>
+              <div style={{display:"flex",gap:5}}>
+                {Object.entries(STATUS).map(([k,s])=>(
+                  <button key={k} onClick={()=>updateStatus(selected.id,k)} style={{flex:1,padding:"0.45rem",border:`2px solid ${selected.status===k?s.color:"#e2e8f0"}`,borderRadius:8,background:selected.status===k?s.bg:"white",color:s.color,cursor:"pointer",fontSize:"0.7rem",fontWeight:600}}>{s.label}</button>
+                ))}
+              </div>
+              <button onClick={()=>downloadICS(selected)} style={{width:"100%",padding:"0.6rem",background:"#0f172a",color:"white",border:"none",borderRadius:8,cursor:"pointer",fontWeight:600,fontSize:"0.82rem"}}>📲 Exporter vers Samsung Calendar (.ics)</button>
+              <button onClick={()=>deleteReservation(selected.id)} style={{width:"100%",padding:"0.45rem",background:"white",color:"#ef4444",border:"1px solid #fca5a5",borderRadius:8,cursor:"pointer",fontSize:"0.82rem"}}>🗑 Supprimer</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Liste prochaines */}
+      <div style={{padding:"0 2rem 3rem"}}>
+        <div style={{background:"white",borderRadius:16,border:"1px solid #e2e8f0",padding:"1.5rem"}}>
+          <h3 style={{margin:"0 0 1rem",color:"#0f172a"}}>📋 Toutes les réservations</h3>
+          {filtered.length===0
+            ? <div style={{color:"#94a3b8",textAlign:"center",padding:"2rem"}}>Aucune réservation. Cliquez sur "+ Réservation".</div>
+            : <div style={{display:"flex",flexDirection:"column",gap:7}}>
+                {[...filtered].sort((a,b)=>a.dateIn.localeCompare(b.dateIn)).map(r=>(
+                  <div key={r.id} onClick={()=>setSelected(r)} style={{display:"flex",alignItems:"center",gap:"1rem",padding:"0.7rem 1rem",borderRadius:10,border:`1px solid ${STATUS[r.status].border}`,background:STATUS[r.status].bg,cursor:"pointer",flexWrap:"wrap"}}>
+                    <div style={{width:9,height:9,borderRadius:"50%",background:BUNGALOW_COLORS[r.bungalow]?.dot,flexShrink:0}}/>
+                    <strong style={{minWidth:120}}>{r.client}</strong>
+                    <span style={{color:"#64748b",fontSize:"0.82rem"}}>{r.bungalow}</span>
+                    <span style={{color:"#64748b",fontSize:"0.82rem"}}>📅 {r.dateIn} → {r.dateOut}</span>
+                    <div style={{marginLeft:"auto",display:"flex",gap:5}}>
+                      <span style={{background:STATUS[r.status].color,color:"white",padding:"2px 9px",borderRadius:20,fontSize:"0.72rem",fontWeight:600}}>{STATUS[r.status].label}</span>
+                      <button onClick={e=>{e.stopPropagation();downloadICS(r);}} style={{background:"#0f172a",color:"white",border:"none",borderRadius:5,padding:"2px 7px",cursor:"pointer",fontSize:"0.72rem"}}>📲</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+          }
+        </div>
+      </div>
+
+      {/* Modal ajout */}
+      {showForm&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
+          <div style={{background:"white",borderRadius:16,padding:"2rem",width:"100%",maxWidth:460,maxHeight:"90vh",overflowY:"auto"}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:"1.2rem"}}>
+              <h3 style={{margin:0,color:"#0f172a"}}>Nouvelle réservation</h3>
+              <button onClick={()=>setShowForm(false)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"1.2rem"}}>✕</button>
+            </div>
+            {[["client","text","👤 Nom client *"],["email","email","📧 Email"],["phone","tel","📞 Téléphone"],["dateIn","date","📅 Arrivée *"],["dateOut","date","📅 Départ *"],["total","number","💰 Total (€)"],["notes","text","📝 Notes"]].map(([key,type,label])=>(
+              <div key={key} style={{marginBottom:"0.7rem"}}>
+                <label style={{display:"block",fontSize:"0.78rem",color:"#64748b",marginBottom:3}}>{label}</label>
+                <input type={type} value={form[key]} onChange={e=>setForm({...form,[key]:e.target.value})} style={{width:"100%",padding:"0.65rem",border:"1px solid #e2e8f0",borderRadius:8,fontSize:"0.9rem",boxSizing:"border-box"}}/>
+              </div>
+            ))}
+            {[["bungalow","🏠 Bungalow *",BUNGALOWS],["pack","🎁 Pack",["Aucun","Pack Romantique","Massage Solo","Massage Duo","Kayak Couple","Kayak Famille","Paddle Couple","Paddle Famille","Charrette Couple","Charrette Famille"]],["status","🔵 Statut",Object.entries(STATUS).map(([k,s])=>[k,s.label])]].map(([key,label,opts])=>(
+              <div key={key} style={{marginBottom:"0.7rem"}}>
+                <label style={{display:"block",fontSize:"0.78rem",color:"#64748b",marginBottom:3}}>{label}</label>
+                <select value={form[key]} onChange={e=>setForm({...form,[key]:e.target.value})} style={{width:"100%",padding:"0.65rem",border:"1px solid #e2e8f0",borderRadius:8,fontSize:"0.9rem"}}>
+                  {opts.map(o=>Array.isArray(o)?<option key={o[0]} value={o[0]}>{o[1]}</option>:<option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            ))}
+            <button onClick={addReservation} style={{width:"100%",padding:"0.85rem",background:"#0284c7",color:"white",border:"none",borderRadius:10,cursor:"pointer",fontWeight:700,fontSize:"0.95rem",marginTop:"0.5rem"}}>✅ Ajouter</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
   </script>
 </body>
 </html>
