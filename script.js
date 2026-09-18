@@ -93,9 +93,6 @@ function updateAll() {
     if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
 }
 
-
-
-
 async function sendServicesRequest() {
     const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
     const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
@@ -134,7 +131,7 @@ async function sendServicesRequest() {
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
 
-    // 🔥 NOUVEAU : Enregistrer dans Firestore
+    // 🔥 Enregistrer dans Firestore
     let docId = null;
     try {
         const docRef = await window.firebaseAddDoc(
@@ -151,9 +148,12 @@ async function sendServicesRequest() {
         console.error("Erreur Firestore:", error);
     }
 
-    // Envoi des emails (comme avant), avec l'ID de la demande en plus
+    // Ajout de l'ID + messages pour le template client
     templateParams.demande_id = docId || "N/A";
-    
+    templateParams.statut_sujet = "Confirmation de votre demande - Sarmèz Retreats";
+    templateParams.statut_message = "Nous avons bien reçu votre demande de réservation ! Voici un récapitulatif :";
+
+    // Envoi des emails
     emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
     emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
