@@ -164,8 +164,8 @@
                             </div>
 
                             <div class="btns">
-                                <button class="btn-accept" onclick="window.updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}', '${d.bungalow}', '${d.dates}', '${d.pack_choisi}', '${d.liste_services}', '${d.total_final}')">✅ Accepter</button>
-                                <button class="btn-refuse" onclick="window.updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}', '${d.bungalow}', '${d.dates}', '${d.pack_choisi}', '${d.liste_services}', '${d.total_final}')">❌ Refuser</button>
+                                <button class="btn-accept" onclick="window.handleDecision(event, '${id}', 'accepte', ${JSON.stringify(d)})">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="window.handleDecision(event, '${id}', 'refuse', ${JSON.stringify(d)})">❌ Refuser</button>
                             </div>
                         </div>
                     `;
@@ -175,43 +175,48 @@
         });
     }
 
-    // Mettre à jour le statut et envoyer email complet
-    window.updateStatut = async function(id, nouveauStatut, clientName, clientEmail, bungalow, dates, packChoisi, services, totalFinal) {
+    // Gestionnaire de décision
+    window.handleDecision = async function(event, id, statut, donnees) {
+        event.preventDefault();
+        
         try {
+            // Mise à jour Firestore
             await updateDoc(doc(db, "demandes", id), {
-                statut: nouveauStatut
+                statut: statut
             });
 
-            // 📧 Email au PRESTATAIRE avec réservation complète
+            // Préparation des paramètres
             const templateParams = {
                 to_email: "willpapo79@hotmail.com",
-                client_name: clientName,
-                client_email: clientEmail,
+                client_name: donnees.client_name,
+                client_email: donnees.client_email,
                 demande_id: id,
-                statut_emoji: nouveauStatut === 'accepte' ? '✅' : '❌',
-                statut_texte: nouveauStatut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
-                statut_sujet: nouveauStatut === 'accepte' 
-                    ? `✅ Vous avez ACCEPTÉ une demande de ${clientName}` 
-                    : `❌ Vous avez REFUSÉ une demande de ${clientName}`,
-                hebergement: bungalow,
-                dates_sejour: dates,
-                pack: packChoisi,
-                services: services.replace(/ \| /g, '\n'),
-                total: totalFinal
+                statut_emoji: statut === 'accepte' ? '✅' : '❌',
+                statut_texte: statut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
+                statut_sujet: statut === 'accepte' 
+                    ? `✅ ACCEPTÉE - ${donnees.client_name}` 
+                    : `❌ REFUSÉE - ${donnees.client_name}`,
+                hebergement: donnees.bungalow || "Non spécifié",
+                dates_sejour: donnees.dates || "Non spécifié",
+                pack: donnees.pack_choisi || "Non spécifié",
+                services: donnees.liste_services || "Aucun service",
+                total: donnees.total_final || "0€"
             };
+
+            console.log("Paramètres envoyés:", templateParams);
 
             emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
                 .then(() => {
-                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée - Confirmation envoyée !" : "❌ Demande refusée - Notification envoyée !");
+                    alert(statut === 'accepte' ? "✅ Demande acceptée!" : "❌ Demande refusée!");
                     loadDemandes();
                 }, (err) => {
                     console.error("Erreur EmailJS:", err);
-                    alert("Erreur envoi email : " + JSON.stringify(err));
+                    alert("Erreur: " + err.text);
                 });
 
         } catch (error) {
-            console.error("Erreur Firestore:", error);
-            alert("❌ Erreur : " + error.message);
+            console.error("Erreur:", error);
+            alert("❌ Erreur: " + error.message);
         }
     };
 
