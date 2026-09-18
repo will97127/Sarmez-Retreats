@@ -125,6 +125,30 @@
 <script type="text/javascript">
   (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })();
 </script>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-pNaOwoA7cgKe3DM6Di0L_EBD3v_h2O4",
+    authDomain: "sarmez-retreats.firebaseapp.com",
+    projectId: "sarmez-retreats",
+    storageBucket: "sarmez-retreats.firebasestorage.app",
+    messagingSenderId: "586728433767",
+    appId: "1:586728433767:web:567f3000153393b13c8cc2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Rendre disponible pour script.js
+  window.firebaseDb = db;
+  window.firebaseAddDoc = addDoc;
+  window.firebaseCollection = collection;
+  window.firebaseTimestamp = serverTimestamp;
+</script>
 <script src="script.js"></script>
 
 </body>
