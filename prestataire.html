@@ -9,14 +9,15 @@
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
         h1 { text-align: center; color: #333; margin-bottom: 30px; }
         .demande { background: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .demande p { margin: 8px 0; line-height: 1.6; }
+        .demande p { margin: 8px 0; line-height: 1.6; color: #555; }
         .demande strong { color: #333; }
+        .details { background: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; margin: 10px 0; border-radius: 4px; }
         .badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 0.85em; color: white; font-weight: bold; margin-top: 10px; }
         .badge.en_attente { background: #f0ad4e; }
         .badge.accepte { background: #28a745; }
         .badge.refuse { background: #dc3545; }
-        .btns { margin-top: 15px; }
-        .btns button { padding: 10px 18px; margin-right: 10px; margin-bottom: 5px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; }
+        .btns { margin-top: 15px; display: flex; gap: 10px; }
+        .btns button { padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; flex: 1; }
         .btn-accept { background: #28a745; }
         .btn-accept:hover { background: #218838; }
         .btn-refuse { background: #dc3545; }
@@ -29,201 +30,171 @@
         #login-box button:hover { background: #555; }
         #login-error { color: red; margin-top: 10px; font-weight: bold; }
         .logout-btn { position: absolute; top: 20px; right: 20px; padding: 10px 18px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        .logout-btn:hover { background: #c82333; }
-        #content { display: none; }
-        .demande-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .demande-id { font-size: 0.9em; color: #666; }
-        .detail-section { margin: 12px 0; padding: 10px; background: #f9f9f9; border-left: 3px solid #333; }
+        #demandes-container { max-width: 900px; margin: 0 auto; }
     </style>
 </head>
 <body>
+    <div id="login-box">
+        <h2>🔐 Espace Prestataire</h2>
+        <input type="password" id="password" placeholder="Mot de passe" onkeypress="if(event.key==='Enter') login()">
+        <button onclick="login()">Se connecter</button>
+        <div id="login-error"></div>
+    </div>
 
-<div id="login-box">
-    <h2>🔐 Espace Prestataire</h2>
-    <p style="color: #666; margin-bottom: 20px;">Connectez-vous pour gérer les demandes</p>
-    <input type="password" id="password" placeholder="Mot de passe" onkeypress="if(event.key==='Enter') checkPassword()">
-    <button onclick="checkPassword()">Connexion</button>
-    <p id="login-error"></p>
-</div>
+    <div id="demandes-container" style="display:none;">
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        <h1>📋 Demandes de réservation en attente</h1>
+        <div id="demandes-list"></div>
+    </div>
 
-<div id="content">
-    <button class="logout-btn" onclick="logout()">Déconnexion</button>
-    <h1>📋 Demandes clients en attente</h1>
-    <div id="demandes-list">Chargement...</div>
-</div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script type="text/javascript">
-  (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })();
-</script>
+    <script>
+        // ===== INITIALISATION FIREBASE =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEd5RoWJDVx2TKlf8zzvFVfW8BaLpZ6os",
+            authDomain: "sarmez-retreats.firebaseapp.com",
+            projectId: "sarmez-retreats",
+            storageBucket: "sarmez-retreats.appspot.com",
+            messagingSenderId: "1047881848330",
+            appId: "1:1047881848330:web:d98ea00bce21a5a44c4f60"
+        };
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyB-pNaOwoA7cgKe3DM6Di0L_EBD3v_h2O4",
-        authDomain: "sarmez-retreats.firebaseapp.com",
-        projectId: "sarmez-retreats",
-        storageBucket: "sarmez-retreats.firebasestorage.app",
-        messagingSenderId: "586728433767",
-        appId: "1:586728433767:web:567f3000153393b13c8cc2"
-    };
+        // ===== INITIALISATION EMAILJS =====
+        emailjs.init("Iq_lhGPbEGJNqFHRH");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Variables globales
-    let currentUser = null;
-
-    // Vérifier le mot de passe
-    window.checkPassword = function() {
-        const passwordInput = document.getElementById('password').value;
-        const errorMsg = document.getElementById('login-error');
-        
-        if (passwordInput === '0705') {
-            currentUser = true;
-            localStorage.setItem('prestataire_session', 'true');
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-            loadDemandes();
-        } else {
-            errorMsg.innerText = '❌ Mot de passe incorrect';
-            document.getElementById('password').value = '';
-        }
-    };
-
-    // Déconnexion
-    window.logout = function() {
-        currentUser = null;
-        localStorage.removeItem('prestataire_session');
-        document.getElementById('login-box').style.display = 'block';
-        document.getElementById('content').style.display = 'none';
-        document.getElementById('password').value = '';
-        document.getElementById('login-error').innerText = '';
-    };
-
-    // Vérifier la session au chargement
-    if (localStorage.getItem('prestataire_session') === 'true') {
-        currentUser = true;
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-        loadDemandes();
-    }
-
-    // Charger et afficher les demandes
-    function loadDemandes() {
-        const q = query(collection(db, "demandes"), where("statut", "==", "en_attente"));
-        
-        onSnapshot(q, (snapshot) => {
-            const list = document.getElementById('demandes-list');
-            let html = '';
-
-            if (snapshot.empty) {
-                html = '<p style="text-align: center; color: #999; padding: 30px;">✅ Aucune demande en attente</p>';
+        // ===== LOGIN =====
+        function login() {
+            const password = document.getElementById("password").value;
+            if (password === "0705") {
+                document.getElementById("login-box").style.display = "none";
+                document.getElementById("demandes-container").style.display = "block";
+                localStorage.setItem("logged", "true");
+                loadDemandes();
             } else {
-                snapshot.forEach(docSnap => {
-                    const id = docSnap.id;
-                    const d = docSnap.data();
+                document.getElementById("login-error").textContent = "❌ Mot de passe incorrect";
+            }
+        }
 
-                    html += `
+        function logout() {
+            localStorage.removeItem("logged");
+            location.reload();
+        }
+
+        // ===== CHARGER LES DEMANDES =====
+        async function loadDemandes() {
+            const demandesList = document.getElementById("demandes-list");
+            demandesList.innerHTML = "<p>⏳ Chargement...</p>";
+
+            try {
+                const querySnapshot = await db.collection("demandes").where("statut", "==", "en_attente").get();
+
+                if (querySnapshot.empty) {
+                    demandesList.innerHTML = "<p style='text-align:center;'>✅ Aucune demande en attente</p>";
+                    return;
+                }
+
+                demandesList.innerHTML = "";
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const id = doc.id;
+
+                    // Construction HTML
+                    const html = `
                         <div class="demande">
-                            <div class="demande-header">
-                                <div>
-                                    <h3 style="color: #333; margin-bottom: 5px;">👤 ${d.client_name}</h3>
-                                    <div class="demande-id">ID: ${id}</div>
-                                </div>
-                                <span class="badge badge-en_attente">⏳ En attente</span>
-                            </div>
-                            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
-                            
-                            <div class="detail-section">
-                                <p><strong>📧 Email :</strong> ${d.client_email}</p>
-                                <p><strong>📞 Téléphone :</strong> ${d.client_phone}</p>
-                            </div>
+                            <p><strong>👤 Client:</strong> ${data.client_name || "N/A"}</p>
+                            <p><strong>📧 Email:</strong> ${data.client_email || "N/A"}</p>
 
-                            <div class="detail-section">
-                                <p><strong>🏡 Hébergement :</strong> ${d.bungalow}</p>
-                            </div>
-
-                            <div class="detail-section">
-                                <p><strong>📅 Dates de séjour :</strong> ${d.dates}</p>
-                            </div>
-
-                            <div class="detail-section">
-                                <p><strong>🌿 Pack sélectionné :</strong> ${d.pack_choisi}</p>
-                            </div>
-
-                            <div class="detail-section">
-                                <p><strong>🛎️ Services complémentaires :</strong></p>
-                                <p style="margin-left: 15px; color: #555;">${d.liste_services.replace(/ \| /g, '<br>')}</p>
-                            </div>
-
-                            <div class="detail-section" style="border-left-color: #f0ad4e;">
-                                <p><strong>💰 Total estimé :</strong> <span style="font-size: 1.2em; color: #f0ad4e;">${d.total_final}</span></p>
+                            <div class="details">
+                                <p><strong>🏡 Hébergement:</strong> ${data.bungalow || "Non spécifié"}</p>
+                                <p><strong>📅 Dates:</strong> ${data.dates || "Non spécifié"}</p>
+                                <p><strong>🌿 Pack:</strong> ${data.pack_choisi || "Non spécifié"}</p>
+                                <p><strong>🛎️ Services:</strong> ${data.liste_services || "Aucun"}</p>
+                                <p><strong>💰 Total:</strong> ${data.total_final || "0€"}</p>
                             </div>
 
                             <div class="btns">
-                                <button class="btn-accept" onclick="window.handleDecision(event, '${id}', 'accepte', ${JSON.stringify(d)})">✅ Accepter</button>
-                                <button class="btn-refuse" onclick="window.handleDecision(event, '${id}', 'refuse', ${JSON.stringify(d)})">❌ Refuser</button>
+                                <button class="btn-accept" onclick="handleDecision('${id}', 'accepte', '${data.client_name}', '${data.client_email}')">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="handleDecision('${id}', 'refuse', '${data.client_name}', '${data.client_email}')">❌ Refuser</button>
                             </div>
                         </div>
                     `;
+                    demandesList.innerHTML += html;
                 });
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                demandesList.innerHTML = "<p style='color:red;'>❌ Erreur lors du chargement</p>";
             }
-            list.innerHTML = html;
-        });
-    }
+        }
 
-    // Gestionnaire de décision
-    window.handleDecision = async function(event, id, statut, donnees) {
-        event.preventDefault();
-        
-        try {
-            // Mise à jour Firestore
-            await updateDoc(doc(db, "demandes", id), {
-                statut: statut
-            });
+        // ===== ACCEPTER/REFUSER =====
+        async function handleDecision(id, statut, clientName, clientEmail) {
+            try {
+                // Récupérer les données complètes
+                const doc = await getDoc(doc(db, "demandes", id));
+                if (!doc.exists()) {
+                    alert("❌ Document non trouvé");
+                    return;
+                }
 
-            // Préparation des paramètres
-            const templateParams = {
-                to_email: "willpapo79@hotmail.com",
-                client_name: donnees.client_name,
-                client_email: donnees.client_email,
-                demande_id: id,
-                statut_emoji: statut === 'accepte' ? '✅' : '❌',
-                statut_texte: statut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
-                statut_sujet: statut === 'accepte' 
-                    ? `✅ ACCEPTÉE - ${donnees.client_name}` 
-                    : `❌ REFUSÉE - ${donnees.client_name}`,
-                hebergement: donnees.bungalow || "Non spécifié",
-                dates_sejour: donnees.dates || "Non spécifié",
-                pack: donnees.pack_choisi || "Non spécifié",
-                services: donnees.liste_services || "Aucun service",
-                total: donnees.total_final || "0€"
-            };
+                const donnees = doc.data();
 
-            console.log("Paramètres envoyés:", templateParams);
-
-            emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
-                .then(() => {
-                    alert(statut === 'accepte' ? "✅ Demande acceptée!" : "❌ Demande refusée!");
-                    loadDemandes();
-                }, (err) => {
-                    console.error("Erreur EmailJS:", err);
-                    alert("Erreur: " + err.text);
+                // Mettre à jour le statut dans Firestore
+                await updateDoc(doc(db, "demandes", id), {
+                    statut: statut
                 });
 
-        } catch (error) {
-            console.error("Erreur:", error);
-            alert("❌ Erreur: " + error.message);
+                // Messages personnalisés
+                const messageClient = statut === 'accepte' 
+                    ? "✅ Votre demande a été acceptée ! Nous vous contacterons bientôt pour confirmer les détails."
+                    : "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci. N'hésitez pas à nous contacter pour explorer d'autres options.";
+
+                // Paramètres pour EmailJS
+                const templateParams = {
+                    to_email: clientEmail,
+                    client_name: clientName,
+                    demande_id: id,
+                    hebergement: donnees.bungalow || "Non spécifié",
+                    dates_sejour: donnees.dates || "Non spécifié",
+                    pack: donnees.pack_choisi || "Non spécifié",
+                    services: donnees.liste_services || "Aucun service",
+                    total: donnees.total_final || "0€",
+                    statut_emoji: statut === 'accepte' ? '✅' : '❌',
+                    statut_text: statut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
+                    message_client: messageClient
+                };
+
+                console.log("📤 Envoi email avec:", templateParams);
+
+                // Envoyer email au client
+                await emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams);
+
+                alert(statut === 'accepte' ? "✅ Demande acceptée !" : "❌ Demande refusée !");
+                loadDemandes();
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                alert("❌ Erreur: " + error.message);
+            }
         }
-    };
 
-    // Rendre loadDemandes accessible globalement
-    window.loadDemandes = loadDemandes;
+        // ===== VÉRIFIER LA SESSION =====
+        if (localStorage.getItem("logged") === "true") {
+            document.getElementById("login-box").style.display = "none";
+            document.getElementById("demandes-container").style.display = "block";
+            loadDemandes();
+        }
 
-</script>
+        // Import getDoc et updateDoc
+        const { getDoc, updateDoc } = firebase.firestore;
+
+    </script>
 
 </body>
 </html>
