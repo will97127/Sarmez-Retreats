@@ -144,8 +144,8 @@
                             <p><strong>🛎️ Services :</strong> ${d.liste_services}</p>
                             <p><strong>💰 Total :</strong> ${d.total_final}</p>
                             <div class="btns">
-                                <button class="btn-accept" onclick="updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}')">✅ Accepter</button>
-                                <button class="btn-refuse" onclick="updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}')">❌ Refuser</button>
+                                <button class="btn-accept" onclick="window.updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}')">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="window.updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}')">❌ Refuser</button>
                             </div>
                         </div>
                     `;
@@ -155,36 +155,45 @@
         });
     }
 
-    // Mettre à jour le statut et envoyer email
+    // Mettre à jour le statut et envoyer email au PRESTATAIRE
     window.updateStatut = async function(id, nouveauStatut, clientName, clientEmail) {
         try {
             await updateDoc(doc(db, "demandes", id), {
                 statut: nouveauStatut
             });
 
-            // Envoyer email au client
+            // 📧 Email au PRESTATAIRE (vous) à willpapo79@hotmail.com
             const templateParams = {
+                to_email: "willpapo79@hotmail.com",
                 client_name: clientName,
                 client_email: clientEmail,
+                demande_id: id,
                 statut_sujet: nouveauStatut === 'accepte' 
-                    ? "✅ Réservation confirmée - Sarmèz Retreats" 
-                    : "📋 Mise à jour de votre demande - Sarmèz Retreats",
+                    ? "✅ Vous avez ACCEPTÉ une demande" 
+                    : "❌ Vous avez REFUSÉ une demande",
                 statut_message: nouveauStatut === 'accepte'
-                    ? "🎉 Bonne nouvelle ! Votre demande a été confirmée par notre équipe. Nous vous remercions de votre confiance !"
-                    : "ℹ️ Nous sommes désolés, votre demande n'a pas pu être confirmée cette fois-ci. N'hésitez pas à nous contacter pour trouver une alternative."
+                    ? `Demande de ${clientName} (${clientEmail}) - ACCEPTÉE`
+                    : `Demande de ${clientName} (${clientEmail}) - REFUSÉE`
             };
 
             emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
                 .then(() => {
-                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée et client notifié !" : "❌ Demande refusée et client notifié !");
+                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée - Email de confirmation envoyé !" : "❌ Demande refusée - Email envoyé !");
+                    loadDemandes();
                 }, (err) => {
+                    console.error("Erreur EmailJS:", err);
                     alert("Erreur envoi email : " + JSON.stringify(err));
                 });
 
         } catch (error) {
+            console.error("Erreur Firestore:", error);
             alert("❌ Erreur : " + error.message);
         }
     };
+
+    // Rendre loadDemandes accessible globalement
+    window.loadDemandes = loadDemandes;
+
 </script>
 
 </body>
