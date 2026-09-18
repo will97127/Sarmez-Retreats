@@ -54,19 +54,19 @@
     <script>
         // ===== INITIALISATION FIREBASE =====
         const firebaseConfig = {
-            apiKey: "AIzaSyBEd5RoWJDVx2TKlf8zzvFVfW8BaLpZ6os",
+            apiKey: "AIzaSyB-pNaOwoA7cgKe3DM6Di0L_EBD3v_h2O4",
             authDomain: "sarmez-retreats.firebaseapp.com",
             projectId: "sarmez-retreats",
-            storageBucket: "sarmez-retreats.appspot.com",
-            messagingSenderId: "1047881848330",
-            appId: "1:1047881848330:web:d98ea00bce21a5a44c4f60"
+            storageBucket: "sarmez-retreats.firebasestorage.app",
+            messagingSenderId: "586728433767",
+            appId: "1:586728433767:web:567f3000153393b13c8cc2"
         };
 
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // ===== INITIALISATION EMAILJS =====
-        emailjs.init("Iq_lhGPbEGJNqFHRH");
+        emailjs.init("7RJbubWGmgBgT2N5Y");
 
         // ===== LOGIN =====
         function login() {
@@ -104,11 +104,11 @@
                     const data = doc.data();
                     const id = doc.id;
 
-                    // Construction HTML
                     const html = `
                         <div class="demande">
                             <p><strong>👤 Client:</strong> ${data.client_name || "N/A"}</p>
                             <p><strong>📧 Email:</strong> ${data.client_email || "N/A"}</p>
+                            <p><strong>📱 Téléphone:</strong> ${data.client_phone || "N/A"}</p>
 
                             <div class="details">
                                 <p><strong>🏡 Hébergement:</strong> ${data.bungalow || "Non spécifié"}</p>
@@ -119,8 +119,8 @@
                             </div>
 
                             <div class="btns">
-                                <button class="btn-accept" onclick="handleDecision('${id}', 'accepte', '${data.client_name}', '${data.client_email}')">✅ Accepter</button>
-                                <button class="btn-refuse" onclick="handleDecision('${id}', 'refuse', '${data.client_name}', '${data.client_email}')">❌ Refuser</button>
+                                <button class="btn-accept" onclick="handleDecision('${id}', 'accepte', '${(data.client_name || '').replace(/'/g, "\\'")}', '${data.client_email || ''}')">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="handleDecision('${id}', 'refuse', '${(data.client_name || '').replace(/'/g, "\\'")}', '${data.client_email || ''}')">❌ Refuser</button>
                             </div>
                         </div>
                     `;
@@ -136,35 +136,34 @@
         // ===== ACCEPTER/REFUSER =====
         async function handleDecision(id, statut, clientName, clientEmail) {
             try {
-                // Récupérer les données complètes
-                const doc = await getDoc(doc(db, "demandes", id));
-                if (!doc.exists()) {
+                const docRef = db.collection("demandes").doc(id);
+                const docSnap = await docRef.get();
+
+                if (!docSnap.exists) {
                     alert("❌ Document non trouvé");
                     return;
                 }
 
-                const donnees = doc.data();
+                const donnees = docSnap.data();
 
                 // Mettre à jour le statut dans Firestore
-                await updateDoc(doc(db, "demandes", id), {
-                    statut: statut
-                });
+                await docRef.update({ statut: statut });
 
                 // Messages personnalisés
                 const messageClient = statut === 'accepte' 
                     ? "✅ Votre demande a été acceptée ! Nous vous contacterons bientôt pour confirmer les détails."
                     : "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci. N'hésitez pas à nous contacter pour explorer d'autres options.";
 
-                // Paramètres pour EmailJS
+                // Paramètres pour EmailJS (mêmes noms que script.js)
                 const templateParams = {
                     to_email: clientEmail,
                     client_name: clientName,
                     demande_id: id,
-                    hebergement: donnees.bungalow || "Non spécifié",
-                    dates_sejour: donnees.dates || "Non spécifié",
-                    pack: donnees.pack_choisi || "Non spécifié",
-                    services: donnees.liste_services || "Aucun service",
-                    total: donnees.total_final || "0€",
+                    bungalow: donnees.bungalow || "Non spécifié",
+                    dates: donnees.dates || "Non spécifié",
+                    pack_choisi: donnees.pack_choisi || "Non spécifié",
+                    liste_services: donnees.liste_services || "Aucun service",
+                    total_final: donnees.total_final || "0€",
                     statut_emoji: statut === 'accepte' ? '✅' : '❌',
                     statut_text: statut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
                     message_client: messageClient
@@ -172,10 +171,9 @@
 
                 console.log("📤 Envoi email avec:", templateParams);
 
-                // Envoyer email au client
                 await emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams);
 
-                alert(statut === 'accepte' ? "✅ Demande acceptée !" : "❌ Demande refusée !");
+                alert(statut === 'accepte' ? "✅ Demande acceptée et client notifié !" : "❌ Demande refusée et client notifié !");
                 loadDemandes();
 
             } catch (error) {
@@ -190,10 +188,6 @@
             document.getElementById("demandes-container").style.display = "block";
             loadDemandes();
         }
-
-        // Import getDoc et updateDoc
-        const { getDoc, updateDoc } = firebase.firestore;
-
     </script>
 
 </body>
