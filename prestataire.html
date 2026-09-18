@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Prestataire | Sarmèz Retreats</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .demande { background: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .demande p { margin: 8px 0; line-height: 1.6; }
+        .demande strong { color: #333; }
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 0.85em; color: white; font-weight: bold; margin-top: 10px; }
+        .badge.en_attente { background: #f0ad4e; }
+        .badge.accepte { background: #28a745; }
+        .badge.refuse { background: #dc3545; }
+        .btns { margin-top: 15px; }
+        .btns button { padding: 10px 18px; margin-right: 10px; margin-bottom: 5px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; }
+        .btn-accept { background: #28a745; }
+        .btn-accept:hover { background: #218838; }
+        .btn-refuse { background: #dc3545; }
+        .btn-refuse:hover { background: #c82333; }
+        .btns button:disabled { background: #ccc; cursor: not-allowed; }
+        #login-box { max-width: 350px; margin: 120px auto; text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.15); }
+        #login-box h2 { color: #333; margin-bottom: 20px; }
+        #login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em; }
+        #login-box button { width: 100%; padding: 12px; background: #333; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        #login-box button:hover { background: #555; }
+        #login-error { color: red; margin-top: 10px; font-weight: bold; }
+        .logout-btn { position: absolute; top: 20px; right: 20px; padding: 10px 18px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .logout-btn:hover { background: #c82333; }
+        #content { display: none; }
+        .demande-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .demande-id { font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
 
+<div id="login-box">
+    <h2>🔐 Espace Prestataire</h2>
+    <p style="color: #666; margin-bottom: 20px;">Connectez-vous pour gérer les demandes</p>
+    <input type="password" id="password" placeholder="Mot de passe" onkeypress="if(event.key==='Enter') checkPassword()">
+    <button onclick="checkPassword()">Connexion</button>
+    <p id="login-error"></p>
+</div>
+
+<div id="content">
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    <h1>📋 Demandes clients en attente</h1>
+    <div id="demandes-list">Chargement...</div>
+</div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })();
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB-pNaOwoA7cgKe3DM6Di0L_EBD3v_h2O4",
+        authDomain: "sarmez-retreats.firebaseapp.com",
+        projectId: "sarmez-retreats",
+        storageBucket: "sarmez-retreats.firebasestorage.app",
+        messagingSenderId: "586728433767",
+        appId: "1:586728433767:web:567f3000153393b13c8cc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Variables globales
+    let currentUser = null;
+
+    // Vérifier le mot de passe
+    window.checkPassword = function() {
+        const passwordInput = document.getElementById('password').value;
+        const errorMsg = document.getElementById('login-error');
+        
+        if (passwordInput === '0705') {
+            currentUser = true;
+            localStorage.setItem('prestataire_session', 'true');
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            loadDemandes();
+        } else {
+            errorMsg.innerText = '❌ Mot de passe incorrect';
+            document.getElementById('password').value = '';
+        }
+    };
+
+    // Déconnexion
+    window.logout = function() {
+        currentUser = null;
+        localStorage.removeItem('prestataire_session');
+        document.getElementById('login-box').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('password').value = '';
+        document.getElementById('login-error').innerText = '';
+    };
+
+    // Vérifier la session au chargement
+    if (localStorage.getItem('prestataire_session') === 'true') {
+        currentUser = true;
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        loadDemandes();
+    }
+
+    // Charger et afficher les demandes
+    function loadDemandes() {
+        const q = query(collection(db, "demandes"), where("statut", "==", "en_attente"));
+        
+        onSnapshot(q, (snapshot) => {
+            const list = document.getElementById('demandes-list');
+            let html = '';
+
+            if (snapshot.empty) {
+                html = '<p style="text-align: center; color: #999; padding: 30px;">✅ Aucune demande en attente</p>';
+            } else {
+                snapshot.forEach(docSnap => {
+                    const id = docSnap.id;
+                    const d = docSnap.data();
+                    const statut = d.statut || 'en_attente';
+
+                    html += `
+                        <div class="demande">
+                            <div class="demande-header">
+                                <div>
+                                    <h3 style="color: #333; margin-bottom: 5px;">👤 ${d.client_name}</h3>
+                                    <div class="demande-id">ID: ${id}</div>
+                                </div>
+                                <span class="badge badge-${statut}">⏳ En attente</span>
+                            </div>
+                            <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                            <p><strong>📧 Email :</strong> ${d.client_email}</p>
+                            <p><strong>📞 Téléphone :</strong> ${d.client_phone}</p>
+                            <p><strong>🏡 Bungalow :</strong> ${d.bungalow}</p>
+                            <p><strong>📅 Dates :</strong> ${d.dates}</p>
+                            <p><strong>📦 Pack :</strong> ${d.pack_choisi}</p>
+                            <p><strong>🛎️ Services :</strong> ${d.liste_services}</p>
+                            <p><strong>💰 Total :</strong> ${d.total_final}</p>
+                            <div class="btns">
+                                <button class="btn-accept" onclick="updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}')">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}')">❌ Refuser</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            list.innerHTML = html;
+        });
+    }
+
+    // Mettre à jour le statut et envoyer email
+    window.updateStatut = async function(id, nouveauStatut, clientName, clientEmail) {
+        try {
+            await updateDoc(doc(db, "demandes", id), {
+                statut: nouveauStatut
+            });
+
+            // Envoyer email au client
+            const templateParams = {
+                client_name: clientName,
+                client_email: clientEmail,
+                statut_sujet: nouveauStatut === 'accepte' 
+                    ? "✅ Réservation confirmée - Sarmèz Retreats" 
+                    : "📋 Mise à jour de votre demande - Sarmèz Retreats",
+                statut_message: nouveauStatut === 'accepte'
+                    ? "🎉 Bonne nouvelle ! Votre demande a été confirmée par notre équipe. Nous vous remercions de votre confiance !"
+                    : "ℹ️ Nous sommes désolés, votre demande n'a pas pu être confirmée cette fois-ci. N'hésitez pas à nous contacter pour trouver une alternative."
+            };
+
+            emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+                .then(() => {
+                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée et client notifié !" : "❌ Demande refusée et client notifié !");
+                }, (err) => {
+                    alert("Erreur envoi email : " + JSON.stringify(err));
+                });
+
+        } catch (error) {
+            alert("❌ Erreur : " + error.message);
+        }
+    };
+</script>
+
+</body>
+</html>
