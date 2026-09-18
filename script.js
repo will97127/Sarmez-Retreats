@@ -93,8 +93,10 @@ function updateAll() {
     if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
 }
 
-function sendServicesRequest() {
-    // Priorité aux données du Chat, sinon formulaire principal
+
+
+
+async function sendServicesRequest() {
     const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
     const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
     const phone = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
@@ -132,6 +134,26 @@ function sendServicesRequest() {
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
     };
 
+    // 🔥 NOUVEAU : Enregistrer dans Firestore
+    let docId = null;
+    try {
+        const docRef = await window.firebaseAddDoc(
+            window.firebaseCollection(window.firebaseDb, "demandes"),
+            {
+                ...templateParams,
+                statut: "en_attente",
+                date_creation: window.firebaseTimestamp()
+            }
+        );
+        docId = docRef.id;
+        console.log("Demande enregistrée avec ID:", docId);
+    } catch (error) {
+        console.error("Erreur Firestore:", error);
+    }
+
+    // Envoi des emails (comme avant), avec l'ID de la demande en plus
+    templateParams.demande_id = docId || "N/A";
+    
     emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
     emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
         .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
