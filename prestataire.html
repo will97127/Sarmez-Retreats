@@ -33,6 +33,7 @@
         #content { display: none; }
         .demande-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .demande-id { font-size: 0.9em; color: #666; }
+        .detail-section { margin: 12px 0; padding: 10px; background: #f9f9f9; border-left: 3px solid #333; }
     </style>
 </head>
 <body>
@@ -124,7 +125,6 @@
                 snapshot.forEach(docSnap => {
                     const id = docSnap.id;
                     const d = docSnap.data();
-                    const statut = d.statut || 'en_attente';
 
                     html += `
                         <div class="demande">
@@ -133,19 +133,39 @@
                                     <h3 style="color: #333; margin-bottom: 5px;">👤 ${d.client_name}</h3>
                                     <div class="demande-id">ID: ${id}</div>
                                 </div>
-                                <span class="badge badge-${statut}">⏳ En attente</span>
+                                <span class="badge badge-en_attente">⏳ En attente</span>
                             </div>
                             <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
-                            <p><strong>📧 Email :</strong> ${d.client_email}</p>
-                            <p><strong>📞 Téléphone :</strong> ${d.client_phone}</p>
-                            <p><strong>🏡 Bungalow :</strong> ${d.bungalow}</p>
-                            <p><strong>📅 Dates :</strong> ${d.dates}</p>
-                            <p><strong>📦 Pack :</strong> ${d.pack_choisi}</p>
-                            <p><strong>🛎️ Services :</strong> ${d.liste_services}</p>
-                            <p><strong>💰 Total :</strong> ${d.total_final}</p>
+                            
+                            <div class="detail-section">
+                                <p><strong>📧 Email :</strong> ${d.client_email}</p>
+                                <p><strong>📞 Téléphone :</strong> ${d.client_phone}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <p><strong>🏡 Hébergement :</strong> ${d.bungalow}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <p><strong>📅 Dates de séjour :</strong> ${d.dates}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <p><strong>🌿 Pack sélectionné :</strong> ${d.pack_choisi}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <p><strong>🛎️ Services complémentaires :</strong></p>
+                                <p style="margin-left: 15px; color: #555;">${d.liste_services.replace(/ \| /g, '<br>')}</p>
+                            </div>
+
+                            <div class="detail-section" style="border-left-color: #f0ad4e;">
+                                <p><strong>💰 Total estimé :</strong> <span style="font-size: 1.2em; color: #f0ad4e;">${d.total_final}</span></p>
+                            </div>
+
                             <div class="btns">
-                                <button class="btn-accept" onclick="window.updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}')">✅ Accepter</button>
-                                <button class="btn-refuse" onclick="window.updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}')">❌ Refuser</button>
+                                <button class="btn-accept" onclick="window.updateStatut('${id}', 'accepte', '${d.client_name}', '${d.client_email}', '${d.bungalow}', '${d.dates}', '${d.pack_choisi}', '${d.liste_services}', '${d.total_final}')">✅ Accepter</button>
+                                <button class="btn-refuse" onclick="window.updateStatut('${id}', 'refuse', '${d.client_name}', '${d.client_email}', '${d.bungalow}', '${d.dates}', '${d.pack_choisi}', '${d.liste_services}', '${d.total_final}')">❌ Refuser</button>
                             </div>
                         </div>
                     `;
@@ -155,30 +175,34 @@
         });
     }
 
-    // Mettre à jour le statut et envoyer email au PRESTATAIRE
-    window.updateStatut = async function(id, nouveauStatut, clientName, clientEmail) {
+    // Mettre à jour le statut et envoyer email complet
+    window.updateStatut = async function(id, nouveauStatut, clientName, clientEmail, bungalow, dates, packChoisi, services, totalFinal) {
         try {
             await updateDoc(doc(db, "demandes", id), {
                 statut: nouveauStatut
             });
 
-            // 📧 Email au PRESTATAIRE (vous) à willpapo79@hotmail.com
+            // 📧 Email au PRESTATAIRE avec réservation complète
             const templateParams = {
                 to_email: "willpapo79@hotmail.com",
                 client_name: clientName,
                 client_email: clientEmail,
                 demande_id: id,
+                statut_emoji: nouveauStatut === 'accepte' ? '✅' : '❌',
+                statut_texte: nouveauStatut === 'accepte' ? 'ACCEPTÉE' : 'REFUSÉE',
                 statut_sujet: nouveauStatut === 'accepte' 
-                    ? "✅ Vous avez ACCEPTÉ une demande" 
-                    : "❌ Vous avez REFUSÉ une demande",
-                statut_message: nouveauStatut === 'accepte'
-                    ? `Demande de ${clientName} (${clientEmail}) - ACCEPTÉE`
-                    : `Demande de ${clientName} (${clientEmail}) - REFUSÉE`
+                    ? `✅ Vous avez ACCEPTÉ une demande de ${clientName}` 
+                    : `❌ Vous avez REFUSÉ une demande de ${clientName}`,
+                hebergement: bungalow,
+                dates_sejour: dates,
+                pack: packChoisi,
+                services: services.replace(/ \| /g, '\n'),
+                total: totalFinal
             };
 
             emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
                 .then(() => {
-                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée - Email de confirmation envoyé !" : "❌ Demande refusée - Email envoyé !");
+                    alert(nouveauStatut === 'accepte' ? "✅ Demande acceptée - Confirmation envoyée !" : "❌ Demande refusée - Notification envoyée !");
                     loadDemandes();
                 }, (err) => {
                     console.error("Erreur EmailJS:", err);
