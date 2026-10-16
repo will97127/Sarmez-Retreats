@@ -62,4 +62,124 @@ function showCategory(cat) {
                 <hr>
                 <p>Total : <strong id="services-total">0€</strong></p>
                 <button type="button" onclick="sendServicesRequest()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; cursor:pointer; margin-bottom:5px;">Envoyer la demande</button>
-                <button t
+                <button type="button" onclick="backToMenu()" style="width:100%;">⬅ Retour</button>
+            </div>
+        `;
+    }
+}
+
+// --- CALCULS ET ENVOI ---
+function updateAll() {
+    const dateInVal = document.getElementById('date-in')?.value;
+    const dateOutVal = document.getElementById('date-out')?.value;
+    let nightPrice = 0;
+    if (dateInVal && dateOutVal) {
+        const diffTime = Math.abs(new Date(dateOutVal) - new Date(dateInVal));
+        nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
+    }
+
+    let totalServices = 0;
+    document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
+
+    const packPrice = parseInt(document.getElementById('pack-select')?.value) || 0;
+
+    if (document.getElementById('night-total')) document.getElementById('night-total').innerText = nightPrice;
+    if (document.getElementById('pack-total')) document.getElementById('pack-total').innerText = packPrice;
+    if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
+    if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
+}
+
+async function sendServicesRequest() {
+    const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
+    const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
+    const phone = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
+
+    const mainBungalow = document.getElementById('bungalow')?.value;
+    const chatBungalow = document.getElementById('chat-bungalow')?.value;
+    const bungalowFinal = mainBungalow || (chatBungalow && chatBungalow !== "Non précisé" ? chatBungalow : null);
+
+    if (!name.trim() || !bungalowFinal) {
+        alert("Veuillez renseigner votre nom et sélectionner un bungalow.");
+        return;
+    }
+
+    const dateIn = document.getElementById('date-in')?.value;
+    const dateOut = document.getElementById('date-out')?.value;
+
+    // Contrôle des dates
+    if (dateIn && dateOut) {
+        if (dateOut <= dateIn) {
+            alert("La date de départ doit être après la date d'arrivée.");
+            return;
+        }
+        if (window.SarmezCalendar && SarmezCalendar.overlaps(window.sarmezEvents || [], bungalowFinal, dateIn, dateOut)) {
+            alert("Ce bungalow n'est pas disponible sur tout ou partie de ces dates.");
+            return;
+        }
+    }
+
+    let detailsServices = [];
+    document.querySelectorAll('.service-item:checked').forEach(checkbox => {
+        const parentRow = checkbox.closest('.service-row');
+        const detail = parentRow.querySelector('.service-details')?.value || 'Aucune précision';
+        const serviceName = parentRow.querySelector('label').innerText.split(':')[0].trim();
+        detailsServices.push(`${serviceName} [Détails: ${detail}]`);
+    });
+
+    const formatDate = (d) => { if (!d) return "Non précisé"; const [y, m, d2] = d.split('-'); return `${d2}/${m}/${y}`; };
+    const datesStr = (dateIn && dateOut) ? `Du ${formatDate(dateIn)} au ${formatDate(dateOut)}` : "Client déjà sur place";
+
+    const templateParams = {
+        client_name: name.trim(),
+        client_email: email || 'Non renseigné',
+        client_phone: phone || 'Non renseigné',
+        bungalow: bungalowFinal,
+        dates: datesStr,
+        pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
+        liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
+        total_final: document.getElementById('display-total-final')?.innerText || '0€'
+    };
+
+    // 🔥 Enregistrer dans Firestore
+    let docId = null;
+    try {
+        const docRef = await window.firebaseAddDoc(
+            window.firebaseCollection(window.firebaseDb, "demandes"),
+            {
+                ...templateParams,
+                date_in: dateIn || null,      // format AAAA-MM-JJ (utilisé par le calendrier)
+                date_out: dateOut || null,
+                statut: "en_attente",
+                date_creation: window.firebaseTimestamp()
+            }
+        );
+        docId = docRef.id;
+
+        // Bloque les dates sur le calendrier public (aucune donnée personnelle)
+        if (dateIn && dateOut) {
+            await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDb, "bloquages", docId), {
+                bungalow: bungalowFinal,
+                date_in: dateIn,
+                date_out: dateOut,
+                statut: "en_attente"
+            });
+        }
+    } catch (error) {
+        console.error("Erreur Firestore:", error);
+    }
+
+    templateParams.demande_id = docId || "N/A";
+    templateParams.statut_sujet = "Confirmation de votre demande - Sarmèz Retreats";
+    templateParams.statut_message = "Nous avons bien reçu votre demande de réservation ! Voici un récapitulatif :";
+
+    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
+    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+        .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    ['date-in', 'date-out', 'pack-select', 'bungalow'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updateAll);
+    });
+    backToMenu();
+});
