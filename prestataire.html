@@ -61,7 +61,7 @@
         <h2>🔒 Bloquer des dates (réservation directe, travaux…)</h2>
         <div class="block-form">
             <select id="b-bungalow">
-                <option>SR Plage</option><option>SR Rivière</option><option>SR Tradition</option>
+                 <option>SR Plage</option><option>SR Rivière</option><option>SR Tradition</option><option>SR Mangrove</option>
             </select>
             <input type="text" id="b-label" placeholder="Libellé (ex : Réservation directe)">
             <input type="date" id="b-in">
@@ -80,7 +80,7 @@
     <script src="calendar.js"></script>
 
     <script>
-        const BUNGALOWS = ["SR Plage", "SR Rivière", "SR Tradition"];
+        const BUNGALOWS = ["SR Plage", "SR Rivière", "SR Tradition", "SR Mangrove"];
         firebase.initializeApp({
             apiKey: "AIzaSyB-pNaOwoA7cgKe3DM6Di0L_EBD3v_h2O4",
             authDomain: "sarmez-retreats.firebaseapp.com",
