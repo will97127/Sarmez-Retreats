@@ -154,6 +154,12 @@
                 .filter(d => d.date_in && d.date_out && (d.statut === "accepte" || d.statut === "en_attente"))
                 .map(d => ({ id: d.id, bungalow: d.bungalow, date_in: d.date_in, date_out: d.date_out,
                              statut: d.statut, label: d.client_name || "?" })));
+            // Pastille rouge : nombre de demandes en attente par bungalow
+            const badges = {};
+            allDemandes.filter(d => d.statut === "en_attente").forEach(d => {
+                badges[d.bungalow] = (badges[d.bungalow] || 0) + 1;
+            });
+            cal.setBadges(badges);
             document.getElementById("day-info").innerHTML = "";
         }
 
@@ -172,8 +178,8 @@
                     ${acc ? "" : `<button style="background:#28a745" data-accept="${esc(e.id)}">Accepter</button>`}
                 </div>`;
             }).join("");
-            box.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => decide(b.dataset.cancel, "refuse"));
-            box.querySelectorAll("[data-accept]").forEach(b => b.onclick = () => decide(b.dataset.accept, "accepte"));
+            box.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => decide(b.dataset.cancel, "refuse", true));
+            box.querySelectorAll("[data-accept]").forEach(b => b.onclick = () => decide(b.dataset.accept, "accepte", true));
         }
 
         // ===== LISTE DES DEMANDES EN ATTENTE =====
