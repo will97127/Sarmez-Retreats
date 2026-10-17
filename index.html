@@ -20,8 +20,8 @@
         <a href="#home">Accueil</a>
         <a href="#bungalows">Bungalows</a>
         <a href="#infos">Infos pratiques</a>
-        <a href="#autour">Autour de vous</a>
         <a href="#planning">Tarif & Réservation</a>
+        <a href="#autour">Autour de vous</a>
         <a href="#faq">FAQ</a>
     </nav>
 </header>
@@ -87,9 +87,9 @@
     <div class="info-grid">
         <div class="info-box">
             <h3>📍 Adresse</h3>
-            <p>Route de Démeré, Les Mangles<br>97131 Petit-Canal, Guadeloupe</p>
+            <p>Rocade Ouest, section Les Mangles<br>97131 Petit-Canal, Guadeloupe</p>
             <p>Environ 35 minutes de l'aéroport de Pointe-à-Pitre, selon la circulation.</p>
-            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Route+de+D%C3%A9mer%C3%A9+Les+Mangles+Petit-Canal+Guadeloupe" target="_blank" rel="noopener">Voir sur la carte →</a>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Rocade+Ouest+Les+Mangles+97131+Petit-Canal+Guadeloupe" target="_blank" rel="noopener">Voir sur la carte →</a>
         </div>
         <div class="info-box">
             <h3>🕓 Arrivée</h3>
@@ -115,6 +115,60 @@
             <p>Une voiture est recommandée pour découvrir le nord de Grande-Terre. Des lignes de bus relient Petit-Canal, Port-Louis, Anse-Bertrand et Pointe-à-Pitre.</p>
         </div>
     </div>
+</section>
+
+<section id="planning" class="container">
+    <h2 class="section-title">Réservation & Packs</h2>
+
+    <!-- Calendrier des disponibilités -->
+    <div class="cal-wrap">
+        <div id="cal-root"></div>
+        <div class="cal-legend">
+            <span><i style="background:#d1fae5"></i>Libre</span>
+            <span><i style="background:#fef3c7"></i>Demande en cours</span>
+            <span><i style="background:#fee2e2"></i>Réservé</span>
+        </div>
+        <p class="cal-hint">Cliquez sur votre jour d'arrivée, puis sur votre jour de départ.</p>
+    </div>
+
+    <form id="booking-form" onsubmit="event.preventDefault(); sendServicesRequest();">
+
+        <select id="bungalow" required class="large-select">
+            <option value="">Choisir un bungalow</option>
+            <option value="SR Plage">SR Plage - 200€ / nuit</option>
+            <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
+            <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
+            <option value="SR Mangrove">SR Mangrove - 200€ / nuit</option>
+        </select>
+
+        <input type="date" id="date-in" required class="large-select">
+        <input type="date" id="date-out" required class="large-select">
+
+        <select id="pack-select" class="large-select">
+            <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
+            <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
+            <optgroup label="🧖‍♂️ Bien-être">
+                <option value="100" data-name="Massage Solo">Massage Solo (1h) - 100€</option>
+                <option value="170" data-name="Massage Duo">Massage Duo (1h) - 170€</option>
+            </optgroup>
+            <optgroup label="🛶 Loisirs">
+                <option value="220" data-name="Kayak Couple">Kayak (Couple) - 220€</option>
+                <option value="380" data-name="Kayak Famille">Kayak (Famille 4p) - 380€</option>
+                <option value="220" data-name="Paddle Couple">Paddle (Couple) - 220€</option>
+                <option value="380" data-name="Paddle Famille">Paddle (Famille 4p) - 380€</option>
+            </optgroup>
+            <optgroup label="🐂 Patrimoine">
+                <option value="160" data-name="Charrette Couple">Charrette à bœufs (Couple) - 160€</option>
+                <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
+            </optgroup>
+        </select>
+        
+        <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
+        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
+        <input type="email" id="email" placeholder="Votre email" required class="large-select">
+        <input type="tel" id="phone" placeholder="Votre numéro de téléphone" required class="large-select">
+        <button type="submit">Envoyer la demande</button>
+    </form>
 </section>
 
 <section id="autour" class="container">
@@ -206,60 +260,6 @@
             <p>Numéro d'urgence : 112. SAMU : 15.</p>
         </div>
     </div>
-</section>
-    
-<section id="planning" class="container">
-    <h2 class="section-title">Réservation & Packs</h2>
-
-    <!-- Calendrier des disponibilités -->
-    <div class="cal-wrap">
-        <div id="cal-root"></div>
-        <div class="cal-legend">
-            <span><i style="background:#d1fae5"></i>Libre</span>
-            <span><i style="background:#fef3c7"></i>Demande en cours</span>
-            <span><i style="background:#fee2e2"></i>Réservé</span>
-        </div>
-        <p class="cal-hint">Cliquez sur votre jour d'arrivée, puis sur votre jour de départ.</p>
-    </div>
-
-    <form id="booking-form" onsubmit="event.preventDefault(); sendServicesRequest();">
-
-        <select id="bungalow" required class="large-select">
-            <option value="">Choisir un bungalow</option>
-            <option value="SR Plage">SR Plage - 200€ / nuit</option>
-            <option value="SR Rivière">SR Rivière - 200€ / nuit</option>
-            <option value="SR Tradition">SR Tradition - 200€ / nuit</option>
-            <option value="SR Mangrove">SR Mangrove - 200€ / nuit</option>
-        </select>
-
-        <input type="date" id="date-in" required class="large-select">
-        <input type="date" id="date-out" required class="large-select">
-
-        <select id="pack-select" class="large-select">
-            <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
-            <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
-            <optgroup label="🧖‍♂️ Bien-être">
-                <option value="100" data-name="Massage Solo">Massage Solo (1h) - 100€</option>
-                <option value="170" data-name="Massage Duo">Massage Duo (1h) - 170€</option>
-            </optgroup>
-            <optgroup label="🛶 Loisirs">
-                <option value="220" data-name="Kayak Couple">Kayak (Couple) - 220€</option>
-                <option value="380" data-name="Kayak Famille">Kayak (Famille 4p) - 380€</option>
-                <option value="220" data-name="Paddle Couple">Paddle (Couple) - 220€</option>
-                <option value="380" data-name="Paddle Famille">Paddle (Famille 4p) - 380€</option>
-            </optgroup>
-            <optgroup label="🐂 Patrimoine">
-                <option value="160" data-name="Charrette Couple">Charrette à bœufs (Couple) - 160€</option>
-                <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
-            </optgroup>
-        </select>
-        
-        <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
-        <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
-        <input type="email" id="email" placeholder="Votre email" required class="large-select">
-        <input type="tel" id="phone" placeholder="Votre numéro de téléphone" required class="large-select">
-        <button type="submit">Envoyer la demande</button>
-    </form>
 </section>
 
 <section id="faq" class="container">
@@ -355,4 +355,4 @@
 <script type="module" src="firebase-init.js"></script>
 
 </body>
-            </html>
+    </html>
