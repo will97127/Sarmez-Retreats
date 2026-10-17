@@ -44,6 +44,7 @@ function showCategory(cat) {
                     <option value="SR Plage">SR Plage</option>
                     <option value="SR Rivière">SR Rivière</option>
                     <option value="SR Tradition">SR Tradition</option>
+                    <option value="SR Mangrove">SR Mangrove</option>
                 </select>
                 
                 <strong>Services souhaités :</strong><br>
