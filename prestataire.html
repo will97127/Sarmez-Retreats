@@ -18,6 +18,7 @@
         .btns button { padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; flex: 1; }
         .btn-accept { background: #28a745; }
         .btn-refuse { background: #dc3545; }
+        .btn-delete { background: #64748b; }
         #login-box { max-width: 350px; margin: 120px auto; text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.15); }
         #login-box h2 { margin-top: 0; }
         #login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em; }
@@ -176,10 +177,12 @@
                     📧 ${esc(d.client_email)} · 📱 ${esc(d.client_phone)}<br>
                     <button style="background:#dc3545" data-cancel="${esc(e.id)}">${acc ? "Annuler la réservation" : "Refuser"}</button>
                     ${acc ? "" : `<button style="background:#28a745" data-accept="${esc(e.id)}">Accepter</button>`}
+                    <button style="background:#64748b" data-delete="${esc(e.id)}">🗑 Supprimer</button>
                 </div>`;
             }).join("");
             box.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => decide(b.dataset.cancel, "refuse", true));
             box.querySelectorAll("[data-accept]").forEach(b => b.onclick = () => decide(b.dataset.accept, "accepte", true));
+            box.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => supprimer(b.dataset.delete));
         }
 
         // ===== LISTE DES DEMANDES EN ATTENTE =====
@@ -202,10 +205,12 @@
                     <div class="btns">
                         <button class="btn-accept" data-id="${esc(d.id)}">✅ Accepter</button>
                         <button class="btn-refuse" data-id="${esc(d.id)}">❌ Refuser</button>
+                        <button class="btn-delete" data-id="${esc(d.id)}">🗑 Supprimer</button>
                     </div>
                 </div>`).join("");
             list.querySelectorAll(".btn-accept").forEach(b => b.onclick = () => decide(b.dataset.id, "accepte", true));
             list.querySelectorAll(".btn-refuse").forEach(b => b.onclick = () => decide(b.dataset.id, "refuse", true));
+            list.querySelectorAll(".btn-delete").forEach(b => b.onclick = () => supprimer(b.dataset.id));
         }
 
         // ===== ACCEPTER / REFUSER / ANNULER =====
@@ -253,7 +258,7 @@
                         lien_paiement: lien,
                         statut_emoji: statut === "accepte" ? "✅" : "❌",
                         statut_text: statut === "accepte" ? "ACCEPTÉE" : "REFUSÉE",
-                        statut_sujet: statut === "accepte" ? "Votre demande est acceptée - Sarmèz Retreats" : "Votre demande - Sarmèz Retreats",
+                        statut_sujet: statut === "accepte" ? "Votre demande est acceptée - Sarmèz Retreats" : "Votre demande a été refusée - Sarmèz Retreats",
                         statut_message: statut === "accepte" ? msgOk : msgKo,
                         message_client: statut === "accepte" ? msgOk : msgKo
                     });
@@ -265,6 +270,16 @@
 
             alert((statut === "accepte" ? "✅ Réservation acceptée." : "❌ Demande refusée.") + emailMsg);
             await loadAll();
+        }
+
+        // ===== SUPPRIMER (sans email au client) =====
+        async function supprimer(id) {
+            if (!confirm("Supprimer définitivement cette demande ? Le client ne sera pas prévenu.")) return;
+            try {
+                await db.collection("bloquages").doc(id).delete();
+                await db.collection("demandes").doc(id).delete();
+                await loadAll();
+            } catch (e) { alert("❌ Erreur : " + e.message); }
         }
 
         // ===== BLOCAGE MANUEL =====
