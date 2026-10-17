@@ -1,1 +1,11 @@
-
+.amenities { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.amenities li { background: #f1f5f9; color: #334155; border-radius: 20px; padding: 4px 10px; font-size: .78rem; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+.info-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.4rem; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+.info-box h3 { margin: 0 0 .6rem; color: #0f172a; font-size: 1.1rem; }
+.info-box p { margin: .3rem 0; color: #475569; font-size: .95rem; }
+.faq { max-width: 800px; margin: 2rem auto 0; }
+.faq details { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: .9rem 1.1rem; margin-bottom: .6rem; }
+.faq summary { cursor: pointer; font-weight: 600; color: #0f172a; }
+.faq details p { margin: .6rem 0 0; color: #475569; line-height: 1.5; }
+.wa-btn { position: fixed; left: 20px; bottom: 90px; z-index: 1001; background: #25D366; color: #fff; padding: 12px 18px; border-radius: 30px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
