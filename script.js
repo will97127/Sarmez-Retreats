@@ -106,6 +106,13 @@ async function sendServicesRequest() {
 
     const dateIn = document.getElementById('date-in')?.value;
     const dateOut = document.getElementById('date-out')?.value;
+        const guests = parseInt(document.getElementById('guests')?.value) || null;
+    const clientMessage = document.getElementById('client-message')?.value?.trim() || '';
+    const maxGuests = (bungalowFinal === 'SR Plage' || bungalowFinal === 'SR Rivière') ? 4 : 2;
+    if (guests && guests > maxGuests) {
+        alert(`${bungalowFinal} accueille ${maxGuests} personnes maximum.`);
+        return;
+    }
 
     // Contrôle des dates
     if (dateIn && dateOut) {
