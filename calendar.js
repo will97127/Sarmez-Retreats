@@ -21,7 +21,8 @@
       bungalow: opts.bungalow || opts.bungalows[0],
       events: opts.events || [],
       cur: new Date(),
-      sel: [null, null]
+      sel: [null, null],
+      badges: {}
     };
     state.cur.setDate(1);
 
@@ -44,6 +45,12 @@
         btn.type = "button";
         btn.textContent = b;
         btn.className = "cal-tab" + (b === state.bungalow ? " active" : "");
+        if (state.badges[b] > 0) {
+          const badge = document.createElement("span");
+          badge.className = "cal-badge";
+          badge.textContent = state.badges[b];
+          btn.appendChild(badge);
+        }
         btn.onclick = () => { state.bungalow = b; draw(); opts.onBungalow && opts.onBungalow(b); };
         tabs.appendChild(btn);
       });
@@ -81,6 +88,7 @@
     return {
       setEvents(ev) { state.events = ev; draw(); },
       setBungalow(b) { state.bungalow = b; draw(); },
+      setBadges(obj) { state.badges = obj || {}; draw(); },
       getBungalow() { return state.bungalow; },
       setSelection(a, b) { state.sel = [a || null, b || null]; draw(); }
     };
