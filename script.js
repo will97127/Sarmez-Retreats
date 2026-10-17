@@ -143,6 +143,8 @@ async function sendServicesRequest() {
         client_phone: phone || 'Non renseigné',
         bungalow: bungalowFinal,
         dates: datesStr,
+        nb_voyageurs: guests || 'Non précisé',
+        message_demande: clientMessage || 'Aucun',
         pack_choisi: document.getElementById('pack-select')?.options[document.getElementById('pack-select')?.selectedIndex]?.text || 'Aucun',
         liste_services: detailsServices.length > 0 ? detailsServices.join(" | ") : "Aucun service sélectionné",
         total_final: document.getElementById('display-total-final')?.innerText || '0€'
