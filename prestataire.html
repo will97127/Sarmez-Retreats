@@ -91,6 +91,17 @@
         const db = firebase.firestore();
         emailjs.init("7RJbubWGmgBgT2N5Y");
 
+        // ⚠️ Remplace par ton lien de paiement (PayPal.me, Stripe, SumUp, Lydia…)
+        const LIEN_PAIEMENT = "https://paypal.me/VOTRE_NOM";
+        function lienPaiement(d) {
+            const montant = parseFloat(String(d.total_final || "").replace(/[^\d.,]/g, "").replace(",", "."));
+            // Avec PayPal.me, le montant du séjour est ajouté automatiquement au lien
+            if (LIEN_PAIEMENT.includes("paypal.me") && montant > 0) {
+                return LIEN_PAIEMENT.replace(/\/$/, "") + "/" + montant + "EUR";
+            }
+            return LIEN_PAIEMENT;
+        }
+
         let allDemandes = [];
         let cal = null;
 
@@ -218,6 +229,9 @@
             // 2) Email client (une erreur ici n'annule pas la décision)
             let emailMsg = "";
             if (notify && d.client_email && d.client_email !== "Non renseigné") {
+                const lien = statut === "accepte" ? lienPaiement(d) : "";
+                const msgOk = "✅ Votre demande a été acceptée ! Pour confirmer votre réservation, merci de régler votre séjour via ce lien de paiement : " + lien;
+                const msgKo = "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci. N'hésitez pas à nous contacter pour explorer d'autres options.";
                 try {
                     await emailjs.send("service_8chuqsf", "template_7m5glbl", {
                         to_email: d.client_email,
@@ -230,15 +244,12 @@
                         pack_choisi: d.pack_choisi || "Non spécifié",
                         liste_services: d.liste_services || "Aucun service",
                         total_final: d.total_final || "0€",
+                        lien_paiement: lien,
                         statut_emoji: statut === "accepte" ? "✅" : "❌",
                         statut_text: statut === "accepte" ? "ACCEPTÉE" : "REFUSÉE",
                         statut_sujet: statut === "accepte" ? "Votre demande est acceptée - Sarmèz Retreats" : "Votre demande - Sarmèz Retreats",
-                        statut_message: statut === "accepte"
-                            ? "✅ Votre demande a été acceptée ! Nous vous contacterons bientôt pour confirmer les détails."
-                            : "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci. N'hésitez pas à nous contacter pour explorer d'autres options.",
-                        message_client: statut === "accepte"
-                            ? "✅ Votre demande a été acceptée ! Nous vous contacterons bientôt pour confirmer les détails."
-                            : "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci."
+                        statut_message: statut === "accepte" ? msgOk : msgKo,
+                        message_client: statut === "accepte" ? msgOk : msgKo
                     });
                 } catch (e) {
                     console.error(e);
