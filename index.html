@@ -26,6 +26,14 @@
     </nav>
 </header>
 
+<section id="home" class="hero" style="background-image: linear-gradient(rgba(15,23,42,.45), rgba(15,23,42,.6)), url('SRmangrove.jpg');">
+    <div class="hero-content">
+        <h1>Sarmèz Retreats</h1>
+        <p>Quatre bungalows avec piscine privée, au cœur de la Guadeloupe.</p>
+        <a class="btn" href="#planning">Réserver</a>
+    </div>
+</section>
+
 <section id="bungalows" class="container">
     <h2 class="section-title">Nos Bungalows</h2>
     <p class="subtitle text-center">Découvrez nos unités premium nichées au cœur de la Guadeloupe.</p>
@@ -86,7 +94,7 @@
     <h2 class="section-title">Infos pratiques</h2>
     <div class="info-grid">
         <div class="info-box">
-            <h3>📍adresse</h3>
+            <h3>📍 Adresse</h3>
             <p>Rocade Ouest, section Les Mangles<br>97131 Petit-Canal, Guadeloupe</p>
             <p>Environ 35 minutes de l'aéroport de Pointe-à-Pitre, selon la circulation.</p>
             <a class="map-link" href="https://www.google.com/maps/dir/?api=1&destination=16.3871163,-61.4614942" target="_blank" rel="noopener">Itinéraire jusqu'au bungalow →</a>
@@ -144,6 +152,8 @@
         <input type="date" id="date-in" required class="large-select">
         <input type="date" id="date-out" required class="large-select">
 
+        <input type="number" id="guests" min="1" max="4" placeholder="Nombre de voyageurs" required class="large-select">
+
         <select id="pack-select" class="large-select">
             <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
             <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
@@ -167,6 +177,7 @@
         <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
         <input type="email" id="email" placeholder="Votre email" required class="large-select">
         <input type="tel" id="phone" placeholder="Votre numéro de téléphone" required class="large-select">
+        <textarea id="client-message" placeholder="Une demande particulière ? (optionnel)" rows="3" class="large-select"></textarea>
         <button type="submit">Envoyer la demande</button>
     </form>
 </section>
@@ -223,6 +234,8 @@
         </div>
     </div>
 
+    <p class="note">⚠️ Plusieurs plages du nord ne sont pas surveillées : renseignez-vous sur les conditions de baignade avant de vous mettre à l'eau. Les sargasses varient selon les plages et les périodes : demandez-nous quelles plages sont dégagées avant de partir.</p>
+
     <h3 class="group-title">🛒 Courses et services</h3>
     <div class="info-grid">
         <div class="info-box">
@@ -270,6 +283,21 @@
     </div>
 </section>
 
+<footer>
+    <div class="container">
+        <p class="footer-contact">
+            📞 <a href="tel:+590690XXXXXX">+590 690 XX XX XX</a> &nbsp;·&nbsp;
+            ✉️ <a href="mailto:contact@VOTRE-DOMAINE.fr">contact@VOTRE-DOMAINE.fr</a>
+        </p>
+        <p>
+            <a href="mentions-legales.html#mentions">Mentions légales</a> ·
+            <a href="mentions-legales.html#conditions">Conditions de réservation</a> ·
+            <a href="mentions-legales.html#confidentialite">Confidentialité</a>
+        </p>
+        <p>© Sarmèz Retreats</p>
+    </div>
+</footer>
+
 <a id="wa-btn" class="wa-btn" href="#" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 
 <div class="chat-widget" id="chat-widget">
@@ -302,6 +330,22 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="text/javascript">
   (function(){ emailjs.init("7RJbubWGmgBgT2N5Y"); })();
+</script>
+
+<!-- Capacité selon le bungalow -->
+<script>
+(function () {
+  const sel = document.getElementById("bungalow");
+  const guests = document.getElementById("guests");
+  function setMax() {
+    const max = (sel.value === "SR Plage" || sel.value === "SR Rivière") ? 4 : (sel.value ? 2 : 4);
+    guests.max = max;
+    guests.placeholder = "Nombre de voyageurs (max " + max + ")";
+    if (guests.value && parseInt(guests.value) > max) guests.value = max;
+  }
+  sel.addEventListener("change", setMax);
+  setMax();
+})();
 </script>
 
 <!-- Bouton WhatsApp : reprend le bungalow et les dates choisis -->
@@ -337,4 +381,4 @@
 <script type="module" src="firebase-init.js"></script>
 
 </body>
-    </html>
+</html>
