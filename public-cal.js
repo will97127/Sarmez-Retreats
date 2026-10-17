@@ -1,6 +1,6 @@
 // Calendrier public : affiche libre / demande en cours / réservé, et remplit les dates du formulaire
 (function () {
-  const BUNGALOWS = ["SR Plage", "SR Rivière", "SR Tradition"];
+    const BUNGALOWS = ["SR Plage", "SR Rivière", "SR Tradition", "SR Mangrove"];
   const sel = document.getElementById("bungalow");
   const di = document.getElementById("date-in");
   const dout = document.getElementById("date-out");
