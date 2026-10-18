@@ -16,6 +16,7 @@ function backToMenu() {
             <strong>Que puis-je faire pour vous ?</strong>
             <div class="chat-options">
                 <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
+                <button type="button" onclick="window.location.href='probleme.html'">🛠 Signaler un problème</button>
             </div>`;
     }
 }
