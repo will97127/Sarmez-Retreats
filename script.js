@@ -57,10 +57,6 @@ function showCategory(cat) {
                 ${renderService("Charrette Famille", 300)}
                 ${renderService("Kayak/Paddle Couple", 240)}
                 ${renderService("Kayak/Paddle Famille", 400)}
-                <div class="service-row" style="margin-bottom:10px;">
-                    <label><input type="checkbox" class="service-item" value="0" onchange="updateAll()"> 🛠 Problème technique</label><br>
-                    <textarea class="service-details" placeholder="Détails du problème" style="width:100%; height:60px;"></textarea>
-                </div>
                 <hr>
                 <p>Total : <strong id="services-total">0€</strong></p>
                 <button type="button" onclick="sendServicesRequest()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; cursor:pointer; margin-bottom:5px;">Envoyer la demande</button>
