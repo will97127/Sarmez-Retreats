@@ -310,7 +310,7 @@
             if (!num) return alert("Téléphone du client introuvable.");
             const code = prompt("Code de la boîte à clés pour ce séjour :");
             if (!code) return;
-            const texte = `Bonjour ${d.client_name},\n\nVotre séjour à Sarmèz Retreats approche ! Voici les informations pour votre arrivée :\n\n🏡 ${d.bungalow}\n📅 ${d.dates}\n🔑 Code de la boîte à clés : ${code}\n\nTout le détail (accès, wifi, piscine, départ) est ici :\nhttps://sarmez-retreats.pages.dev/guide-accueil.html\n\nÀ très bientôt,\nWill - Sarmèz Retreats`;
+            const texte = `Bonjour ${d.client_name},\n\nVotre séjour à Sarmèz Retreats approche ! Voici les informations pour votre arrivée :\n\n🏡 ${d.bungalow}\n📅 ${d.dates}\n📍 Localisation exacte du bungalow :\nhttps://www.google.com/maps?q=16.3871163,-61.4614942\n🔑 Code de la boîte à clés : ${code}\n\nTout le détail (accès, wifi, piscine, départ) est ici :\nhttps://sarmez-retreats.pages.dev/guide-accueil.html\n\nÀ très bientôt,\nWill - Sarmèz Retreats`;
             window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(texte), "_blank");
         }
         // ===== BLOCAGE MANUEL =====
