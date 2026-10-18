@@ -176,6 +176,7 @@
                     ${fr(d.date_in)} → ${fr(d.date_out)}<br>
                     📧 ${esc(d.client_email)} · 📱 ${esc(d.client_phone)}<br>
                     <button style="background:#dc3545" data-cancel="${esc(e.id)}">${acc ? "Annuler la réservation" : "Refuser"}</button>
+                    ${acc ? `<button style="background:#25D366" data-arrive="${esc(e.id)}">💬 Envoyer le guide d'arrivée</button>` : ""}
                     ${acc ? "" : `<button style="background:#28a745" data-accept="${esc(e.id)}">Accepter</button>`}
                     <button style="background:#64748b" data-delete="${esc(e.id)}">🗑 Supprimer</button>
                 </div>`;
