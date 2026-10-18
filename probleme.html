@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Signaler un problème | Sarmèz Retreats</title>
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; color: #334155; line-height: 1.5; margin: 0; padding: 1.2rem; background: #f8fafc; }
+main { max-width: 600px; margin: 0 auto; }
+h1 { color: #0f172a; text-align: center; font-size: 1.5rem; }
+.urgence { background: #fee2e2; color: #991b1b; border-radius: 10px; padding: .9rem 1rem; margin-bottom: 1.2rem; font-size: .92rem; }
+form { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.2rem; }
+label { display: block; font-weight: 600; margin: 1rem 0 .3rem; color: #0f172a; font-size: .92rem; }
+select, input, textarea { width: 100%; padding: .85rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; }
+textarea { resize: vertical; }
+button { width: 100%; margin-top: 1.4rem; padding: 1rem; background: #25D366; color: #fff; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+.hint { background: #e0f2fe; color: #075985; border-radius: 10px; padding: .8rem 1rem; margin-top: 1rem; font-size: .9rem; display: none; }
+a { color: #0284c7; }
+</style>
+</head>
+<body>
+<main>
+<p><a href="index.html">← Retour au site</a></p>
+<h1>🛠 Signaler un problème</h1>
+
+<div class="urgence">
+🚨 En cas de danger (fumée, étincelles, odeur de brûlé, inondation, personne blessée), appelez le <strong>112</strong> (SAMU : <strong>15</strong>) avant tout.
+</div>
+
+<form id="pb-form">
+  <label for="bungalow">Votre bungalow</label>
+  <select id="bungalow" required>
+    <option value="">Choisir…</option>
+    <option>SR Plage</option><option>SR Rivière</option><option>SR Tradition</option><option>SR Mangrove</option>
+  </select>
+
+  <label for="nom">Votre nom (optionnel)</label>
+  <input type="text" id="nom" placeholder="Nom et prénom">
+
+  <label for="categorie">Type de problème</label>
+  <select id="categorie" required><option value="">Choisir…</option></select>
+
+  <label for="detail">Précisez</label>
+  <select id="detail" required><option value="">Choisissez d'abord un type</option></select>
+
+  <label for="urgence">Urgence</label>
+  <select id="urgence" required>
+    <option>Urgent (plus de courant, fuite importante, plus d'eau)</option>
+    <option selected>Gênant, à régler vite</option>
+    <option>Peut attendre</option>
+  </select>
+
+  <label for="description">Détails (optionnel)</label>
+  <textarea id="description" rows="4" placeholder="Depuis quand ? Où exactement ?"></textarea>
+
+  <button type="submit">💬 Envoyer sur WhatsApp</button>
+  <div class="hint" id="hint">Dans WhatsApp, appuyez sur 📎 (ou l'appareil photo) pour joindre vos <strong>photos ou vidéos</strong> du problème, puis envoyez.</div>
+</form>
+</main>
+
+<script>
+const NUM = "590690676841"; // ⚠️ Remplace par ton numéro : 590 + numéro sans le 0 (ex : 590690123456)
+
+const PROBLEMES = {
+  "⚡ Électricité": ["Plus de courant dans tout le bungalow", "Une prise ne fonctionne pas", "Le disjoncteur saute", "Autre"],
+  "🚿 Plomberie / eau": ["Plus d'eau", "Pas d'eau chaude", "Fuite d'eau", "Évier, douche ou WC bouché", "Faible pression", "Autre"],
+  "💡 Éclairage": ["Ampoule grillée", "Une lumière ne s'allume pas", "Éclairage de la terrasse ou du jardin", "Éclairage de la piscine", "Autre"],
+  "📶 Wifi / Internet": ["Pas de connexion", "Connexion très lente", "Le mot de passe ne fonctionne pas", "Autre"],
+  "❄️ Climatisation": ["Ne démarre pas", "Ne refroidit pas", "Fuite d'eau", "Bruit anormal", "Télécommande", "Autre"],
+  "🍳 Cuisine / électroménager": ["Réfrigérateur", "Plaques de cuisson", "Four ou micro-ondes", "Autre"],
+  "🏊 Piscine": ["Eau trouble", "Pompe ou filtration à l'arrêt", "Autre"],
+  "🔑 Serrure / clés": ["Boîte à clés bloquée", "Porte difficile à ouvrir ou fermer", "Clé perdue", "Autre"],
+  "🧹 Autre": ["Autre problème"]
+};
+
+const cat = document.getElementById("categorie");
+const det = document.getElementById("detail");
+Object.keys(PROBLEMES).forEach(k => cat.add(new Option(k, k)));
+cat.addEventListener("change", () => {
+  det.innerHTML = "";
+  det.add(new Option("Choisir…", ""));
+  (PROBLEMES[cat.value] || []).forEach(d => det.add(new Option(d, d)));
+});
+
+document.getElementById("pb-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  let msg = "🛠 Signalement de problème - Sarmèz Retreats\n";
+  msg += "Bungalow : " + v("bungalow") + "\n";
+  if (v("nom")) msg += "Nom : " + v("nom") + "\n";
+  msg += "Type : " + v("categorie") + "\n";
+  msg += "Problème : " + v("detail") + "\n";
+  msg += "Urgence : " + v("urgence") + "\n";
+  if (v("description")) msg += "Détails : " + v("description") + "\n";
+  msg += "\n(Je joins mes photos ci-dessous.)";
+  document.getElementById("hint").style.display = "block";
+  window.open("https://wa.me/" + NUM + "?text=" + encodeURIComponent(msg), "_blank");
+});
+</script>
+</body>
+</html>
