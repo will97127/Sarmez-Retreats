@@ -181,6 +181,9 @@ async function sendServicesRequest() {
     templateParams.demande_id = docId || "N/A";
     templateParams.statut_sujet = "Confirmation de votre demande - Sarmèz Retreats";
     templateParams.statut_message = "Nous avons bien reçu votre demande de réservation ! Voici un récapitulatif :";
+        // Espace insécable pour éviter que le texte soit collé dans l'email
+    templateParams.nb_voyageurs = "\u00a0" + templateParams.nb_voyageurs;
+    templateParams.message_demande = "\u00a0" + templateParams.message_demande;
 
     emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
     emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
