@@ -247,6 +247,8 @@
                 const lien = statut === "accepte" ? lienPaiement(d) : "";
                 const msgOk = "✅ Votre demande a été acceptée ! Pour confirmer votre réservation, merci de régler votre séjour via ce lien de paiement : " + lien;
                 const msgKo = "❌ Malheureusement, votre demande n'a pas pu être acceptée cette fois-ci. N'hésitez pas à nous contacter pour explorer d'autres options.";
+                const ligneLoc = statut === "accepte" ? "📍 Localisation exacte du bungalow : https://www.google.com/maps?q=16.3871163,-61.4614942" : "";
+                const ligneGuide = statut === "accepte" ? "📖 Guide d'accueil (accès, wifi, piscine, départ) : https://sarmez-retreats.pages.dev/guide-accueil.html" : "";
                 try {
                     await emailjs.send("service_8chuqsf", "template_7m5glbl", {
                         to_email: d.client_email,
