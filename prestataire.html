@@ -288,6 +288,31 @@
             } catch (e) { alert("❌ Erreur : " + e.message); }
         }
 
+                // ===== GUIDE D'ARRIVÉE PAR WHATSAPP =====
+        function numeroWhatsApp(tel) {
+            let n = String(tel || "").replace(/[^\d+]/g, "");
+            if (n.startsWith("00")) n = "+" + n.slice(2);
+            if (n.startsWith("+")) {
+                n = n.slice(1);
+                if (n.startsWith("5900")) n = "590" + n.slice(4);
+                return n;
+            }
+            if (n.startsWith("590")) return n;
+            if (/^(690|691)\d{6}$/.test(n)) return "590" + n;
+            if (/^0(690|691|590)\d{6}$/.test(n)) return "590" + n.slice(1);
+            if (/^0\d{9}$/.test(n)) return "33" + n.slice(1);
+            return n;
+        }
+        function envoyerArrivee(id) {
+            const d = allDemandes.find(x => x.id === id);
+            if (!d) return alert("Demande introuvable.");
+            const num = numeroWhatsApp(d.client_phone);
+            if (!num) return alert("Téléphone du client introuvable.");
+            const code = prompt("Code de la boîte à clés pour ce séjour :");
+            if (!code) return;
+            const texte = `Bonjour ${d.client_name},\n\nVotre séjour à Sarmèz Retreats approche ! Voici les informations pour votre arrivée :\n\n🏡 ${d.bungalow}\n📅 ${d.dates}\n🔑 Code de la boîte à clés : ${code}\n\nTout le détail (accès, wifi, piscine, départ) est ici :\nhttps://sarmez-retreats.pages.dev/guide-accueil.html\n\nÀ très bientôt,\nWill - Sarmèz Retreats`;
+            window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(texte), "_blank");
+        }
         // ===== BLOCAGE MANUEL =====
         async function blockDates() {
             const bungalow = document.getElementById("b-bungalow").value;
