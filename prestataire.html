@@ -184,6 +184,7 @@
             box.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => decide(b.dataset.cancel, "refuse", true));
             box.querySelectorAll("[data-accept]").forEach(b => b.onclick = () => decide(b.dataset.accept, "accepte", true));
             box.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => supprimer(b.dataset.delete));
+            box.querySelectorAll("[data-arrive]").forEach(b => b.onclick = () => envoyerArrivee(b.dataset.arrive));
         }
 
         // ===== LISTE DES DEMANDES EN ATTENTE =====
