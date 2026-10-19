@@ -94,7 +94,7 @@
         emailjs.init("7RJbubWGmgBgT2N5Y");
 
         // ⚠️ Remplace par ton lien de paiement (PayPal.me, Stripe, SumUp, Lydia…)
-        const LIEN_PAIEMENT = "const LIEN_PAIEMENT = "https://paypal.me/SarmezRetreats";
+        const LIEN_PAIEMENT = "https://paypal.me/SarmezRetreats";
         function lienPaiement(d) {
             const montant = parseFloat(String(d.total_final || "").replace(/[^\d.,]/g, "").replace(",", "."));
             // Avec PayPal.me, le montant du séjour est ajouté automatiquement au lien
