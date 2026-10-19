@@ -75,7 +75,7 @@ function updateAll() {
         const diffTime = Math.abs(new Date(dateOutVal) - new Date(dateInVal));
         nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
     }
-
+if (document.getElementById('services-bar')) document.getElementById('services-bar').innerText = totalServices;
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
 
