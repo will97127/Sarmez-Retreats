@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarmèz Retreats | Conciergerie</title>
+    <title>Sarmèz Retreats | Bungalows avec piscine privée en Guadeloupe</title>
+    <meta name="description" content="Quatre bungalows avec piscine privée à Petit-Canal, Guadeloupe. Réservez en ligne : SR Plage, SR Rivière, SR Tradition, SR Mangrove.">
+    <meta property="og:title" content="Sarmèz Retreats - Bungalows avec piscine privée">
+    <meta property="og:description" content="Quatre bungalows avec piscine privée au cœur de la Guadeloupe.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌴</text></svg>">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="calendar.css">
     <link rel="stylesheet" href="infos.css">
@@ -155,7 +160,7 @@
         <input type="number" id="guests" min="1" max="4" placeholder="Nombre de voyageurs" required class="large-select">
 
         <select id="pack-select" class="large-select">
-            <option value="0" data-name="Aucun">Choisir un pack (Optionnel)</option>
+            <option value="0" data-name="Aucun">Choisir un pack (optionnel, tarif réservation)</option>
             <option value="150" data-name="Romantique">🌿 Pack Romantique (Champagne + Fleurs) - 150€</option>
             <optgroup label="🧖‍♂️ Bien-être">
                 <option value="100" data-name="Massage Solo">Massage Solo (1h) - 100€</option>
@@ -172,12 +177,15 @@
                 <option value="280" data-name="Charrette Famille">Charrette à bœufs (Famille 4p) - 280€</option>
             </optgroup>
         </select>
+        <p class="form-note">💡 Les packs réservés avec votre séjour sont moins chers que les mêmes services commandés sur place.</p>
         
         <input type="text" id="client-lastname" placeholder="Nom" required class="large-select">
         <input type="text" id="client-firstname" placeholder="Prénom" required class="large-select">        
         <input type="email" id="email" placeholder="Votre email" required class="large-select">
         <input type="tel" id="phone" placeholder="Votre numéro de téléphone" required class="large-select">
         <textarea id="client-message" placeholder="Une demande particulière ? (optionnel)" rows="3" class="large-select"></textarea>
+        <label class="consent"><input type="checkbox" id="consent" required> J'accepte les <a href="mentions-legales.html#conditions" target="_blank" rel="noopener">conditions de réservation</a> et la <a href="mentions-legales.html#confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</label>
+        <p class="form-note">La taxe de séjour s'ajoute au total, selon le tarif de la commune.</p>
         <button type="submit">Envoyer la demande</button>
     </form>
 </section>
@@ -323,7 +331,7 @@
         <div id="chat-content">
             <strong>Que puis-je faire pour vous ?</strong>
             <div class="chat-options">
-                <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
+                <button type="button" onclick="showCategory('services')">🛎️ Services pendant votre séjour</button>
             </div>
             <hr>
             <p>Total services sélectionnés : <strong id="services-total">0€</strong></p>
@@ -365,7 +373,7 @@
 <!-- Bouton WhatsApp : reprend le bungalow et les dates choisis -->
 <script>
 (function () {
-  const NUM = "590690676841"; // ⚠️ Remplace par ton numéro : 590 + numéro sans le 0 (ex : 590690123456)
+  const NUM = "590690676841";
   const btn = document.getElementById("wa-btn");
   const fr = d => d.split("-").reverse().join("/");
   function update() {
