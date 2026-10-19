@@ -67,6 +67,7 @@ function showCategory(cat) {
 }
 
 // --- CALCULS ET ENVOI ---
+
 function updateAll() {
     const dateInVal = document.getElementById('date-in')?.value;
     const dateOutVal = document.getElementById('date-out')?.value;
@@ -75,7 +76,7 @@ function updateAll() {
         const diffTime = Math.abs(new Date(dateOutVal) - new Date(dateInVal));
         nightPrice = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24))) * 200;
     }
-if (document.getElementById('services-bar')) document.getElementById('services-bar').innerText = totalServices;
+
     let totalServices = 0;
     document.querySelectorAll('.service-item:checked').forEach(item => totalServices += parseFloat(item.value));
 
@@ -83,10 +84,10 @@ if (document.getElementById('services-bar')) document.getElementById('services-b
 
     if (document.getElementById('night-total')) document.getElementById('night-total').innerText = nightPrice;
     if (document.getElementById('pack-total')) document.getElementById('pack-total').innerText = packPrice;
+    if (document.getElementById('services-bar')) document.getElementById('services-bar').innerText = totalServices;
     if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
     if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
 }
-
 async function sendServicesRequest() {
     const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
     const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
