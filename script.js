@@ -15,7 +15,7 @@ function backToMenu() {
         content.innerHTML = `
             <strong>Que puis-je faire pour vous ?</strong>
             <div class="chat-options">
-                <button type="button" onclick="showCategory('services')">🛎️ Nos Services</button>
+                <button type="button" onclick="showCategory('services')">🛎️ Services pendant votre séjour</button>
                 <button type="button" onclick="window.location.href='probleme.html'">🛠 Signaler un problème</button>
             </div>`;
     }
@@ -48,7 +48,7 @@ function showCategory(cat) {
                     <option value="SR Mangrove">SR Mangrove</option>
                 </select>
                 
-                <strong>Services souhaités :</strong><br>
+                <strong>Services sur place (tarif sur place) :</strong><br>
                 ${renderService("Petit déjeuner", 15)}
                 ${renderService("Ménage", 20)}
                 ${renderService("Massage Solo", 110)}
@@ -173,6 +173,8 @@ async function sendServicesRequest() {
         }
     } catch (error) {
         console.error("Erreur Firestore:", error);
+        alert("❌ Votre demande n'a pas pu être enregistrée. Réessayez ou contactez-nous sur WhatsApp.");
+        return;
     }
 
     templateParams.demande_id = docId || "N/A";
@@ -182,9 +184,16 @@ async function sendServicesRequest() {
     templateParams.nb_voyageurs = "\u00a0" + templateParams.nb_voyageurs;
     templateParams.message_demande = "\u00a0" + templateParams.message_demande;
 
-    emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams);
-    emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
-        .then(() => alert("Demande envoyée avec succès !"), (err) => alert("Erreur : " + JSON.stringify(err)));
+    try {
+        await Promise.all([
+            emailjs.send("service_8chuqsf", "template_ip31gnr", templateParams),
+            emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
+        ]);
+        alert("Demande envoyée avec succès !");
+    } catch (err) {
+        console.error(err);
+        alert("Votre demande est bien enregistrée, mais l'email de confirmation n'a pas pu partir. Nous vous répondrons rapidement.");
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
