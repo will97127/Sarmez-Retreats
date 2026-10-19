@@ -88,7 +88,21 @@ function updateAll() {
     if (document.getElementById('services-total')) document.getElementById('services-total').innerText = totalServices + "€";
     if (document.getElementById('display-total-final')) document.getElementById('display-total-final').innerText = (nightPrice + packPrice + totalServices) + "€";
 }
+let envoiEnCours = false;
+
 async function sendServicesRequest() {
+    if (envoiEnCours) return;
+    envoiEnCours = true;
+    const btns = document.querySelectorAll('#booking-form button[type="submit"]');
+    btns.forEach(b => { b.disabled = true; b.textContent = "Envoi en cours..."; });
+    try {
+        await envoyerDemande();
+    } finally {
+        envoiEnCours = false;
+        btns.forEach(b => { b.disabled = false; b.textContent = "Envoyer la demande"; });
+    }
+}
+async function envoyerDemande() {
     const name = document.getElementById('chat-name')?.value || `${document.getElementById('client-firstname')?.value || ''} ${document.getElementById('client-lastname')?.value || ''}`;
     const email = document.getElementById('chat-email')?.value || document.getElementById('email')?.value;
     const phone = document.getElementById('chat-phone')?.value || document.getElementById('phone')?.value;
