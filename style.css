@@ -105,9 +105,14 @@ footer .container { padding: 2.5rem 2rem; }
   body { padding-bottom: 90px; }
   .container { padding: 3rem 1.2rem; }
 
-  .hero { height: auto; min-height: 70vh; padding: 3rem 1rem; }
-  .hero-content h1 { font-size: 2.2rem; }
-  .hero-content p { font-size: 1.1rem; }
+    .hero {
+    height: auto;
+    min-height: 0;
+    align-items: flex-start;
+    padding: 2rem 1rem 12rem;
+  }
+  .hero-content h1 { font-size: 2.2rem; margin-bottom: .6rem; }
+  .hero-content p { font-size: 1.05rem; margin-bottom: 1.2rem; }
 
   /* Barre de prix compacte : 2 lignes maximum */
   .price-bar { padding: .4rem 0; }
