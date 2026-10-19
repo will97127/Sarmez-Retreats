@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Espace Prestataire | Sarmèz Retreats</title>
     <link rel="stylesheet" href="calendar.css">
     <style>
@@ -221,6 +222,7 @@
         async function decide(id, statut, notify) {
             const d = allDemandes.find(x => x.id === id);
             if (!d) return alert("❌ Demande introuvable");
+            if (statut === "accepte" && LIEN_PAIEMENT.includes("VOTRE_NOM")) return alert("⚠️ Renseignez d'abord LIEN_PAIEMENT dans prestataire.html.");
             if (statut === "accepte" && d.date_in && d.date_out) {
                 const conflict = allDemandes.some(x => x.id !== id && x.statut === "accepte" && x.bungalow === d.bungalow &&
                     x.date_in < d.date_out && x.date_out > d.date_in);
@@ -292,7 +294,7 @@
             } catch (e) { alert("❌ Erreur : " + e.message); }
         }
 
-                // ===== GUIDE D'ARRIVÉE PAR WHATSAPP =====
+        // ===== GUIDE D'ARRIVÉE PAR WHATSAPP =====
         function numeroWhatsApp(tel) {
             let n = String(tel || "").replace(/[^\d+]/g, "");
             if (n.startsWith("00")) n = "+" + n.slice(2);
@@ -317,6 +319,7 @@
             const texte = `Bonjour ${d.client_name},\n\nVotre séjour à Sarmèz Retreats approche ! Voici les informations pour votre arrivée :\n\n🏡 ${d.bungalow}\n📅 ${d.dates}\n📍 Localisation exacte du bungalow :\nhttps://www.google.com/maps?q=16.3871163,-61.4614942\n🔑 Code de la boîte à clés : ${code}\n\nTout le détail (accès, wifi, piscine, départ) est ici :\nhttps://sarmez-retreats.pages.dev/guide-accueil.html\n\nÀ très bientôt,\nWill - Sarmèz Retreats`;
             window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(texte), "_blank");
         }
+
         // ===== BLOCAGE MANUEL =====
         async function blockDates() {
             const bungalow = document.getElementById("b-bungalow").value;
