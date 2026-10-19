@@ -205,6 +205,7 @@ async function envoyerDemande() {
             emailjs.send("service_8chuqsf", "template_7m5glbl", templateParams)
         ]);
         alert("Demande envoyée avec succès !");
+        location.reload();
     } catch (err) {
         console.error(err);
         alert("Votre demande est bien enregistrée, mais l'email de confirmation n'a pas pu partir. Nous vous répondrons rapidement.");
